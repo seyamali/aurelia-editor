@@ -1,0 +1,203 @@
+/* Existing styles */
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  background-color: #f4f5f7;
+}
+
+#app {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 20px;
+}
+
+.editor-wrapper {
+  background: white;
+  border: 1px solid #ccced1;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.toolbar {
+  padding: 8px;
+  background: #fafafa;
+  border-bottom: 1px solid #ccced1;
+  display: flex;
+  gap: 5px;
+}
+
+/* This is the area Lexical will control */
+.editor-container {
+  min-height: 300px;
+  padding: 20px;
+  outline: none;
+  /* Removes the default browser focus ring */
+  color: #333;
+  line-height: 1.6;
+}
+
+/* Standard focus state for the whole editor */
+.editor-wrapper:focus-within {
+  border-color: #0782ed;
+}
+
+/* Ensure bullets and numbers actually show up */
+.editor-list-ul {
+  list-style-type: disc;
+  margin-left: 20px;
+  padding-left: 20px;
+}
+
+.editor-list-ol {
+  list-style-type: decimal;
+  margin-left: 20px;
+  padding-left: 20px;
+}
+
+.editor-listitem {
+  margin: 4px 0;
+}
+
+.editor-h1 {
+  font-size: 2em;
+  font-weight: bold;
+  margin: 10px 0;
+  color: #1a1a1a;
+}
+
+.editor-h2 {
+  font-size: 1.5em;
+  font-weight: bold;
+  margin: 8px 0;
+  color: #333;
+}
+
+.editor-quote {
+  margin: 10px 0;
+  padding-left: 15px;
+  border-left: 4px solid #ccced1;
+  color: #666;
+  font-style: italic;
+}
+
+/* Text formatting styles */
+.editor-text-bold {
+  font-weight: bold;
+}
+
+.editor-text-italic {
+  font-style: italic;
+}
+
+.editor-text-underline {
+  text-decoration: underline;
+}
+
+.editor-text-strikethrough {
+  text-decoration: line-through;
+}
+
+.editor-text-underlineStrikethrough {
+  text-decoration: underline line-through;
+}
+
+.editor-text-subscript {
+  vertical-align: sub;
+  font-size: 0.8em;
+}
+
+.editor-text-superscript {
+  vertical-align: super;
+  font-size: 0.8em;
+}
+
+.editor-text-code {
+  background-color: #f0f0f0;
+  padding: 2px 4px;
+  border-radius: 3px;
+  font-family: 'Courier New', Courier, monospace;
+  color: #d14;
+  /* Standard code red/pink color */
+  font-size: 0.9em;
+}
+
+.editor-hr {
+  border: none;
+  border-top: 2px solid #eeeeee;
+  margin: 20px 0;
+  padding: 0;
+  height: 0;
+  cursor: default;
+}
+
+/* Make it look selected when clicked */
+.editor-hr.selected {
+  outline: 2px solid #0782ed;
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  /* Allows buttons to go to the next line */
+  gap: 4px;
+  /* Adds neat spacing between buttons */
+  background: #fafafa;
+  padding: 8px;
+  border-bottom: 1px solid #ccced1;
+  align-items: center;
+}
+
+.toolbar button {
+  white-space: nowrap;
+  /* Prevents text inside a button from breaking */
+  padding: 4px 8px;
+  min-width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #ccc;
+  background: white;
+  cursor: pointer;
+}
+
+.toolbar button:hover {
+  background: #f0f0f0;
+}
+
+.editor-link {
+  color: #005cc5;
+  text-decoration: underline;
+}
+
+.editor-autolink {
+  color: #005cc5;
+  text-decoration: underline;
+}
+
+/* Ensure the Lexical wrapper allows content to be seen */
+.image-control-wrapper {
+  display: block;
+  position: relative;
+  margin: 15px 0;
+  width: 100%;
+  min-height: 50px;
+  /* Give it a minimum height so it's not collapsed */
+}
+
+/* Force the image to be visible and responsive */
+.image-control-wrapper img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border: 1px solid #ced4da;
+  /* Add a border to see the boundaries */
+  border-radius: 4px;
+}
+
+/* Ensure the theme class from engine.ts is applied */
+.editor-image {
+  display: block;
+  user-select: none;
+  width: 100%;
+}
