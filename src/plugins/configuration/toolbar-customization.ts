@@ -62,13 +62,32 @@ export const ToolbarCustomization = {
         config.forEach(item => {
             const el = document.getElementById(item.id);
             if (el) {
-                el.style.display = item.visible ? 'inline-block' : 'none';
+                // For select elements, use 'inline-block' or 'block' depending on element type
+                if (el.tagName === 'SELECT') {
+                    el.style.display = item.visible ? 'inline-block' : 'none';
+                } else {
+                    el.style.display = item.visible ? 'inline-block' : 'none';
+                }
             }
         });
+        
+        // Ensure placeholder-select is visible if it exists but wasn't in config
+        const placeholderSelect = document.getElementById('placeholder-select');
+        if (placeholderSelect && !config.find(item => item.id === 'placeholder-select')) {
+            placeholderSelect.style.display = 'inline-block';
+        }
     },
 
     init: () => {
         const config = ToolbarCustomization.getConfig();
         ToolbarCustomization.applyConfig(config);
+        
+        // Ensure placeholder-select is always visible (fallback)
+        setTimeout(() => {
+            const placeholderSelect = document.getElementById('placeholder-select');
+            if (placeholderSelect && placeholderSelect.style.display === 'none') {
+                placeholderSelect.style.display = 'inline-block';
+            }
+        }, 100);
     }
 };

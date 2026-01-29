@@ -1,79 +1,163 @@
-import { $getRoot } from 'lexical';
-import { $isHeadingNode, type HeadingTagType } from '@lexical/rich-text';
 import { EditorSDK } from '../../core/sdk';
+import { $getRoot, type LexicalNode } from 'lexical';
+import { $isHeadingNode } from '@lexical/rich-text';
 
-type OutlineItem = {
+export type OutlineEntry = {
     key: string;
     text: string;
-    tag: HeadingTagType;
+    tag: string;
+    level: number;
 };
 
 export const DocumentOutlinePlugin = {
     name: 'document-outline',
     init: (sdk: EditorSDK) => {
-        const outlineContainer = document.getElementById('outline-list');
-        const outlinePanel = document.getElementById('document-outline');
+        // --- 1. Infrastructure ---
+        if (!document.getElementById('document-outline')) {
+            const outline = document.createElement('div');
+            outline.id = 'document-outline';
+            outline.className = 'document-outline'; // Initially hidden by CSS (display: none)
+            outline.innerHTML = `
+                <div class="outline-header">
+                    <h3>Document Outline</h3>
+                </div>
+                <div id="outline-content" class="outline-list"></div>
+            `;
+            document.body.appendChild(outline);
+        }
 
-        if (!outlineContainer || !outlinePanel) return;
+        // --- 2. Scroll Spy Logic ---
+        const updateActiveHeading = () => {
+            const outlineElement = document.getElementById('document-outline');
+            if (!outlineElement || outlineElement.style.display === 'none') return;
 
-        // Function to update the outline
-        const updateOutline = () => {
-            sdk.getLexicalEditor().getEditorState().read(() => {
+            sdk.update(() => {
                 const root = $getRoot();
-                const children = root.getChildren();
-                const headings: OutlineItem[] = [];
+                const headings: { key: string; rect: DOMRect }[] = [];
 
-                children.forEach((node) => {
+                function findHeadings(node: LexicalNode) {
                     if ($isHeadingNode(node)) {
-                        headings.push({
-                            key: node.getKey(),
-                            text: node.getTextContent(),
-                            tag: node.getTag()
-                        });
+                        const el = sdk.getElementByKey(node.getKey());
+                        if (el) {
+                            headings.push({ key: node.getKey(), rect: el.getBoundingClientRect() });
+                        }
+                    }
+                    if ('getChildren' in node && typeof node.getChildren === 'function') {
+                        node.getChildren().forEach((child: any) => findHeadings(child));
+                    }
+                }
+
+                findHeadings(root);
+
+                let activeKey: string | null = null;
+                const SCROLL_THRESHOLD = 100; // Offset from top
+
+                // Find the last heading that is above the threshold
+                for (let i = headings.length - 1; i >= 0; i--) {
+                    if (headings[i].rect.top <= SCROLL_THRESHOLD) {
+                        activeKey = headings[i].key;
+                        break;
+                    }
+                }
+
+                // Update UI
+                document.querySelectorAll('.outline-item').forEach(item => {
+                    if ((item as HTMLElement).dataset.key === activeKey) {
+                        item.classList.add('active');
+                        // Optional: item.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    } else {
+                        item.classList.remove('active');
                     }
                 });
-
-                renderOutline(headings);
             });
         };
 
-        // Render to DOM
-        const renderOutline = (headings: OutlineItem[]) => {
-            outlineContainer.innerHTML = '';
+        // --- 3. Rendering Logic ---
+        const renderOutline = () => {
+            const container = document.getElementById('outline-content');
+            if (!container) return;
 
-            if (headings.length === 0) {
-                outlineContainer.innerHTML = '<div style="color: #999; padding: 10px;">No headings found.</div>';
-                return;
-            }
+            sdk.update(() => {
+                const root = $getRoot();
+                const entries: OutlineEntry[] = [];
 
-            headings.forEach(h => {
-                const div = document.createElement('div');
-                div.className = `outline-item outline-${h.tag}`;
-                div.innerText = h.text || '(Untitled)';
-                div.addEventListener('click', () => {
-                    sdk.update(() => {
-                        const node = sdk.getElementByKey(h.key);
-                        node?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    });
+                function scan(node: LexicalNode) {
+                    if ($isHeadingNode(node)) {
+                        const tag = node.getTag();
+                        entries.push({
+                            key: node.getKey(),
+                            text: node.getTextContent(),
+                            tag: tag,
+                            level: parseInt(tag.slice(1))
+                        });
+                    }
+                    if ('getChildren' in node && typeof node.getChildren === 'function') {
+                        node.getChildren().forEach((child: any) => scan(child));
+                    }
+                }
+                scan(root);
+
+                if (entries.length === 0) {
+                    container.innerHTML = '<div class="outline-empty">No headings found.</div>';
+                    // Trigger scroll spy update anyway to clear active states
+                    updateActiveHeading();
+                    return;
+                }
+
+                container.innerHTML = '';
+                entries.forEach((entry) => {
+                    const item = document.createElement('div');
+                    item.className = `outline-item outline-${entry.tag}`;
+                    item.dataset.key = entry.key;
+                    item.title = entry.text;
+                    item.innerHTML = `
+                        <span class="outline-text">${entry.text || '(Untitled)'}</span>
+                    `;
+
+                    item.onclick = () => {
+                        sdk.update(() => {
+                            const el = sdk.getElementByKey(entry.key);
+                            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        });
+                    };
+
+                    container.appendChild(item);
                 });
-                outlineContainer.appendChild(div);
+
+                updateActiveHeading();
             });
         };
 
-        // Listen for updates using specific debounce or throttle could be better
-        // but for now, simple update listener.
+        // --- 4. Event Management ---
+        let updateTimeout: any;
         sdk.registerUpdateListener(() => {
-            updateOutline();
+            clearTimeout(updateTimeout);
+            updateTimeout = setTimeout(renderOutline, 400); // 400ms debounce
+        });
+
+        window.addEventListener('scroll', () => {
+            requestAnimationFrame(updateActiveHeading);
         });
 
         // Initial render
-        updateOutline();
+        renderOutline();
     },
 
     toggleVisibility: () => {
-        const outlinePanel = document.getElementById('document-outline');
-        if (outlinePanel) {
-            outlinePanel.classList.toggle('hidden');
+        const outline = document.getElementById('document-outline');
+        if (outline) {
+            const isVisible = outline.classList.contains('active');
+            if (isVisible) {
+                outline.classList.remove('active');
+                setTimeout(() => {
+                    if (!outline.classList.contains('active')) outline.style.display = 'none';
+                }, 300);
+            } else {
+                outline.style.display = 'flex';
+                // Force layout for transition
+                outline.offsetHeight;
+                outline.classList.add('active');
+            }
         }
     }
 };

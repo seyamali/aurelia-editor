@@ -1,0 +1,482 @@
+/* ============================================
+   TOOLBAR CUSTOMIZATION MODAL
+   ============================================ */
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(15, 23, 42, 0.4);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 5000;
+    overflow: hidden;
+}
+
+#toolbar-customization-modal .toolbar-customization-container {
+    max-width: 900px;
+    width: 90vw;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+}
+
+#toolbar-customization-modal .modal-body {
+    overflow-y: auto;
+    flex: 1;
+}
+
+/* ============================================
+   CUSTOMIZATION SECTIONS
+   ============================================ */
+
+.customization-section {
+    margin-bottom: 2rem;
+}
+
+.customization-section h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 1rem;
+}
+
+.customization-divider {
+    height: 1px;
+    background: linear-gradient(to right, transparent, #e5e7eb 20%, #e5e7eb 80%, transparent);
+    margin: 2rem 0;
+}
+
+.help-text {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin-bottom: 1rem;
+}
+
+/* ============================================
+   PRESET BUTTONS
+   ============================================ */
+
+.preset-buttons {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 0.75rem;
+}
+
+.preset-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1rem;
+    background: #ffffff;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: left;
+}
+
+.preset-btn:hover {
+    border-color: #3b82f6;
+    background: #eff6ff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.preset-btn:active {
+    transform: translateY(0);
+}
+
+.preset-btn strong {
+    font-size: 1rem;
+    color: #1f2937;
+    margin-bottom: 0.25rem;
+}
+
+.preset-btn span {
+    font-size: 0.75rem;
+    color: #6b7280;
+}
+
+.preset-btn.active {
+    border-color: #3b82f6;
+    background: #dbeafe;
+}
+
+/* ============================================
+   CUSTOMIZATION PANELS
+   ============================================ */
+
+.customization-panels {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+.panel {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 1rem;
+}
+
+.panel h4 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+/* ============================================
+   TOOLS FILTER
+   ============================================ */
+
+.tools-filter {
+    margin-bottom: 1rem;
+}
+
+.tools-filter input {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    transition: all 0.2s ease;
+}
+
+.tools-filter input:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* ============================================
+   TOOLS LIST
+   ============================================ */
+
+.tools-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    min-height: 60px;
+}
+
+.tools-list.droppable {
+    background: #ffffff;
+    border: 2px dashed #d1d5db;
+    border-radius: 6px;
+    padding: 0.75rem;
+    min-height: 200px;
+}
+
+.tools-list.droppable:empty::before {
+    content: 'Drag tools here';
+    display: block;
+    text-align: center;
+    color: #9ca3af;
+    font-size: 0.875rem;
+    padding: 2rem 0;
+}
+
+/* ============================================
+   TOOL ITEM
+   ============================================ */
+
+.tool-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    cursor: grab;
+    transition: all 0.2s ease;
+    user-select: none;
+}
+
+.tool-item:hover {
+    border-color: #3b82f6;
+    background: #f0f9ff;
+    transform: translateX(4px);
+}
+
+.tool-item.dragging {
+    opacity: 0.5;
+    cursor: grabbing;
+}
+
+.tool-item.available {
+    cursor: pointer;
+}
+
+.tool-item.available:hover {
+    background: #ecfdf5;
+    border-color: #10b981;
+}
+
+.tool-icon {
+    flex-shrink: 0;
+    width: 24px;
+    text-align: center;
+    font-size: 1rem;
+}
+
+.tool-label {
+    flex: 1;
+    font-size: 0.875rem;
+    color: #374151;
+    font-weight: 500;
+}
+
+.tool-remove,
+.tool-add {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.tool-remove {
+    color: #ef4444;
+    background: #fee2e2;
+}
+
+.tool-remove:hover {
+    background: #fecaca;
+    transform: scale(1.1);
+}
+
+.tool-add {
+    color: #10b981;
+    background: #d1fae5;
+}
+
+.tool-add:hover {
+    background: #a7f3d0;
+    transform: scale(1.1);
+}
+
+/* ============================================
+   TOOL GROUPS
+   ============================================ */
+
+.tools-groups {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.tool-group {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    padding: 0.75rem;
+}
+
+.tool-group h5 {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+}
+
+/* ============================================
+   TOOLBAR SEPARATOR
+   ============================================ */
+
+.toolbar-separator {
+    width: 1px;
+    height: 24px;
+    background: #e5e7eb;
+    margin: 0 0.5rem;
+    align-self: center;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
+@media (max-width: 768px) {
+    .customization-panels {
+        grid-template-columns: 1fr;
+    }
+
+    .preset-buttons {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ============================================
+   DARK MODE
+   ============================================ */
+
+@media (prefers-color-scheme: dark) {
+    .customization-section h3 {
+        color: #f3f4f6;
+    }
+
+    .customization-divider {
+        background: linear-gradient(to right, transparent, #374151 20%, #374151 80%, transparent);
+    }
+
+    .help-text {
+        color: #9ca3af;
+    }
+
+    .preset-btn {
+        background: #1f2937;
+        border-color: #374151;
+    }
+
+    .preset-btn:hover {
+        border-color: #60a5fa;
+        background: #1e3a8a;
+    }
+
+    .preset-btn strong {
+        color: #f3f4f6;
+    }
+
+    .preset-btn span {
+        color: #9ca3af;
+    }
+
+    .preset-btn.active {
+        border-color: #60a5fa;
+        background: #1e40af;
+    }
+
+    .panel {
+        background: #1f2937;
+        border-color: #374151;
+    }
+
+    .panel h4 {
+        color: #e5e7eb;
+        border-bottom-color: #374151;
+    }
+
+    .tools-filter input {
+        background: #111827;
+        border-color: #374151;
+        color: #f3f4f6;
+    }
+
+    .tools-filter input:focus {
+        border-color: #60a5fa;
+        box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.2);
+    }
+
+    .tools-list.droppable {
+        background: #111827;
+        border-color: #4b5563;
+    }
+
+    .tools-list.droppable:empty::before {
+        color: #6b7280;
+    }
+
+    .tool-item {
+        background: #111827;
+        border-color: #374151;
+    }
+
+    .tool-item:hover {
+        border-color: #60a5fa;
+        background: #1e3a8a;
+    }
+
+    .tool-item.available:hover {
+        background: #064e3b;
+        border-color: #10b981;
+    }
+
+    .tool-label {
+        color: #e5e7eb;
+    }
+
+    .tool-remove {
+        color: #f87171;
+        background: #7f1d1d;
+    }
+
+    .tool-remove:hover {
+        background: #991b1b;
+    }
+
+    .tool-add {
+        color: #34d399;
+        background: #064e3b;
+    }
+
+    .tool-add:hover {
+        background: #065f46;
+    }
+
+    .tool-group {
+        background: #111827;
+        border-color: #374151;
+    }
+
+    .tool-group h5 {
+        color: #9ca3af;
+    }
+
+    .toolbar-separator {
+        background: #4b5563;
+    }
+}
+
+/* ============================================
+   SCROLLBAR STYLING
+   ============================================ */
+
+.tools-groups::-webkit-scrollbar {
+    width: 8px;
+}
+
+.tools-groups::-webkit-scrollbar-track {
+    background: #f3f4f6;
+    border-radius: 4px;
+}
+
+.tools-groups::-webkit-scrollbar-thumb {
+    background: #d1d5db;
+    border-radius: 4px;
+}
+
+.tools-groups::-webkit-scrollbar-thumb:hover {
+    background: #9ca3af;
+}
+
+@media (prefers-color-scheme: dark) {
+    .tools-groups::-webkit-scrollbar-track {
+        background: #1f2937;
+    }
+
+    .tools-groups::-webkit-scrollbar-thumb {
+        background: #4b5563;
+    }
+
+    .tools-groups::-webkit-scrollbar-thumb:hover {
+        background: #6b7280;
+    }
+}

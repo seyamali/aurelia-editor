@@ -4,14 +4,51 @@
 import { type LexicalEditor } from 'lexical';
 
 const MERGE_FIELDS = [
-    { name: 'FirstName', label: 'First Name', type: 'User', description: 'The user’s first name', sample: 'John' },
-    { name: 'LastName', label: 'Last Name', type: 'User', description: 'The user’s last name', sample: 'Doe' },
+    { name: 'FirstName', label: 'First Name', type: 'User', description: "The user's first name", sample: 'John' },
+    { name: 'LastName', label: 'Last Name', type: 'User', description: "The user's last name", sample: 'Doe' },
     { name: 'Company', label: 'Company', type: 'Organization', description: 'The company name', sample: 'Acme Inc.' },
     { name: 'Date', label: 'Date', type: 'System', description: 'Current date', sample: '2026-01-22' },
     // Add more fields as needed
 ];
 
+// Valid merge field names (for sanitization)
+const VALID_MERGE_FIELD_NAMES = new Set(MERGE_FIELDS.map(f => f.name));
+
 let recentFields: string[] = [];
+
+/**
+ * Sanitizes a placeholder name to ensure it's safe and valid.
+ * Only allows alphanumeric characters and underscores.
+ * Prevents script injection and unsafe content.
+ */
+export function sanitizePlaceholderName(name: string): string | null {
+    if (!name || typeof name !== 'string') {
+        return null;
+    }
+
+    // Remove any potentially dangerous characters
+    // Only allow alphanumeric and underscore
+    const sanitized = name.replace(/[^a-zA-Z0-9_]/g, '');
+
+    if (!sanitized || sanitized.length === 0) {
+        return null;
+    }
+
+    // Optional: Only allow predefined merge fields for security
+    // Uncomment the following lines to enforce strict validation:
+    // if (!VALID_MERGE_FIELD_NAMES.has(sanitized)) {
+    //     return null;
+    // }
+
+    return sanitized;
+}
+
+/**
+ * Checks if a placeholder name is valid (exists in predefined list).
+ */
+export function isValidPlaceholderName(name: string): boolean {
+    return VALID_MERGE_FIELD_NAMES.has(name);
+}
 
 export function showPlaceholderInsertPanel(editor: LexicalEditor) {
     let panel = document.getElementById('placeholder-insert-panel');
@@ -76,13 +113,44 @@ export function showPlaceholderInsertPanel(editor: LexicalEditor) {
             });
             groups.appendChild(ul);
         });
-        if (!filtered.length && !recentFields.length) {
+        if (filter.length > 0) {
+            // Check if exact match exists
+            const exactMatch = MERGE_FIELDS.find(f => f.name.toLowerCase() === filter.toLowerCase());
+            if (!exactMatch) {
+                const customHeader = document.createElement('div');
+                customHeader.className = 'placeholder-group-header';
+                customHeader.innerText = 'Custom';
+                groups.appendChild(customHeader);
+
+                const customUl = document.createElement('ul');
+                customUl.className = 'placeholder-list';
+
+                const customField = {
+                    name: filter,
+                    label: filter,
+                    type: 'Custom',
+                    description: 'Custom merge field',
+                    sample: 'Value'
+                };
+
+                const li = createListItem(customField);
+                li.innerHTML = `
+                        <span class="placeholder-label">Create "{{${filter}}}"</span>
+                        <span class="placeholder-meta">New</span>
+                   `;
+                customUl.appendChild(li);
+                groups.appendChild(customUl);
+                anyAdded = true;
+            }
+        }
+
+        if (!anyAdded && !recentFields.length && filter.length === 0) {
             errorDiv.innerText = 'No fields found.';
             errorDiv.style.display = 'block';
         }
     }
 
-    function createListItem(field) {
+    function createListItem(field: any) {
         const li = document.createElement('li');
         li.className = 'placeholder-list-item';
         li.setAttribute('role', 'option');
@@ -98,16 +166,27 @@ export function showPlaceholderInsertPanel(editor: LexicalEditor) {
         li.onmouseenter = () => li.classList.add('focused');
         li.onmouseleave = () => li.classList.remove('focused');
         li.onclick = () => {
+            // Sanitize the field name before inserting
+            const sanitized = sanitizePlaceholderName(field.name);
+            if (!sanitized) {
+                errorDiv.innerText = 'Invalid placeholder name. Only alphanumeric characters and underscores are allowed.';
+                errorDiv.style.display = 'block';
+                return;
+            }
+
             editor.update(() => {
-                const node = $createPlaceholderNode(field.name);
+                const node = $createPlaceholderNode(sanitized);
                 $insertNodes([node]);
             });
-            if (!recentFields.includes(field.name)) {
-                recentFields.unshift(field.name);
+            if (!recentFields.includes(sanitized)) {
+                recentFields.unshift(sanitized);
                 if (recentFields.length > 5) recentFields.pop();
             }
-            panel.style.opacity = '0';
-            setTimeout(() => { if (panel) panel.style.display = 'none'; }, 200);
+            if (panel) panel.style.opacity = '0';
+            setTimeout(() => {
+                const p = document.getElementById('placeholder-insert-panel');
+                if (p) p.style.display = 'none';
+            }, 200);
         };
         return li;
     }
@@ -119,7 +198,7 @@ export function showPlaceholderInsertPanel(editor: LexicalEditor) {
     };
 
     closeBtn.onclick = () => {
-        panel.style.opacity = '0';
+        if (panel) panel.style.opacity = '0';
         setTimeout(() => { if (panel) panel.style.display = 'none'; }, 200);
     };
 
@@ -148,7 +227,7 @@ export function showPlaceholderInsertPanel(editor: LexicalEditor) {
             if (item && item instanceof HTMLElement) item.click();
             e.preventDefault();
         } else if (e.key === 'Escape') {
-            panel.style.opacity = '0';
+            if (panel) panel.style.opacity = '0';
             setTimeout(() => { if (panel) panel.style.display = 'none'; }, 200);
             searchInput.focus();
         }
@@ -194,8 +273,15 @@ export const PlaceholderPlugin = {
         sdk.registerCommand(
             INSERT_PLACEHOLDER_COMMAND,
             (name: string) => {
+                // Sanitize the placeholder name before inserting
+                const sanitized = sanitizePlaceholderName(name);
+                if (!sanitized) {
+                    console.warn(`Invalid placeholder name: ${name}. Only alphanumeric characters and underscores are allowed.`);
+                    return false;
+                }
+
                 sdk.update(() => {
-                    const node = $createPlaceholderNode(name);
+                    const node = $createPlaceholderNode(sanitized);
                     $insertNodes([node]);
                 });
                 return true;

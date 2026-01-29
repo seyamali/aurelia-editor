@@ -3,7 +3,9 @@ import './spare.css';
 import { initSpareLogic } from './spare';
 import { MyUniversalEditor } from './core/engine';
 import { EDITOR_LAYOUT_HTML } from './ui/layout';
-import { setupToolbar } from './ui/toolbar-setup';
+import { setupToolbarState } from './ui/toolbar-logic/state-logic';
+import { setupLinkPopover } from './plugins/media/link-popover-ui';
+import { setupCodeBlockPopover } from './ui/code-block-popover-ui';
 
 // --- PLUGINS ---
 import { BasicStylesPlugin } from './plugins/formatting/basic-styles';
@@ -24,13 +26,13 @@ import { FormatPainterPlugin } from './plugins/productivity/format-painter';
 import { PlaceholderPlugin } from './plugins/advanced/placeholder';
 import { SlashCommandPlugin } from './plugins/productivity/slash-commands';
 import { PageBreakPlugin } from './plugins/page-layout/page-break';
-import { DocumentOutlinePlugin } from './plugins/productivity/document-outline';
-import { FootnotePlugin } from './plugins/advanced/footnote';
+import { FootnotePlugin } from './plugins/advanced/footnote-plugin';
 import { TableOfContentsPlugin } from './plugins/page-layout/toc-plugin';
+import { MinimapPlugin } from './plugins/productivity/minimap';
 import { HelloWorldPlugin } from './plugins/custom-plugin-demo';
 import { ProductivityPlugin } from './plugins/productivity/productivity-pack';
 import { RevisionHistoryPlugin } from './plugins/advanced/revision-history';
-import { ToolbarCustomization } from './plugins/configuration/toolbar-customization';
+import { ToolbarSystem } from './plugins/configuration/toolbar-system';
 import { setupToolbarSettingsUI } from './plugins/configuration/toolbar-ui';
 import { I18nManager } from './plugins/configuration/i18n';
 import { AccessibilityManager } from './plugins/configuration/accessibility';
@@ -45,6 +47,7 @@ import { setupEmojiUI } from './plugins/productivity/emoji-ui';
 import { setupTablePopover } from './ui/table-popover-ui';
 import { setupTableGridPicker } from './ui/table-grid-picker';
 import { setupTrackChangesUI } from './ui/track-changes-ui';
+import { DocumentOutlinePlugin } from './plugins/productivity/document-outline';
 
 const appElement = document.querySelector<HTMLDivElement>('#app');
 
@@ -79,6 +82,7 @@ if (appElement) {
     editor.use(DocumentOutlinePlugin);
     editor.use(FootnotePlugin);
     editor.use(TableOfContentsPlugin);
+    editor.use(MinimapPlugin);
     editor.use(HelloWorldPlugin);
     editor.use(ProductivityPlugin);
     editor.use(RevisionHistoryPlugin);
@@ -86,15 +90,24 @@ if (appElement) {
     const internalEditor = editor.getInternalEditor();
 
     // 2. Setup UI Handlers
-    setupToolbar(editor, internalEditor);
+    // Legacy state and popovers that don't depend on static toolbar buttons
+    setupToolbarState(internalEditor);
+    setupLinkPopover(internalEditor);
+    setupCodeBlockPopover(internalEditor);
+
+    // Other UI components
     setupRevisionHistoryUI(internalEditor);
     setupFindReplaceUI(internalEditor);
     setupEmojiUI(internalEditor);
     setupTablePopover(internalEditor);
-    setupTableGridPicker(internalEditor);
+    setupTableGridPicker(internalEditor); // Configures picker markup
     setupTrackChangesUI(internalEditor);
-    setupToolbarSettingsUI();
-    ToolbarCustomization.init();
+    setupToolbarSettingsUI(); // Settings modal
+
+    // Initialize the New Toolbar System (Delegation + Customization)
+    ToolbarSystem.init(editor, internalEditor);
+
+    // Core Managers
     I18nManager.init();
     AccessibilityManager.init();
 

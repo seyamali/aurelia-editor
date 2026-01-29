@@ -30,9 +30,11 @@ export class SlashMenuUI {
         this.currentQuery = query;
         this.selectedIndex = 0;
 
-        // Filter commands
+        // Filter commands by label or description
+        const lowerQuery = query.toLowerCase();
         const filtered = this.commands.filter(cmd =>
-            cmd.label.toLowerCase().includes(query.toLowerCase())
+            cmd.label.toLowerCase().includes(lowerQuery) ||
+            (cmd.description && cmd.description.toLowerCase().includes(lowerQuery))
         );
 
         this.renderItems(filtered);
@@ -42,10 +44,43 @@ export class SlashMenuUI {
             return;
         }
 
-        // Position menu
+        // Position menu - improved positioning
         this.menuElement.classList.add('visible');
-        this.menuElement.style.top = `${rect.bottom + window.scrollY}px`;
-        this.menuElement.style.left = `${rect.left + window.scrollX}px`;
+        
+        // Calculate position with better handling
+        const scrollY = window.scrollY || window.pageYOffset;
+        const scrollX = window.scrollX || window.pageXOffset;
+        
+        let top = rect.bottom + scrollY + 4;
+        let left = rect.left + scrollX;
+        
+        // Adjust if menu would go off screen
+        requestAnimationFrame(() => {
+            const menuRect = this.menuElement.getBoundingClientRect();
+            
+            // Check right edge
+            if (left + menuRect.width > scrollX + window.innerWidth - 10) {
+                left = scrollX + window.innerWidth - menuRect.width - 10;
+            }
+            
+            // Check left edge
+            if (left < scrollX + 10) {
+                left = scrollX + 10;
+            }
+            
+            // Check bottom edge - if menu would go off screen, position above
+            if (top + menuRect.height > scrollY + window.innerHeight - 10) {
+                top = rect.top + scrollY - menuRect.height - 4;
+            }
+            
+            // Ensure menu doesn't go above viewport
+            if (top < scrollY + 10) {
+                top = scrollY + 10;
+            }
+            
+            this.menuElement.style.top = `${top}px`;
+            this.menuElement.style.left = `${left}px`;
+        });
     }
 
     hide() {
@@ -62,7 +97,10 @@ export class SlashMenuUI {
             el.className = `slash-item ${index === this.selectedIndex ? 'selected' : ''}`;
             el.innerHTML = `
                 <span class="slash-item-icon">${cmd.icon}</span>
-                <span class="slash-item-label">${cmd.label}</span>
+                <div class="slash-item-content">
+                    <span class="slash-item-label">${cmd.label}</span>
+                    ${cmd.description ? `<span class="slash-item-description">${cmd.description}</span>` : ''}
+                </div>
             `;
             el.addEventListener('click', () => {
                 this.executeCommand(cmd);

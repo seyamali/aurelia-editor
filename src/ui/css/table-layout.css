@@ -12,7 +12,8 @@
     caret-color: #333;
 }
 
-.editor-table-cell {
+.editor-table-cell,
+.editor-table-cell-header {
     border: 1px solid #c4c4c4;
     padding: 10px;
     min-width: 40px;
@@ -29,12 +30,16 @@
 }
 
 /* Cell Selection (CKEditor Style) */
-.editor-table-cell.selected {
+.editor-table-cell.selected,
+.editor-table-cell-header.selected {
     background-color: rgba(7, 130, 237, 0.15) !important;
     background-image: linear-gradient(rgba(7, 130, 237, 0.05), rgba(7, 130, 237, 0.05));
+    position: relative;
+    /* Ensure ::after positioning works */
 }
 
-.editor-table-cell.selected::after {
+.editor-table-cell.selected::after,
+.editor-table-cell-header.selected::after {
     content: '';
     position: absolute;
     top: -1px;

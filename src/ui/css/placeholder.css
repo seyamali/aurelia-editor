@@ -1,16 +1,199 @@
 /* Placeholder Fields */
 .editor-placeholder-field {
-    background-color: #ffd700;
-    color: #333;
-    padding: 2px 4px;
-    border-radius: 4px;
-    font-weight: bold;
-    cursor: default;
+    background-color: #f3f4f6;
+    color: #374151;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
     user-select: none;
     font-size: 0.9em;
-    border: 1px solid #d4b400;
+    border: 1px dashed #cbd5e1;
+    display: inline-block;
+    margin: 0 2px;
+    transition: all 0.2s ease;
 }
 
 .editor-placeholder-field:hover {
-    background-color: #ffea00;
+    background-color: #e5e7eb;
+    border-color: #9ca3af;
+}
+
+.editor-placeholder-field:focus {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+}
+
+/* Placeholder Tooltip Popup */
+.placeholder-tooltip-popup {
+    position: fixed;
+    z-index: 10000;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    padding: 12px;
+    min-width: 200px;
+    max-width: 300px;
+    pointer-events: none;
+}
+
+.placeholder-tooltip-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.placeholder-tooltip-name {
+    font-weight: 600;
+    color: #111827;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9em;
+}
+
+.placeholder-tooltip-type {
+    font-size: 0.75em;
+    color: #6b7280;
+    background: #f3f4f6;
+    padding: 2px 6px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    font-weight: 500;
+}
+
+.placeholder-tooltip-description {
+    color: #4b5563;
+    font-size: 0.875em;
+    line-height: 1.4;
+}
+
+/* Placeholder Insert Panel */
+.placeholder-insert-panel {
+    position: fixed;
+    z-index: 3000;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    padding: 18px 22px;
+    min-width: 340px;
+    max-width: 420px;
+    border: 1px solid #e5e7eb;
+    transition: opacity 0.2s;
+}
+
+.placeholder-search {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 14px;
+    margin-bottom: 12px;
+    box-sizing: border-box;
+}
+
+.placeholder-search:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.placeholder-groups {
+    max-height: 400px;
+    overflow-y: auto;
+    margin-bottom: 12px;
+}
+
+.placeholder-group-header {
+    font-size: 0.75em;
+    font-weight: 600;
+    color: #6b7280;
+    text-transform: uppercase;
+    margin-top: 12px;
+    margin-bottom: 6px;
+    padding: 0 4px;
+}
+
+.placeholder-group-header:first-child {
+    margin-top: 0;
+}
+
+.placeholder-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.placeholder-list-item {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    cursor: pointer;
+    border-radius: 6px;
+    margin-bottom: 2px;
+    transition: background-color 0.15s;
+}
+
+.placeholder-list-item:hover,
+.placeholder-list-item.focused {
+    background-color: #f3f4f6;
+}
+
+.placeholder-list-item:focus {
+    outline: 2px solid #3b82f6;
+    outline-offset: -2px;
+}
+
+.placeholder-label {
+    flex: 1;
+    font-family: 'Courier New', monospace;
+    font-weight: 500;
+    color: #111827;
+    font-size: 0.9em;
+}
+
+.placeholder-meta {
+    font-size: 0.75em;
+    color: #6b7280;
+    background: #f3f4f6;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-left: 8px;
+    text-transform: uppercase;
+    font-weight: 500;
+}
+
+.placeholder-sample {
+    font-size: 0.8em;
+    color: #9ca3af;
+    margin-left: 8px;
+    font-style: italic;
+}
+
+.close-placeholder-panel {
+    width: 100%;
+    padding: 8px;
+    background: #f3f4f6;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #374151;
+    transition: background-color 0.15s;
+}
+
+.close-placeholder-panel:hover {
+    background: #e5e7eb;
+}
+
+.placeholder-error {
+    padding: 12px;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 6px;
+    color: #991b1b;
+    font-size: 0.875em;
+    margin-bottom: 12px;
 }

@@ -1,4 +1,14 @@
-import { $getSelection, $isRangeSelection, $isNodeSelection, COMMAND_PRIORITY_CRITICAL, SELECTION_CHANGE_COMMAND, CAN_UNDO_COMMAND, CAN_REDO_COMMAND, UNDO_COMMAND, REDO_COMMAND } from 'lexical';
+import {
+    $getSelection,
+    $isRangeSelection,
+    $isNodeSelection,
+    COMMAND_PRIORITY_CRITICAL,
+    SELECTION_CHANGE_COMMAND,
+    CAN_UNDO_COMMAND,
+    CAN_REDO_COMMAND,
+    UNDO_COMMAND,
+    REDO_COMMAND
+} from 'lexical';
 import { $getNearestNodeOfType } from '@lexical/utils';
 import { $isHeadingNode, $isQuoteNode } from '@lexical/rich-text';
 import { ListNode } from '@lexical/list';
@@ -6,6 +16,7 @@ import { LinkNode } from '@lexical/link';
 import { $isImageNode } from '../../plugins/media/image-node';
 import { $isTableNode } from '@lexical/table';
 import { $getSelectionStyleValueForProperty } from '@lexical/selection';
+import { ICONS } from '../icons';
 
 export function setupToolbarState(internalEditor: any) {
     const updateToolbar = () => {
@@ -15,54 +26,69 @@ export function setupToolbarState(internalEditor: any) {
             let isLink = false;
 
             if ($isRangeSelection(selection)) {
-                // Formatting
-                const isBold = selection.hasFormat('bold');
-                const isItalic = selection.hasFormat('italic');
-                const isUnderline = selection.hasFormat('underline');
-                const isStrike = selection.hasFormat('strikethrough');
-                const isSub = selection.hasFormat('subscript');
-                const isSup = selection.hasFormat('superscript');
-                const isCode = selection.hasFormat('code');
+                // --- Formatting ---
+                const formatMap: Record<string, string> = {
+                    'bold': 'bold-btn',
+                    'italic': 'italic-btn',
+                    'underline': 'underline-btn',
+                    'strikethrough': 'strikethrough-btn',
+                    'subscript': 'subscript-btn',
+                    'superscript': 'superscript-btn',
+                    'code': 'code-btn'
+                };
 
-                document.getElementById('bold-btn')?.classList.toggle('active', isBold);
-                document.getElementById('italic-btn')?.classList.toggle('active', isItalic);
-                document.getElementById('underline-btn')?.classList.toggle('active', isUnderline);
-                document.getElementById('strike-btn')?.classList.toggle('active', isStrike);
-                document.getElementById('sub-btn')?.classList.toggle('active', isSub);
-                document.getElementById('sup-btn')?.classList.toggle('active', isSup);
-                document.getElementById('code-btn')?.classList.toggle('active', isCode);
+                for (const [format, btnId] of Object.entries(formatMap)) {
+                    document.getElementById(btnId)?.classList.toggle('active', selection.hasFormat(format as any));
+                }
 
-                // Block Type Detection
+                // --- Block Type Detection (Heading Dropdown) ---
                 const anchorNode = selection.anchor.getNode();
                 let element = anchorNode.getKey() === 'root'
                     ? anchorNode
                     : anchorNode.getTopLevelElementOrThrow();
 
-                const blockSelect = document.getElementById('block-type-select') as HTMLSelectElement;
-                if (blockSelect) {
-                    if ($isHeadingNode(element)) {
-                        blockSelect.value = element.getTag();
-                    } else if ($isQuoteNode(element)) {
-                        blockSelect.value = 'quote';
-                    } else {
-                        blockSelect.value = 'paragraph';
-                    }
+                let blockType = 'paragraph';
+                if ($isHeadingNode(element)) {
+                    blockType = element.getTag();
+                } else if ($isQuoteNode(element)) {
+                    blockType = 'blockquote';
                 }
 
-                document.getElementById('quote-btn')?.classList.toggle('active', $isQuoteNode(element));
+                // Update Heading Dropdown Label
+                const headingBtn = document.querySelector('button[data-item-id="heading-dropdown"]');
+                if (headingBtn) {
+                    const blockLabels: Record<string, string> = {
+                        'h1': 'Heading 1',
+                        'h2': 'Heading 2',
+                        'h3': 'Heading 3',
+                        'h4': 'Heading 4',
+                        'h5': 'Heading 5',
+                        'h6': 'Heading 6',
+                        'paragraph': 'Normal',
+                        'blockquote': 'Quote'
+                    };
+                    const label = blockLabels[blockType] || 'Normal';
 
-                // List Detection
+                    // Update only if changed to avoid flicker
+                    // We reconstruct the button content: Icon + Label + Arrow
+                    // Note: We use ICONS.HEADING for the main button always.
+                    headingBtn.innerHTML = `${ICONS.HEADING} ${label} <span style="font-size: 0.8em; opacity: 0.6; margin-left: 4px;">▼</span>`;
+                }
+
+                document.getElementById('blockquote-btn')?.classList.toggle('active', blockType === 'blockquote');
+
+                // --- List Detection ---
                 const listNode = $getNearestNodeOfType(anchorNode, ListNode);
                 if (listNode) {
                     const listType = listNode.getListType();
-                    document.getElementById('bullet-btn')?.classList.toggle('active', listType === 'bullet');
-                    document.getElementById('number-btn')?.classList.toggle('active', listType === 'number');
+                    document.getElementById('bullet-list-btn')?.classList.toggle('active', listType === 'bullet');
+                    document.getElementById('numbered-list-btn')?.classList.toggle('active', listType === 'number');
                 } else {
-                    document.getElementById('bullet-btn')?.classList.remove('active');
-                    document.getElementById('number-btn')?.classList.remove('active');
+                    document.getElementById('bullet-list-btn')?.classList.remove('active');
+                    document.getElementById('numbered-list-btn')?.classList.remove('active');
                 }
 
-                // Link Detection
+                // --- Link Detection ---
                 isLink = $getNearestNodeOfType(anchorNode, LinkNode) !== null;
             } else if ($isNodeSelection(selection)) {
                 // Node Selection (e.g. Image)
@@ -72,43 +98,22 @@ export function setupToolbarState(internalEditor: any) {
                 }
             }
 
-            document.getElementById('link-btn')?.classList.toggle('active', isLink);
+            document.getElementById('insert-link-btn')?.classList.toggle('active', isLink);
 
-            // 1. Remove Formatting Status (Enabled if any formatting exists)
-            const clearBtn = document.getElementById('clear-btn') as HTMLButtonElement;
-            if (clearBtn) {
-                if ($isRangeSelection(selection)) {
-                    const hasFormatting =
-                        selection.hasFormat('bold') ||
-                        selection.hasFormat('italic') ||
-                        selection.hasFormat('underline') ||
-                        selection.hasFormat('strikethrough') ||
-                        selection.hasFormat('subscript') ||
-                        selection.hasFormat('superscript') ||
-                        selection.hasFormat('code') ||
-                        isLink ||
-                        $getSelectionStyleValueForProperty(selection, 'color') !== '' ||
-                        $getSelectionStyleValueForProperty(selection, 'background-color') !== '';
-                    clearBtn.disabled = !hasFormatting;
-                } else {
-                    clearBtn.disabled = true;
-                }
-            }
-
-            // 2. Indentation Status
+            // --- Indentation Status ---
             const indentBtn = document.getElementById('indent-btn') as HTMLButtonElement;
             const outdentBtn = document.getElementById('outdent-btn') as HTMLButtonElement;
             if (indentBtn && outdentBtn) {
                 if ($isRangeSelection(selection)) {
                     const anchorNode = selection.anchor.getNode();
                     const topElement = anchorNode.getTopLevelElement();
+                    const listNode = $getNearestNodeOfType(anchorNode, ListNode);
 
                     // Most top-level elements or list items can be indented
                     const canIndent = topElement !== null && !$isTableNode(topElement);
                     indentBtn.disabled = !canIndent;
 
                     // Can outdent if indent level > 0 or in a nested list
-                    const listNode = $getNearestNodeOfType(anchorNode, ListNode);
                     const currentIndent = topElement?.getIndent?.() || 0;
                     const isNestedList = listNode !== null && listNode.getParent() instanceof ListNode;
 
@@ -126,7 +131,6 @@ export function setupToolbarState(internalEditor: any) {
         const announcer = document.getElementById('announcer');
         if (announcer) {
             announcer.innerText = message;
-            // Clear message after announcement
             setTimeout(() => {
                 if (announcer.innerText === message) announcer.innerText = '';
             }, 3000);
@@ -134,6 +138,7 @@ export function setupToolbarState(internalEditor: any) {
     };
 
     // --- History State Tracking ---
+    // Ensure button IDs match config: 'undo', 'redo' -> 'undo-btn', 'redo-btn'
     internalEditor.registerCommand(
         CAN_UNDO_COMMAND,
         (payload: boolean) => {

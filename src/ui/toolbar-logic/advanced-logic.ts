@@ -4,7 +4,7 @@ import { insertImage } from '../../plugins/media/images';
 import { tableHandlers } from '../../plugins/layout/tables';
 import { MediaEmbedPlugin } from '../../plugins/advanced/media-embed';
 import { INSERT_CODE_BLOCK_COMMAND } from '../../plugins/advanced/code-blocks';
-import { INSERT_PLACEHOLDER_COMMAND } from '../../plugins/advanced/placeholder';
+import { showPlaceholderInsertPanel } from '../../plugins/advanced/placeholder';
 import { TOGGLE_TRACK_CHANGES_COMMAND } from '../../plugins/collaboration/track-changes';
 import { SourceViewPlugin } from '../../plugins/advanced/source-view';
 import { FormatPainter } from '../../plugins/productivity/format-painter';
@@ -77,22 +77,8 @@ export function setupAdvancedLogic(editor: MyUniversalEditor, internalEditor: an
     });
 
     // Placeholders
-    const placeholderSelect = document.getElementById('placeholder-select') as HTMLSelectElement;
-    placeholderSelect?.addEventListener('change', () => {
-        let val = placeholderSelect.value;
-        if (val === '__custom__') {
-            const customVal = prompt("Enter custom placeholder field name:", "CustomField");
-            if (customVal) {
-                val = customVal.replace(/[^a-zA-Z0-9_]/g, ''); // Simple sanitation
-            } else {
-                val = ''; // Cancelled
-            }
-        }
-
-        if (val) {
-            editor.getInternalEditor().dispatchCommand(INSERT_PLACEHOLDER_COMMAND, val);
-            placeholderSelect.value = ""; // Reset
-        }
+    document.getElementById('insert-placeholder-btn')?.addEventListener('click', () => {
+        showPlaceholderInsertPanel(editor.getInternalEditor());
     });
 
     document.getElementById('code-block-btn')?.addEventListener('click', () => {

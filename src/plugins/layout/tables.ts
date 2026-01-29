@@ -20,6 +20,7 @@ import {
     $getSelection,
     $isRangeSelection,
     $insertNodes,
+    createCommand,
     COMMAND_PRIORITY_EDITOR,
     COMMAND_PRIORITY_LOW,
     KEY_TAB_COMMAND
@@ -77,6 +78,17 @@ export const TablesPlugin: EditorPlugin = {
 
         // 3. Arrow Key Navigation (Optional but nice)
         // Note: Simple cell jump on arrows if at boundaries could be added here
+
+        // 4. Register Table Commands for Toolbar
+        editor.registerCommand(createCommand('TABLE_ADD_ROW_ABOVE'), () => { tableHandlers.insertRowAbove({ getInternalEditor: () => editor }); return true; }, COMMAND_PRIORITY_EDITOR);
+        editor.registerCommand(createCommand('TABLE_ADD_ROW_BELOW'), () => { tableHandlers.insertRowBelow({ getInternalEditor: () => editor }); return true; }, COMMAND_PRIORITY_EDITOR);
+        editor.registerCommand(createCommand('TABLE_ADD_COL_LEFT'), () => { tableHandlers.insertColumnLeft({ getInternalEditor: () => editor }); return true; }, COMMAND_PRIORITY_EDITOR);
+        editor.registerCommand(createCommand('TABLE_ADD_COL_RIGHT'), () => { tableHandlers.insertColumnRight({ getInternalEditor: () => editor }); return true; }, COMMAND_PRIORITY_EDITOR);
+        editor.registerCommand(createCommand('TABLE_DELETE_ROW'), () => { tableHandlers.deleteRow({ getInternalEditor: () => editor }); return true; }, COMMAND_PRIORITY_EDITOR);
+        editor.registerCommand(createCommand('TABLE_DELETE_COL'), () => { tableHandlers.deleteColumn({ getInternalEditor: () => editor }); return true; }, COMMAND_PRIORITY_EDITOR);
+        editor.registerCommand(createCommand('TABLE_DELETE_TABLE'), () => { tableHandlers.deleteTable({ getInternalEditor: () => editor }); return true; }, COMMAND_PRIORITY_EDITOR);
+        editor.registerCommand(createCommand('TABLE_MERGE_CELLS'), () => { tableHandlers.mergeCells({ getInternalEditor: () => editor }); return true; }, COMMAND_PRIORITY_EDITOR);
+        editor.registerCommand(createCommand('TABLE_SPLIT_CELLS'), () => { tableHandlers.splitCell({ getInternalEditor: () => editor }); return true; }, COMMAND_PRIORITY_EDITOR);
     }
 };
 

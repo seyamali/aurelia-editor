@@ -78,4 +78,79 @@ export const MODALS_HTML = `
             <label><input type="checkbox" id="link-target-checkbox" /> Open in new tab</label>
           </div>
       </div>
+      
+      <!-- Table of Contents Configuration Modal -->
+      <div id="toc-config-modal" class="modal hidden">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h3>📑 Insert Table of Contents</h3>
+                  <button id="close-toc-config-btn" class="modal-close-btn">&times;</button>
+              </div>
+              <div class="modal-body">
+                  <div class="toc-config-group">
+                      <label>Heading Levels to Include:</label>
+                      <div class="toc-level-inputs">
+                          <label>
+                              From Level:
+                              <select id="toc-min-level">
+                                  <option value="1">H1</option>
+                                  <option value="2">H2</option>
+                                  <option value="3">H3</option>
+                                  <option value="4">H4</option>
+                                  <option value="5">H5</option>
+                                  <option value="6">H6</option>
+                              </select>
+                          </label>
+                          <label>
+                              To Level:
+                              <select id="toc-max-level">
+                                  <option value="1">H1</option>
+                                  <option value="2">H2</option>
+                                  <option value="3" selected>H3</option>
+                                  <option value="4">H4</option>
+                                  <option value="5">H5</option>
+                                  <option value="6" selected>H6</option>
+                              </select>
+                          </label>
+                      </div>
+                  </div>
+                  
+                  <div class="toc-config-group">
+                      <label>List Style:</label>
+                      <select id="toc-style">
+                          <option value="nested">Nested List (Recommended)</option>
+                          <option value="unordered">Unordered List</option>
+                          <option value="ordered">Ordered List</option>
+                      </select>
+                  </div>
+                  
+                  <div class="toc-config-group">
+                      <label>
+                          <input type="checkbox" id="toc-numbered" />
+                          Numbered Headings (e.g., 1.1, 1.2, 2.1)
+                      </label>
+                  </div>
+                  
+                  <div class="toc-config-group">
+                      <label>
+                          <input type="checkbox" id="toc-collapsible" />
+                          Collapsible Sections
+                      </label>
+                  </div>
+
+                  <div class="toc-config-group">
+                      <label>Theme Preference:</label>
+                      <select id="toc-theme">
+                          <option value="auto">Auto (System Default)</option>
+                          <option value="light">Light Mode</option>
+                          <option value="dark">Dark Mode</option>
+                      </select>
+                  </div>
+              </div>
+              <div class="modal-footer">
+                  <button id="toc-insert-btn" class="btn-primary">Insert TOC</button>
+                  <button id="toc-cancel-btn" class="btn-secondary">Cancel</button>
+              </div>
+          </div>
+      </div>
 `;

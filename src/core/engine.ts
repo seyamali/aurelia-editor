@@ -17,7 +17,7 @@ import { CodeBlockNode } from '../plugins/advanced/code-block-node';
 import { SuggestionNode } from '../plugins/collaboration/suggestion-node.ts';
 import { PlaceholderNode } from '../plugins/advanced/placeholder-node.ts';
 import { PageBreakNode } from '../plugins/page-layout/page-break-node';
-import { FootnoteNode } from '../plugins/advanced/footnote-node';
+import { FootnoteRefNode, FootnoteContentNode, FootnoteContainerNode } from '../plugins/advanced/footnote-node';
 import { TableOfContentsNode } from '../plugins/page-layout/toc-node';
 import { CustomHeadingNode } from '../plugins/formatting/custom-heading-node';
 import { CustomParagraphNode } from '../plugins/formatting/custom-paragraph-node';
@@ -64,7 +64,9 @@ export class MyUniversalEditor {
                 SuggestionNode,
                 PlaceholderNode,
                 PageBreakNode,
-                FootnoteNode,
+                FootnoteRefNode,
+                FootnoteContentNode,
+                FootnoteContainerNode,
                 TableOfContentsNode,
                 LayoutNode,
                 StyleNode,
@@ -89,6 +91,11 @@ export class MyUniversalEditor {
                     code: 'editor-text-code',
                 },
                 code: 'editor-code',
+                table: 'editor-table',
+                tableCell: 'editor-table-cell',
+                tableCellHeader: 'editor-table-cell-header',
+                tableCellSelected: 'selected',
+                tableRow: 'editor-table-row',
                 codeHighlight: {
                     atrule: 'editor-code-atrule',
                     attr: 'editor-code-attr',

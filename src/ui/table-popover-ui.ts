@@ -1,5 +1,5 @@
 import { $getSelection, $isRangeSelection, type LexicalEditor, SELECTION_CHANGE_COMMAND, COMMAND_PRIORITY_LOW } from 'lexical';
-import { $isTableCellNode } from '@lexical/table';
+import { $isTableCellNode, $isTableSelection } from '@lexical/table';
 import { tableHandlers } from '../plugins/layout/tables';
 
 export function setupTablePopover(editor: LexicalEditor) {
@@ -73,10 +73,11 @@ export function setupTablePopover(editor: LexicalEditor) {
         SELECTION_CHANGE_COMMAND,
         () => {
             const selection = $getSelection();
-            if ($isRangeSelection(selection)) {
+            if (($isRangeSelection(selection) && !selection.isCollapsed()) || $isTableSelection(selection)) {
                 const nodes = selection.getNodes();
                 let tableCellFound = false;
 
+                // For TableSelection, the nodes are usually the cells themselves
                 for (const node of nodes) {
                     let parent: any = node;
                     while (parent !== null) {

@@ -11,16 +11,21 @@
 @import './ui/css/unified-image-modal.css';
 @import './ui/css/productivity.css';
 @import './ui/css/table-layout.css';
+@import './ui/css/modals.css';
 
 /* Plugin Specifics */
 @import './ui/css/placeholder.css';
 @import './ui/css/slash-menu.css';
 @import './ui/css/page-break.css';
 @import './ui/css/document-outline.css';
+@import './ui/css/minimap.css';
 @import './ui/css/toc.css';
 @import './ui/css/revisions.css';
 @import './ui/css/find-replace.css';
 @import './ui/css/emoji-picker.css';
+@import './ui/css/footnotes.css';
+@import './ui/css/toolbar-customization.css';
+@import './ui/css/context-toolbar.css';
 @import './ui/css/track-changes.css';
 @import './ui/css/code-syntax.css';
 @import './ui/css/code-blocks.css';

@@ -18,63 +18,86 @@ import { insertImage } from '../media/images';
 import { insertTable } from '../layout/tables';
 import { INSERT_CODE_BLOCK_COMMAND } from '../advanced/code-blocks';
 import { MediaEmbedPlugin } from '../advanced/media-embed';
-import { INSERT_PLACEHOLDER_COMMAND } from '../advanced/placeholder';
+import { INSERT_PLACEHOLDER_COMMAND, showPlaceholderInsertPanel } from '../advanced/placeholder';
 
 const SLASH_COMMANDS: SlashCommand[] = [
     {
         label: 'Paragraph',
         icon: '¶',
+        description: 'Plain text paragraph',
         execute: (editor) => setBlockType(editor, 'paragraph')
     },
     {
         label: 'Heading 1',
         icon: 'H1',
+        description: 'Large heading',
         execute: (editor) => setBlockType(editor, 'h1')
     },
     {
         label: 'Heading 2',
         icon: 'H2',
+        description: 'Medium heading',
         execute: (editor) => setBlockType(editor, 'h2')
+    },
+    {
+        label: 'Heading 3',
+        icon: 'H3',
+        description: 'Small heading',
+        execute: (editor) => setBlockType(editor, 'h3')
+    },
+    {
+        label: 'Quote',
+        icon: '"',
+        description: 'Block quote',
+        execute: (editor) => setBlockType(editor, 'quote')
     },
     {
         label: 'Bullet List',
         icon: '•',
+        description: 'Bulleted list',
         execute: (editor) => editor.dispatchCommand(LIST_COMMANDS.BULLET.command, undefined)
     },
     {
         label: 'Numbered List',
         icon: '1.',
+        description: 'Numbered list',
         execute: (editor) => editor.dispatchCommand(LIST_COMMANDS.NUMBER.command, undefined)
     },
     {
         label: 'Divider',
         icon: '—',
+        description: 'Horizontal divider',
         execute: (editor) => insertHorizontalRule(editor)
     },
     {
         label: 'Code Block',
         icon: '{}',
+        description: 'Code block with syntax highlighting',
         execute: (editor) => editor.dispatchCommand(INSERT_CODE_BLOCK_COMMAND, undefined)
     },
     {
         label: 'Image',
         icon: '🖼️',
+        description: 'Insert an image',
         execute: (editor) => insertImage(editor)
     },
     {
         label: 'Table',
-        icon: '📅',
+        icon: '📊',
+        description: 'Insert a table',
         execute: (editor) => insertTable(editor)
     },
     {
         label: 'YouTube',
         icon: '📹',
+        description: 'Embed a YouTube video',
         execute: (editor) => MediaEmbedPlugin.insertYouTube(editor)
     },
     {
         label: 'Placeholder',
         icon: '🏷️',
-        execute: (editor) => editor.dispatchCommand(INSERT_PLACEHOLDER_COMMAND, 'Custom')
+        description: 'Insert a merge field placeholder',
+        execute: (editor) => showPlaceholderInsertPanel(editor)
     }
 ];
 
@@ -171,26 +194,35 @@ export const SlashCommandPlugin = {
                 if (menuUI.isVisible) {
                     const action = menuUI.selectAction();
                     if (action) {
-                        // We need to delete the slash command text before executing!
+                        // Store the action to execute after deletion
+                        const actionToExecute = action;
+                        const nodeKeyToMatch = matchNodeKey;
+                        const offsetToMatch = matchOffset;
+                        
+                        // Delete the slash command text first
                         sdk.update(() => {
                             const selection = $getSelection();
-                            if ($isRangeSelection(selection) && matchNodeKey) {
-                                // Delete the query + slash
-                                // Simplified approach:
+                            if ($isRangeSelection(selection) && nodeKeyToMatch) {
                                 const anchor = selection.anchor;
-                                if (anchor.key === matchNodeKey) {
+                                if (anchor.key === nodeKeyToMatch) {
                                     // Remove from matchOffset to current anchor offset
-                                    const deleteSize = anchor.offset - matchOffset;
-                                    selection.anchor.offset = matchOffset;
-                                    selection.focus.offset = matchOffset + deleteSize;
-                                    selection.removeText();
+                                    const deleteSize = anchor.offset - offsetToMatch;
+                                    if (deleteSize > 0) {
+                                        selection.anchor.offset = offsetToMatch;
+                                        selection.focus.offset = offsetToMatch + deleteSize;
+                                        selection.removeText();
+                                    }
                                 }
                             }
                         });
 
-                        // Execute action
-                        action.execute(editor);
+                        // Execute action after deletion (most actions handle their own updates)
+                        // This ensures proper undo/redo behavior
+                        actionToExecute.execute(editor);
+                        
                         menuUI.hide();
+                        matchOffset = -1;
+                        matchNodeKey = null;
                         payload?.preventDefault();
                         return true;
                     }

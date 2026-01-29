@@ -1,0 +1,85 @@
+/* Minimap - Professional Scroll Indicator */
+.minimap-container {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 30px;
+    /* Ultra-thin per spec */
+    height: 100vh;
+    z-index: 950;
+    /* Slightly behind sidebar if sidebar expanded, but higher than editor */
+    cursor: pointer;
+    user-select: none;
+    background: transparent;
+    border-left: 1px solid rgba(0, 0, 0, 0.02);
+    transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 0;
+    display: none;
+}
+
+.minimap-container:hover {
+    background: rgba(0, 0, 0, 0.01);
+}
+
+.minimap-content {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.minimap-viewport {
+    position: absolute;
+    left: 2px;
+    right: 2px;
+    background: rgba(37, 99, 235, 0.08);
+    /* Transparent blue highlight */
+    border: 1px solid rgba(37, 99, 235, 0.15);
+    border-radius: 2px;
+    pointer-events: none;
+    transition: top 0.05s linear;
+}
+
+.minimap-rail {
+    position: absolute;
+    right: 8px;
+    width: 2px;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.03);
+    border-radius: 1px;
+}
+
+.minimap-handle {
+    position: absolute;
+    right: 6px;
+    width: 6px;
+    background: #cbd5e1;
+    border-radius: 3px;
+    opacity: 0.4;
+    transition: opacity 0.2s, background 0.2s, right 0.2s;
+}
+
+.minimap-container:hover .minimap-handle {
+    opacity: 1;
+    background: #94a3b8;
+    right: 5px;
+}
+
+/* Dark Mode */
+@media (prefers-color-scheme: dark) {
+    .minimap-container {
+        border-left-color: rgba(255, 255, 255, 0.02);
+    }
+
+    .minimap-rail {
+        background: rgba(255, 255, 255, 0.03);
+    }
+
+    .minimap-handle {
+        background: #475569;
+    }
+
+    .minimap-viewport {
+        background: rgba(59, 130, 246, 0.1);
+        border-color: rgba(59, 130, 246, 0.15);
+    }
+}

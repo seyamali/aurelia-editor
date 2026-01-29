@@ -1,73 +1,46 @@
 /* Standard Variables and Reset */
 :root {
-    font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-    background-color: #f4f5f7;
+    font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: #f3f4f6;
+    /* Lighter neutral background */
+    --primary-color: #2563eb;
+    --border-color: #e5e7eb;
 }
 
 #app {
-    max-width: 800px;
+    max-width: 860px;
+    /* Slightly wider for modern feel */
     margin: 40px auto;
-    padding: 20px;
+    padding: 0 20px;
+    /* Add horizontal padding for small screens */
 }
 
+/* The Main Document Frame */
 .editor-wrapper {
     background: white;
-    border: 1px solid #ccced1;
-    border-radius: 4px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    /* Slightly larger radius */
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    /* Soft shadow */
     overflow: visible;
-    /* Changed from hidden to show popovers */
+    /* Needed for popovers */
     position: relative;
+    display: flex;
+    flex-direction: column;
 }
 
 .editor-wrapper:focus-within {
-    border-color: #0782ed;
+    border-color: #93c5fd;
+    /* Very subtle blue highlight */
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025);
 }
 
 .hidden {
     display: none !important;
 }
 
-.divider {
-    display: inline-block;
-    width: 1px;
-    height: 24px;
-    background-color: #ddd;
-    margin: 0 8px;
-    vertical-align: middle;
-}
-
-/* RTL Support */
-.editor-wrapper[dir="rtl"] {
-    text-align: right;
-}
-
-.editor-wrapper[dir="rtl"] .toolbar {
-    flex-direction: row-reverse;
-}
-
-.editor-wrapper[dir="rtl"] .divider {
-    border-right: 1px solid #ddd;
-    border-left: none;
-}
-
-.editor-wrapper[dir="rtl"] .document-outline {
-    border-left: none;
-    border-right: 1px solid #ddd;
-}
-
-.editor-wrapper[dir="rtl"] .revision-panel {
-    right: auto;
-    left: 0;
-    border-left: none;
-    border-right: 1px solid #ddd;
-}
-
-.editor-wrapper[dir="rtl"] .editor-placeholder-field {
-    direction: rtl;
-}
-
-/* Accessibility */
+/* Visually Hidden Helper */
 .sr-only {
     position: absolute;
     width: 1px;
@@ -80,10 +53,19 @@
     border: 0;
 }
 
-/* Clearer Focus Indicators */
+/* Clearer Focus Indicators for Accessibility */
 button:focus-visible,
 select:focus-visible,
-.editor-container:focus-visible {
-    outline: 3px solid #007bff;
+a:focus-visible {
+    outline: 2px solid var(--primary-color);
     outline-offset: 2px;
+}
+
+/* RTL Support */
+.editor-wrapper[dir="rtl"] {
+    text-align: right;
+}
+
+.editor-wrapper[dir="rtl"] .toolbar {
+    flex-direction: row-reverse;
 }

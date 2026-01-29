@@ -7,89 +7,255 @@ import {
     type Spread,
 } from 'lexical';
 
-export type SerializedFootnoteNode = Spread<
+// ============================================
+// FOOTNOTE REFERENCE NODE (Inline Marker)
+// ============================================
+
+export type SerializedFootnoteRefNode = Spread<
     {
-        content: string;
-        type: 'footnote';
+        footnoteId: string;
+        type: 'footnote-ref';
         version: 1;
     },
     SerializedLexicalNode
 >;
 
-export class FootnoteNode extends DecoratorNode<HTMLElement> {
-    __content: string;
+export class FootnoteRefNode extends DecoratorNode<HTMLElement> {
+    __footnoteId: string;
 
     static getType(): string {
-        return 'footnote';
+        return 'footnote-ref';
     }
 
-    static clone(node: FootnoteNode): FootnoteNode {
-        return new FootnoteNode(node.__content, node.__key);
+    static clone(node: FootnoteRefNode): FootnoteRefNode {
+        return new FootnoteRefNode(node.__footnoteId, node.__key);
     }
 
-    static importJSON(serializedNode: SerializedFootnoteNode): FootnoteNode {
-        return $createFootnoteNode(serializedNode.content);
+    static importJSON(serializedNode: SerializedFootnoteRefNode): FootnoteRefNode {
+        return $createFootnoteRefNode(serializedNode.footnoteId);
     }
 
-    constructor(content: string, key?: NodeKey) {
+    constructor(footnoteId: string, key?: NodeKey) {
         super(key);
-        this.__content = content;
+        this.__footnoteId = footnoteId;
     }
 
-    exportJSON(): SerializedFootnoteNode {
+    exportJSON(): SerializedFootnoteRefNode {
         return {
-            content: this.__content,
-            type: 'footnote',
+            footnoteId: this.__footnoteId,
+            type: 'footnote-ref',
             version: 1,
         };
     }
 
+    getFootnoteId(): string {
+        return this.__footnoteId;
+    }
+
     createDOM(_config: EditorConfig): HTMLElement {
         const sup = document.createElement('sup');
-        sup.className = 'editor-footnote';
-        sup.innerText = '[*]'; // Placeholder, will be updated or indexed
-        sup.title = this.__content; // Simple tooltip
-        sup.style.cursor = 'pointer';
-        sup.style.color = '#007bff';
-
-        // Add click listener to edit (handled via delegation or here if simple)
-        // Since we are in vanilla createDOM, we can add a listener but communicating back to editor 
-        // command might need a custom event or closure. 
-        // For simplicity, we'll let the plugin handle clicks or rely on title hover.
-
+        sup.className = 'footnote-ref';
+        sup.setAttribute('data-footnote-id', this.__footnoteId);
+        sup.contentEditable = 'false';
+        sup.textContent = '?'; // Will be updated by plugin
         return sup;
     }
 
-    updateDOM(prevNode: FootnoteNode, dom: HTMLElement): boolean {
-        if (prevNode.__content !== this.__content) {
-            dom.title = this.__content;
+    updateDOM(prevNode: FootnoteRefNode, dom: HTMLElement): boolean {
+        if (prevNode.__footnoteId !== this.__footnoteId) {
+            dom.setAttribute('data-footnote-id', this.__footnoteId);
         }
-        return false; // We don't need to replace the node usually
+        return false;
     }
 
-    setContent(content: string) {
-        const writable = this.getWritable();
-        writable.__content = content;
+    decorate(): HTMLElement {
+        const sup = document.createElement('sup');
+        sup.className = 'footnote-ref';
+        sup.setAttribute('data-footnote-id', this.__footnoteId);
+        sup.contentEditable = 'false';
+        sup.textContent = '?';
+        return sup;
+    }
+
+    isInline(): boolean {
+        return true;
+    }
+}
+
+export function $createFootnoteRefNode(footnoteId: string): FootnoteRefNode {
+    return new FootnoteRefNode(footnoteId);
+}
+
+export function $isFootnoteRefNode(node: LexicalNode | null | undefined): node is FootnoteRefNode {
+    return node instanceof FootnoteRefNode;
+}
+
+// ============================================
+// FOOTNOTE CONTENT NODE (Bottom Block)
+// ============================================
+
+export type SerializedFootnoteContentNode = Spread<
+    {
+        footnoteId: string;
+        content: string;
+        type: 'footnote-content';
+        version: 1;
+    },
+    SerializedLexicalNode
+>;
+
+export class FootnoteContentNode extends DecoratorNode<HTMLElement> {
+    __footnoteId: string;
+    __content: string;
+
+    static getType(): string {
+        return 'footnote-content';
+    }
+
+    static clone(node: FootnoteContentNode): FootnoteContentNode {
+        return new FootnoteContentNode(node.__footnoteId, node.__content, node.__key);
+    }
+
+    static importJSON(serializedNode: SerializedFootnoteContentNode): FootnoteContentNode {
+        return $createFootnoteContentNode(serializedNode.footnoteId, serializedNode.content);
+    }
+
+    constructor(footnoteId: string, content: string, key?: NodeKey) {
+        super(key);
+        this.__footnoteId = footnoteId;
+        this.__content = content;
+    }
+
+    exportJSON(): SerializedFootnoteContentNode {
+        return {
+            footnoteId: this.__footnoteId,
+            content: this.__content,
+            type: 'footnote-content',
+            version: 1,
+        };
+    }
+
+    getFootnoteId(): string {
+        return this.__footnoteId;
     }
 
     getContent(): string {
         return this.__content;
     }
 
+    setContent(content: string): void {
+        const writable = this.getWritable();
+        writable.__content = content;
+    }
+
+    createDOM(_config: EditorConfig): HTMLElement {
+        const div = document.createElement('div');
+        div.className = 'footnote-content-item';
+        div.setAttribute('data-footnote-id', this.__footnoteId);
+        div.innerHTML = `
+            <span class="footnote-number">?</span>
+            <div class="footnote-text" contenteditable="true">${this.__content || ''}</div>
+            <button class="footnote-return" title="Return to reference">↩</button>
+        `;
+        return div;
+    }
+
+    updateDOM(prevNode: FootnoteContentNode, dom: HTMLElement): boolean {
+        if (prevNode.__content !== this.__content) {
+            const textEl = dom.querySelector('.footnote-text');
+            if (textEl) {
+                textEl.textContent = this.__content;
+            }
+        }
+        return false;
+    }
+
     decorate(): HTMLElement {
-        const element = document.createElement('sup');
-        element.className = 'editor-footnote';
-        element.innerText = '[fn]';
-        // We might want to use a dynamic index? 
-        // For now, static marker to signify a footnote.
-        return element;
+        const div = document.createElement('div');
+        div.className = 'footnote-content-item';
+        div.setAttribute('data-footnote-id', this.__footnoteId);
+        div.innerHTML = `
+            <span class="footnote-number">?</span>
+            <div class="footnote-text" contenteditable="true">${this.__content || ''}</div>
+            <button class="footnote-return" title="Return to reference">↩</button>
+        `;
+        return div;
     }
 }
 
-export function $createFootnoteNode(content: string): FootnoteNode {
-    return new FootnoteNode(content);
+export function $createFootnoteContentNode(footnoteId: string, content: string): FootnoteContentNode {
+    return new FootnoteContentNode(footnoteId, content);
 }
 
-export function $isFootnoteNode(node: LexicalNode | null | undefined): node is FootnoteNode {
-    return node instanceof FootnoteNode;
+export function $isFootnoteContentNode(node: LexicalNode | null | undefined): node is FootnoteContentNode {
+    return node instanceof FootnoteContentNode;
+}
+
+// ============================================
+// FOOTNOTE CONTAINER NODE (Wrapper)
+// ============================================
+
+export type SerializedFootnoteContainerNode = Spread<
+    {
+        type: 'footnote-container';
+        version: 1;
+    },
+    SerializedLexicalNode
+>;
+
+export class FootnoteContainerNode extends DecoratorNode<HTMLElement> {
+    static getType(): string {
+        return 'footnote-container';
+    }
+
+    static clone(node: FootnoteContainerNode): FootnoteContainerNode {
+        return new FootnoteContainerNode(node.__key);
+    }
+
+    static importJSON(_serializedNode: SerializedFootnoteContainerNode): FootnoteContainerNode {
+        return $createFootnoteContainerNode();
+    }
+
+    exportJSON(): SerializedFootnoteContainerNode {
+        return {
+            type: 'footnote-container',
+            version: 1,
+        };
+    }
+
+    createDOM(_config: EditorConfig): HTMLElement {
+        const div = document.createElement('div');
+        div.className = 'footnotes-container';
+        div.contentEditable = 'false';
+        div.innerHTML = `
+            <div class="footnotes-divider"></div>
+            <div class="footnotes-header">Footnotes</div>
+            <div id="footnotes-list" class="footnotes-list"></div>
+        `;
+        return div;
+    }
+
+    updateDOM(): boolean {
+        return false;
+    }
+
+    decorate(): HTMLElement {
+        const div = document.createElement('div');
+        div.className = 'footnotes-container';
+        div.contentEditable = 'false';
+        div.innerHTML = `
+            <div class="footnotes-divider"></div>
+            <div class="footnotes-header">Footnotes</div>
+            <div id="footnotes-list" class="footnotes-list"></div>
+        `;
+        return div;
+    }
+}
+
+export function $createFootnoteContainerNode(): FootnoteContainerNode {
+    return new FootnoteContainerNode();
+}
+
+export function $isFootnoteContainerNode(node: LexicalNode | null | undefined): node is FootnoteContainerNode {
+    return node instanceof FootnoteContainerNode;
 }

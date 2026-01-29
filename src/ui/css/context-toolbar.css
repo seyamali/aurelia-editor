@@ -1,0 +1,204 @@
+/* ============================================
+   FLOATING TOOLBAR (Context-Aware)
+   ============================================ */
+
+.floating-toolbar {
+    position: absolute;
+    z-index: 1000;
+    display: flex;
+    gap: 4px;
+    /* Consistent with main toolbar */
+    padding: 6px;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    /* Smooth corners */
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    animation: floatingToolbarFadeIn 0.2s ease;
+}
+
+@keyframes floatingToolbarFadeIn {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+/* Arrow/Tip */
+.floating-toolbar::before {
+    content: '';
+    position: absolute;
+    bottom: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 6px solid #ffffff;
+}
+
+.floating-toolbar::after {
+    content: '';
+    position: absolute;
+    bottom: -7px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 7px solid transparent;
+    border-right: 7px solid transparent;
+    border-top: 7px solid #e5e7eb;
+    z-index: -1;
+}
+
+/* Floating Buttons */
+.floating-toolbar-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: transparent;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    color: #374151;
+    transition: all 0.15s ease;
+}
+
+.floating-toolbar-btn svg {
+    width: 18px;
+    height: 18px;
+    stroke-width: 2;
+    stroke: currentColor;
+    fill: none;
+}
+
+.floating-toolbar-btn:hover {
+    background: #f3f4f6;
+    color: #111827;
+}
+
+.floating-toolbar-btn:active {
+    background: #e5e7eb;
+    color: #2563eb;
+}
+
+/* ============================================
+   TOOLBAR OVERFLOW MENU (Responsive)
+   ============================================ */
+
+.toolbar-overflow {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.toolbar-overflow-btn {
+    display: none;
+    /* Hidden unless needed */
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    background: transparent;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    color: #374151;
+    transition: all 0.2s ease;
+}
+
+/* Ensure it behaves like other toolbar buttons */
+.toolbar-overflow-btn:hover {
+    background: #f3f4f6;
+}
+
+.toolbar-overflow-btn.active {
+    background: #eff6ff;
+    color: #2563eb;
+}
+
+.toolbar-overflow-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 8px;
+    min-width: 200px;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    display: none;
+    flex-direction: column;
+    max-height: 400px;
+    overflow-y: auto;
+    z-index: 200;
+    padding: 4px;
+}
+
+.toolbar-overflow-menu.show {
+    display: flex;
+    animation: dropdownFadeIn 0.15s ease;
+}
+
+@keyframes dropdownFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.toolbar-overflow-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 8px 12px;
+    background: transparent;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.875rem;
+    color: #374151;
+    text-align: left;
+    transition: background 0.15s ease;
+}
+
+.toolbar-overflow-item:hover {
+    background: #f3f4f6;
+    color: #111827;
+}
+
+.toolbar-overflow-item .icon {
+    width: 20px;
+    display: flex;
+    justify-content: center;
+    color: #6b7280;
+}
+
+/* ============================================
+   RESPONSIVE LOGIC
+   ============================================ */
+
+@media (max-width: 1024px) {
+    .toolbar-overflow-btn {
+        display: flex;
+    }
+
+    /* We manage visibility in JS or CSS. 
+       If we use CSS to hide items, the JS logic needs to be aware 
+       or we just visually hide them and let overflow menu pick them up? 
+       For now, we just rely on the overflow script. */
+}
