@@ -1,85 +1,102 @@
-# My Universal Editor
+# Aurelia Editor - by Seyam Ali
 
-A powerful, customizable rich text editor built with [Lexical](https://lexical.dev/), designed content creation with a clean, modern interface.
+A powerful, customizable, and framework-agnostic rich text editor built with [Lexical](https://lexical.dev/). Designed for modern content creation with a clean, "Notion-style" interface and comprehensive productivity tools.
 
-![Editor Preview](https://via.placeholder.com/800x400?text=My+Universal+Editor+Preview)
+![Editor Preview](https://via.placeholder.com/800x400?text=Aurelia+Editor+Preview)
 
-## 🚀 Features
+## ✨ key Features
 
-This editor comes packed with essential features for web content editing:
+**Aurelia Editor** provides a "batteries-included" experience:
 
-### 📝 Text Formatting
-- **Basic Styles**: Bold, Italic, Underline, Strikethrough
-- **Advanced Styles**: Subscript, Superscript, Inline Code
-- **Clear Formatting**: Quickly reset text styles
+### 📝 Advanced Formatting
+- **Rich Text**: Bold, Italic, Underline, Strikethrough, Subscript, Superscript.
+- **Typography**: Heading levels (H1-H3), Blockquotes, and more.
+- **Fonts & Colors**: Customizable font families and text/highlight colors.
+- **Case Converter**: Easily toggle between Uppercase, Lowercase, and Title Case.
 
-### 📐 Layout & Structure
-- **Headings**: Support for H1 and H2 headers
-- **Lists**: Ordered (numbered) and Unordered (bulleted) lists
-- **Indentation**: Increase or decrease indent levels
-- **Dividers**: Insert horizontal rules to separate content
+### 🖼️ Media & Embeds
+- **Universal Image Upload**: Drag & drop, copy-paste, or upload images via a unified modal.
+- **Image Editing**: Resize images, drag to move, and add captions.
+- **Video Support**: Embed YouTube videos and other media.
+- **Files**: Support for file attachments.
 
-### 🖼️ Media & Rich Content
-- **Images**: Upload and embed local images directly into the editor
-- **Links**: Insert and manage hyperlinks (with auto-link detection)
+### 📊 Layout & Structure
+- **Smart Tables**: Create tables with resizable columns/rows, merge cells, and custom backgrounds.
+- **Code Blocks**: Syntax highlighting for multiple languages via PrismJS.
+- **Structure**: Collapsible Text, Page Breaks, Horizontal Rules.
+- **Navigation**: Auto-generated Table of Contents & Document Outline.
 
-### 🛠️ Essentials
-- **History**: Robust Undo/Redo stack
-- **Clipboard**: Seamless copy/paste handling
+### 🚀 Productivity Tools
+- **Slash Commands**: Type `/` to instantly access a menu of blocks and actions.
+- **Markdown Support**: Full Markdown shortcuts (e.g., `## Heading`, `> Quote`, `- List`).
+- **Autosave**: Never lose work with local storage autosave and recovery.
+- **Find & Replace**: Powerful search functionality within the editor.
+- **Format Painter**: Copy formatting from one section and apply it to another.
+- **Word Count**: Real-time statistics.
 
-## 🛠️ Tech Stack
+### 📄 Export & Import
+- **PDF Export**: One-click download of your document as a styled PDF.
+- **Word Export/Import**: Seamlessly move content to and from Microsoft Word (`.docx`).
+- **Print Friendly**: Optimized CSS for printing.
 
-- **Core Engine**: [Meta Lexical](https://lexical.dev/)
+### 🤝 Collaboration & Extras
+- **Comments/Track Changes**: (Beta) Infrastructure for collaborative reviewing.
+- **Mentions**: Support for `@user` mentions.
+- **Source View**: HTML source editing for power users.
+- **Zen Mode**: Distraction-free writing experience.
+
+---
+
+## 💻 Tech Stack
+
+- **Core**: [Lexical](https://lexical.dev/) (by Meta)
 - **Language**: TypeScript
 - **Bundler**: Vite
-- **Styling**: Vanilla CSS (Custom extensible theme)
+- **Styling**: Vanilla CSS (CSS Variables for easy theming)
 
-## 📦 Installation
+## 🎛️ Toolbar Configuration
 
-Clone the repository and install dependencies:
+The editor features a highly configurable toolbar system. You can switch between presets or define your own.
 
-```bash
-git clone <repository-url>
-cd my-universal-editor
-npm install
+**Presets:**
+- `standard`: The default balanced set of tools.
+- `minimal`: Distraction-free, just the basics.
+- `blogging`: Focused on media and structure.
+- `full`: All available tools enabled.
+
+To change the preset programmatically:
+```typescript
+import { ToolbarConfigManager } from 'my-universal-editor';
+
+ToolbarConfigManager.applyPreset('minimal');
 ```
 
-## 🏃‍♂️ Usage
+## ⌨️ Shortcuts
 
-Start the development server:
+| Action | Shortcut |
+|--------|----------|
+| **Bold** | `Ctrl + B` |
+| **Italic** | `Ctrl + I` |
+| **Canel/Undo** | `Ctrl + Z` |
+| **Slash Menu** | `/` |
+| **Find & Replace** | `Ctrl + F` |
+| **Save** | `Ctrl + S` (Triggers Autosave) |
 
-```bash
-npm run dev
-```
+---
 
-Build for production:
+## 📄 License & Attribution
 
-```bash
-npm run build
-```
+This project is open-source and available under the **MIT License**.
 
-## 📂 Project Structure
+### Summary
+- **Commercial Use**: ✅ Allowed
+- **Modification**: ✅ Allowed
+- **Distribution**: ✅ Allowed
+- **Private Use**: ✅ Allowed
+- **Liability**: ❌ None (Use at your own risk)
+- **Attribution**: ⚠️ **REQUIRED**
 
-```
-src/
-├── core/           # Core editor engine and plugin registry
-├── plugins/        # Feature modules
-│   ├── essentials/ # History, Clipboard
-│   ├── formatting/ # Bold, Italic, etc.
-│   ├── layout/     # Lists, Headings
-│   └── media/      # Images, Links
-├── style.css       # Editor themes and UI styling
-└── main.ts         # Application entry point
-```
+### Credit Requirement
+If you use this editor in your project (commercial or non-commercial), you **must** retain the copyright notice and license file (`LICENSE`) in your source code. This ensures the original author receives credit for their work.
 
-## 🤝 Contributing
-
-1. Fork the project
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-## 📄 License
-
-Distributed under the MIT License. See `LICENSE` for more information.
+Copyright (c) 2026 Seyam Ali

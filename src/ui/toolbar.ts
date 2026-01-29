@@ -1,7 +1,8 @@
+import type { LexicalEditor } from 'lexical';
 // --- Table of Contents (TOC) Insert ---
 import { INSERT_TOC_COMMAND } from '../plugins/page-layout/toc-plugin';
 
-export function setupTOCToolbar(editor) {
+export function setupTOCToolbar(editor: LexicalEditor) {
   // Add TOC button to toolbar
   let btn = document.getElementById('toolbar-insert-toc');
   if (!btn) {
@@ -37,7 +38,7 @@ export function setupTOCToolbar(editor) {
   });
 }
 
-function showTOCConfigPanel(editor) {
+function showTOCConfigPanel(editor: LexicalEditor) {
   let panel = document.getElementById('toc-config-panel');
   if (!panel) {
     panel = document.createElement('div');
@@ -70,21 +71,25 @@ function showTOCConfigPanel(editor) {
   panel.style.minWidth = '320px';
   panel.style.border = '1px solid #e5e7eb';
 
-  const insertBtn = panel.querySelector('#toc-insert-btn');
-  const cancelBtn = panel.querySelector('#toc-cancel-btn');
+  const insertBtn = panel.querySelector('#toc-insert-btn') as HTMLButtonElement;
+  const cancelBtn = panel.querySelector('#toc-cancel-btn') as HTMLButtonElement;
 
-  insertBtn.onclick = () => {
-    // For now, just insert TOC node (configurable levels/styles can be used in future)
-    editor.dispatchCommand(INSERT_TOC_COMMAND, undefined);
-    panel.style.display = 'none';
-  };
-  cancelBtn.onclick = () => {
-    panel.style.display = 'none';
-  };
+  if (insertBtn) {
+    insertBtn.onclick = () => {
+      // For now, just insert TOC node (configurable levels/styles can be used in future)
+      editor.dispatchCommand(INSERT_TOC_COMMAND, undefined);
+      if (panel) panel.style.display = 'none';
+    };
+  }
+
+  if (cancelBtn) {
+    cancelBtn.onclick = () => {
+      if (panel) panel.style.display = 'none';
+    };
+  }
 }
 // Toolbar logic for Merge Field/Placeholder Insert
 import { showPlaceholderInsertPanel } from '../plugins/advanced/placeholder';
-import { type LexicalEditor } from 'lexical';
 
 export function setupToolbar(editor: LexicalEditor) {
   // Add a button to the toolbar for inserting placeholders

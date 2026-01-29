@@ -6,7 +6,8 @@ import {
     CLICK_COMMAND
 } from 'lexical';
 import type { EditorPlugin } from '../../core/registry';
-import { EditorSDK } from '../../core/sdk';
+import { type EditorSDK } from '../../core/sdk';
+import { DialogSystem } from '../../shared/dialog-system';
 
 // Store the copied format style
 let copiedFormat: number | null = null;
@@ -54,7 +55,7 @@ export const FormatPainter = {
                 console.log("Format copied:", copiedFormat);
                 togglePainting(true, isLocked);
             } else {
-                alert("Select some text to copy its format first.");
+                DialogSystem.alert("Select some text to copy its format first.", "Format Painter");
             }
         });
     },

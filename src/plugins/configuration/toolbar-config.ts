@@ -93,18 +93,9 @@ export const TOOLBAR_ITEMS: Record<string, ToolbarItem> = {
     // --- LAYOUT & STRUCTURE ---
     'insert-table': { id: 'insert-table', type: 'button', label: 'Table', icon: ICONS.TABLE, tooltip: 'Insert Table', command: 'INSERT_TABLE_COMMAND', group: 'layout' },
     'blockquote': { id: 'blockquote', type: 'button', label: 'Quote', icon: ICONS.QUOTE, tooltip: 'Blockquote', command: 'INSERT_QUOTE_COMMAND', group: 'layout' },
-    'code-block': { id: 'code-block', type: 'button', label: 'Code Block', icon: ICONS.CODE, tooltip: 'Code Block', command: 'INSERT_CODE_BLOCK_COMMAND', group: 'layout' },
+    'code-block': { id: 'code-block', type: 'button', label: 'Code Block', icon: ICONS.CODE_BLOCK, tooltip: 'Code Block', command: 'INSERT_CODE_BLOCK_COMMAND', group: 'layout' },
     'hr': { id: 'hr', type: 'button', label: 'Divider', icon: ICONS.HR, tooltip: 'Horizontal Rule', command: 'INSERT_HORIZONTAL_RULE_COMMAND', group: 'layout' },
     'page-break': { id: 'page-break', type: 'button', label: 'Page Break', icon: ICONS.PAGE_BREAK, tooltip: 'Page Break', command: 'INSERT_PAGE_BREAK_COMMAND', group: 'layout' },
-
-    // --- TABLE TOOLS ---
-    'table-row-above': { id: 'table-row-above', type: 'button', label: 'Row +', icon: '🔼', tooltip: 'Insert Row Above', command: 'TABLE_ADD_ROW_ABOVE', group: 'table' },
-    'table-row-below': { id: 'table-row-below', type: 'button', label: 'Row -', icon: '🔽', tooltip: 'Insert Row Below', command: 'TABLE_ADD_ROW_BELOW', group: 'table' },
-    'table-col-left': { id: 'table-col-left', type: 'button', label: 'Col <', icon: '◀️', tooltip: 'Insert Col Left', command: 'TABLE_ADD_COL_LEFT', group: 'table' },
-    'table-col-right': { id: 'table-col-right', type: 'button', label: 'Col >', icon: '▶️', tooltip: 'Insert Col Right', command: 'TABLE_ADD_COL_RIGHT', group: 'table' },
-    'table-merge': { id: 'table-merge', type: 'button', label: 'Merge', icon: '🔗', tooltip: 'Merge Cells', command: 'TABLE_MERGE_CELLS', group: 'table' },
-    'table-split': { id: 'table-split', type: 'button', label: 'Split', icon: '✂️', tooltip: 'Split Cell', command: 'TABLE_SPLIT_CELLS', group: 'table' },
-    'table-delete': { id: 'table-delete', type: 'button', label: 'Table X', icon: '❌', tooltip: 'Delete Table', command: 'TABLE_DELETE_TABLE', group: 'table' },
 
     // --- DOCUMENT ---
     'footnote': { id: 'footnote', type: 'button', label: 'Footnote', icon: ICONS.FOOTNOTE, tooltip: 'Insert Footnote', command: 'INSERT_FOOTNOTE_COMMAND', group: 'document' },
@@ -119,18 +110,41 @@ export const TOOLBAR_ITEMS: Record<string, ToolbarItem> = {
     'indent': { id: 'indent', type: 'button', label: 'Indent', icon: ICONS.INDENT, tooltip: 'Indent', command: 'INDENT_CONTENT_COMMAND', group: 'indent' },
     'outdent': { id: 'outdent', type: 'button', label: 'Outdent', icon: ICONS.OUTDENT, tooltip: 'Outdent', command: 'OUTDENT_CONTENT_COMMAND', group: 'indent' },
 
+    // --- EXPORT/IMPORT ---
+    'export-pdf': { id: 'export-pdf', type: 'button', label: 'PDF', icon: ICONS.PDF, tooltip: 'Export to PDF', command: 'EXPORT_PDF_COMMAND', group: 'export' },
+    'export-word': { id: 'export-word', type: 'button', label: 'Word', icon: ICONS.WORD, tooltip: 'Export to Word', command: 'EXPORT_WORD_COMMAND', group: 'export' },
+    'import-word': { id: 'import-word', type: 'button', label: 'Import', icon: ICONS.IMPORT, tooltip: 'Import from Word', command: 'IMPORT_WORD_COMMAND', group: 'export' },
+
+    // --- VIEW ---
+    'outline': { id: 'outline', type: 'button', label: 'Outline', icon: ICONS.OUTLINE, tooltip: 'Toggle Outline', command: 'TOGGLE_OUTLINE_COMMAND', group: 'view' },
+    'minimap': { id: 'minimap', type: 'button', label: 'Minimap', icon: ICONS.MINIMAP, tooltip: 'Toggle Minimap', command: 'TOGGLE_MINIMAP_COMMAND', group: 'view' },
+    'zen-mode': { id: 'zen-mode', type: 'button', label: 'Zen', icon: ICONS.ZEN, tooltip: 'Toggle Zen Mode', command: 'TOGGLE_ZEN_MODE_COMMAND', group: 'view' },
+
     // --- UTILS ---
+    'insert-html-snippet': { id: 'insert-html-snippet', type: 'button', label: 'Snippet', icon: ICONS.SNIPPET, tooltip: 'Insert HTML Snippet', command: 'INSERT_HTML_SNIPPET_COMMAND', group: 'media' },
+    'insert-placeholder': { id: 'insert-placeholder', type: 'button', label: 'Field', icon: ICONS.PLACEHOLDER, tooltip: 'Insert Merge Field', command: 'INSERT_PLACEHOLDER_COMMAND', group: 'productivity' },
     'clear-formatting': { id: 'clear-formatting', type: 'button', label: 'Clear', icon: ICONS.CLEAR, tooltip: 'Clear Formatting', command: 'REMOVE_FORMATTING_COMMAND', group: 'utils' },
     'source-view': { id: 'source-view', type: 'button', label: 'Source', icon: ICONS.SOURCE, tooltip: 'Edit HTML Source', command: 'TOGGLE_SOURCE_VIEW', group: 'utils' },
     'undo': { id: 'undo', type: 'button', label: 'Undo', icon: ICONS.UNDO, tooltip: 'Undo', command: 'UNDO_COMMAND', group: 'history' },
     'redo': { id: 'redo', type: 'button', label: 'Redo', icon: ICONS.REDO, tooltip: 'Redo', command: 'REDO_COMMAND', group: 'history' },
+
+    // --- CASE CHANGE ---
+    'uppercase': { id: 'uppercase', type: 'button', label: 'Uppercase', icon: 'ABC', tooltip: 'Uppercase', command: 'CASE_UPPER', group: 'productivity' },
+    'lowercase': { id: 'lowercase', type: 'button', label: 'Lowercase', icon: 'abc', tooltip: 'Lowercase', command: 'CASE_LOWER', group: 'productivity' },
+    'titlecase': { id: 'titlecase', type: 'button', label: 'Title Case', icon: 'Abc', tooltip: 'Title Case', command: 'CASE_TITLE', group: 'productivity' },
+
+    // --- TRACK CHANGES ---
+    'track-changes': { id: 'track-changes', type: 'button', label: 'Track Changes', icon: '👁️', tooltip: 'Toggle Track Changes', command: 'TOGGLE_TRACK_CHANGES', group: 'productivity' },
 
     // --- SEPARATORS ---
     'separator-1': { id: 'separator-1', type: 'separator' },
     'separator-2': { id: 'separator-2', type: 'separator' },
     'separator-3': { id: 'separator-3', type: 'separator' },
     'separator-4': { id: 'separator-4', type: 'separator' },
-    'separator-5': { id: 'separator-5', type: 'separator' }
+    'separator-5': { id: 'separator-5', type: 'separator' },
+    'separator-6': { id: 'separator-6', type: 'separator' },
+    'separator-7': { id: 'separator-7', type: 'separator' },
+    'separator-8': { id: 'separator-8', type: 'separator' }
 };
 
 // ============================================
@@ -142,7 +156,11 @@ export const TOOLBAR_PRESETS: Record<string, ToolbarPreset> = {
         id: 'minimal',
         name: 'Minimal',
         description: 'Just the essentials for quick writing.',
-        items: ['undo', 'redo', 'separator-1', 'bold', 'italic', 'underline', 'separator-2', 'insert-link', 'bullet-list', 'numbered-list']
+        items: [
+            'undo', 'redo', 'separator-1',
+            'bold', 'italic', 'underline', 'separator-2',
+            'bullet-list', 'insert-link'
+        ]
     },
     'standard': {
         id: 'standard',
@@ -152,8 +170,9 @@ export const TOOLBAR_PRESETS: Record<string, ToolbarPreset> = {
             'undo', 'redo', 'separator-1',
             'heading-dropdown', 'separator-2',
             'bold', 'italic', 'underline', 'strikethrough', 'separator-3',
-            'bullet-list', 'numbered-list', 'separator-4',
-            'insert-link', 'insert-image', 'blockquote', 'hr'
+            'bullet-list', 'numbered-list', 'indent', 'outdent', 'separator-4',
+            'align-left', 'align-center', 'align-right', 'separator-5',
+            'insert-link', 'insert-image', 'insert-table', 'blockquote', 'hr'
         ]
     },
     'blogging': {
@@ -161,10 +180,12 @@ export const TOOLBAR_PRESETS: Record<string, ToolbarPreset> = {
         name: 'Blogging',
         description: 'Rich media and formatting for content creators.',
         items: [
-            'heading-dropdown', 'bold', 'italic', 'separator-1',
-            'insert-link', 'insert-image', 'insert-video', 'emoji', 'separator-2',
-            'blockquote', 'code-block', 'bullet-list', 'separator-3',
-            'undo', 'redo'
+            'undo', 'redo', 'separator-1',
+            'heading-dropdown', 'separator-2',
+            'bold', 'italic', 'underline', 'format-painter', 'separator-3',
+            'bullet-list', 'blockquote', 'separator-4',
+            'insert-link', 'insert-image', 'insert-video', 'emoji', 'separator-5',
+            'find-replace', 'track-changes', 'zen-mode'
         ]
     },
     'documentation': {
@@ -172,17 +193,32 @@ export const TOOLBAR_PRESETS: Record<string, ToolbarPreset> = {
         name: 'Documentation',
         description: 'Tools for technical writing and structured docs.',
         items: [
-            'heading-dropdown', 'bold', 'code', 'separator-1',
-            'insert-table', 'code-block', 'toc', 'footnote', 'separator-2',
-            'insert-link', 'insert-image', 'separator-3',
-            'find-replace', 'indent', 'outdent'
+            'undo', 'redo', 'separator-1',
+            'heading-dropdown', 'code', 'separator-2',
+            'bold', 'italic', 'separator-3',
+            'bullet-list', 'numbered-list', 'indent', 'outdent', 'separator-4',
+            'insert-table', 'code-block', 'toc', 'footnote', 'separator-5',
+            'insert-link', 'insert-image', 'insert-html-snippet', 'hr', 'page-break', 'separator-6',
+            'find-replace', 'outline', 'source-view'
         ]
     },
     'full': {
         id: 'full',
         name: 'Full Features',
-        description: 'All available tools in one toolbar.',
-        items: Object.keys(TOOLBAR_ITEMS).filter(k => !k.startsWith('separator'))
+        description: 'All available tools in a structured layout.',
+        items: [
+            'undo', 'redo', 'separator-1',
+            'heading-dropdown', 'format-painter', 'separator-2',
+            'bold', 'italic', 'underline', 'strikethrough', 'code', 'subscript', 'superscript', 'separator-3',
+            'bullet-list', 'numbered-list', 'indent', 'outdent', 'blockquote', 'separator-4',
+            'align-left', 'align-center', 'align-right', 'align-justify', 'separator-5',
+            'insert-link', 'insert-image', 'insert-video', 'insert-table', 'hr', 'page-break', 'emoji', 'separator-6',
+            'code-block', 'insert-html-snippet', 'footnote', 'toc', 'insert-placeholder', 'separator-7',
+            'find-replace', 'track-changes', 'zen-mode', 'outline', 'minimap', 'separator-8',
+            'export-pdf', 'export-word', 'import-word', 'separator-8',
+            'uppercase', 'lowercase', 'titlecase', 'separator-8',
+            'clear-formatting', 'source-view'
+        ]
     }
 };
 
@@ -202,6 +238,12 @@ export class ToolbarConfigManager {
         if (saved) {
             try {
                 this.currentConfig = JSON.parse(saved);
+
+                // DATA CLEANUP: Remove any items that are no longer in the TOOLBAR_ITEMS registry
+                if (this.currentConfig.customItems) {
+                    this.currentConfig.customItems = this.currentConfig.customItems.filter(id => !!TOOLBAR_ITEMS[id]);
+                }
+
                 return this.currentConfig;
             } catch (e) {
                 console.error('Failed to parse toolbar config', e);

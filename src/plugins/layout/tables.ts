@@ -161,11 +161,17 @@ export const tableHandlers = {
     deleteTable: (editor: any) => {
         editor.getInternalEditor().update(() => {
             const selection = $getSelection();
-            if ($isRangeSelection(selection)) {
-                const cell = $getTableCellNodeFromSelection(selection);
-                if (cell) {
-                    const table = cell.getParentOrThrow().getParentOrThrow();
-                    table.remove();
+            if ($isRangeSelection(selection) || $isTableSelection(selection)) {
+                const nodes = selection.getNodes();
+                for (const node of nodes) {
+                    let parent: any = node;
+                    while (parent !== null) {
+                        if ($isTableNode(parent)) {
+                            parent.remove();
+                            return;
+                        }
+                        parent = (typeof parent.getParent === 'function') ? parent.getParent() : null;
+                    }
                 }
             }
         });

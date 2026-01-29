@@ -1,5 +1,6 @@
 import { TOGGLE_LINK_COMMAND, registerAutoLink, toggleLink } from '@lexical/link';
-import { COMMAND_PRIORITY_EDITOR, $getSelection, $isRangeSelection } from 'lexical';
+import { COMMAND_PRIORITY_EDITOR, $getSelection, $isRangeSelection, $isNodeSelection } from 'lexical';
+import { ImageNode, $isImageNode } from './image-node';
 import { EditorSDK } from '../../core/sdk';
 import type { EditorPlugin } from '../../core/registry';
 
@@ -41,27 +42,44 @@ export const LinksPlugin: EditorPlugin = {
             TOGGLE_LINK_COMMAND,
             (payload: any) => {
                 const selection = $getSelection();
+
                 if (payload === null) {
-                    toggleLink(null);
-                    // Add an invisible marker to prevent AutoLink from re-triggering on this text.
-                    // We collapse to start to ensure we don't overwrite the existing text.
-                    if ($isRangeSelection(selection)) {
-                        if (selection.isBackward()) {
-                            selection.anchor.set(selection.focus.key, selection.focus.offset, selection.focus.type);
-                        } else {
-                            selection.focus.set(selection.anchor.key, selection.anchor.offset, selection.anchor.type);
+                    // Unlink logic
+                    if ($isNodeSelection(selection)) {
+                        const nodes = selection.getNodes();
+                        if (nodes.length === 1 && $isImageNode(nodes[0])) {
+                            editor.update(() => (nodes[0] as ImageNode).setLinkUrl(''));
+                            return true;
                         }
-                        selection.insertText('\u200B');
+                    }
+                    if ($isRangeSelection(selection)) {
+                        toggleLink(null);
+                        return true;
+                    }
+                    return false;
+                }
+
+                // Payload exists (URL provided)
+                if ($isNodeSelection(selection)) {
+                    const nodes = selection.getNodes();
+                    if (nodes.length === 1 && $isImageNode(nodes[0])) {
+                        const url = typeof payload === 'string' ? payload : payload.url;
+                        editor.update(() => (nodes[0] as ImageNode).setLinkUrl(url));
+                        return true;
+                    }
+                }
+
+                if ($isRangeSelection(selection)) {
+                    if (typeof payload === 'string') {
+                        toggleLink(payload);
+                    } else {
+                        const { url, target, rel, title } = payload;
+                        toggleLink(url, { target, rel, title });
                     }
                     return true;
-                } else if (typeof payload === 'string') {
-                    toggleLink(payload);
-                    return true;
-                } else {
-                    const { url, target, rel, title } = payload;
-                    toggleLink(url, { target, rel, title });
-                    return true;
                 }
+
+                return false;
             },
             COMMAND_PRIORITY_EDITOR,
         );

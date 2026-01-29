@@ -86,6 +86,75 @@ export const SourceViewPlugin = {
     },
 
     /**
+     * Professional CSS Sandboxer
+     * Prefixes all selectors with .editor-container to ensure scoped styling and high specificity.
+     * Uses a robust balanced-brace parser to correctly handle nested rules (@keyframes, @media).
+     */
+    proxyCSS: (css: string): string => {
+        // Remove comments
+        css = css.replace(/\/\*[\s\S]*?\*\//g, '');
+
+        const prefix = '.editor-container[data-source-fidelity="true"]';
+
+        const parseBlocks = (content: string, isNested = false): string => {
+            let output = '';
+            let cursor = 0;
+
+            while (cursor < content.length) {
+                const nextOpen = content.indexOf('{', cursor);
+                if (nextOpen === -1) {
+                    output += content.substring(cursor);
+                    break;
+                }
+
+                // Found a block. Extract selectors.
+                const selectors = content.substring(cursor, nextOpen);
+
+                // Find matching closing brace
+                let nesting = 1;
+                let j = nextOpen + 1;
+                for (; j < content.length; j++) {
+                    if (content[j] === '{') nesting++;
+                    else if (content[j] === '}') {
+                        nesting--;
+                        if (nesting === 0) break;
+                    }
+                }
+
+                const blockContent = content.substring(nextOpen + 1, j);
+                const trimmedSelectors = selectors.trim();
+
+                if (trimmedSelectors.startsWith('@')) {
+                    // At-rules
+                    if (trimmedSelectors.toLowerCase().startsWith('@media')) {
+                        // Recursively proxy media queries
+                        output += trimmedSelectors + ' {' + parseBlocks(blockContent, true) + '}';
+                    } else {
+                        // Keyframes and others: keep as is but preserve internal structure
+                        output += trimmedSelectors + ' {' + blockContent + '}';
+                    }
+                } else if (trimmedSelectors) {
+                    // Standard selectors: apply prefix
+                    const prefixed = trimmedSelectors.split(',').map(sel => {
+                        const s = sel.trim();
+                        if (!s) return sel;
+                        if (/^(body|html|:root)$/i.test(s)) return prefix;
+                        if (s === '*') return `${prefix} *`;
+                        if (s.startsWith('.editor-container')) return s;
+                        return `${prefix} ${s}`;
+                    }).join(', ');
+                    output += prefixed + ' {' + (isNested ? parseBlocks(blockContent, true) : blockContent) + '}';
+                }
+
+                cursor = j + 1;
+            }
+            return output;
+        };
+
+        return parseBlocks(css);
+    },
+
+    /**
      * Replaces the editor content and injects styles into the document head for "Same-to-Same" design.
      */
     setHtml: (editor: any, html: string) => {
@@ -100,14 +169,11 @@ export const SourceViewPlugin = {
         }
 
         // Register new dirty check listener
-        // We use a timeout to let the initial setHtml update pass without triggering dirty
         setTimeout(() => {
             SourceViewPlugin._listener = editor.getInternalEditor().registerUpdateListener(({ dirtyElements, dirtyLeaves, tags }: any) => {
-                // If the update was user-initiated (not history merge or internal) and changes content
                 if (tags.has('history-merge') || tags.has('paste') || tags.has('user-interaction')) {
                     SourceViewPlugin._isDirty = true;
                 } else if (dirtyElements.size > 0 || dirtyLeaves.size > 0) {
-                    // Any content mutation marks it as dirty
                     SourceViewPlugin._isDirty = true;
                 }
             });
@@ -120,68 +186,52 @@ export const SourceViewPlugin = {
         document.querySelectorAll('[data-editor-asset="true"]').forEach(el => el.remove());
 
         // 2. Detect and Inject Assets (Style/Link tags) into the real Document Head
+        const assets = doc.querySelectorAll('style, link[rel="stylesheet"], script');
+        assets.forEach(asset => {
+            let node: HTMLElement;
+            if (asset.tagName === 'STYLE') {
+                node = document.createElement('style');
+                node.innerHTML = SourceViewPlugin.proxyCSS(asset.innerHTML);
+            } else if (asset.tagName === 'SCRIPT') {
+                node = document.createElement('script');
+                if ((asset as HTMLScriptElement).src) {
+                    (node as HTMLScriptElement).src = (asset as HTMLScriptElement).src;
+                } else {
+                    node.innerHTML = asset.innerHTML;
+                }
+            } else {
+                node = asset.cloneNode(true) as HTMLElement;
+            }
+            node.setAttribute('data-editor-asset', 'true');
+            document.head.appendChild(node);
+        });
+
         const hasHtmlTag = html.toLowerCase().includes('<html');
+        const editorElement = editor.getInternalEditor().getRootElement();
+
         if (hasHtmlTag) {
             SourceViewPlugin._fullDocTemplate = {
                 docType: html.match(/^<!DOCTYPE [^>]+>/i)?.[0] || '<!DOCTYPE html>',
                 head: doc.head.innerHTML
             };
 
-            const editorElement = editor.getInternalEditor().getRootElement();
-
-            // Inject styles/links/scripts into real head with "Body Proxying"
-            const assets = doc.querySelectorAll('style, link[rel="stylesheet"], script');
-            assets.forEach(asset => {
-                let node: HTMLElement;
-                if (asset.tagName === 'STYLE') {
-                    node = document.createElement('style');
-                    // SAME-TO-SAME FIX: Proxy ALL global selectors to target the editor container
-                    let css = asset.innerHTML;
-
-                    // 1. Proxy root/body/html to the container itself
-                    css = css.replace(/(?:body|html|:root)\s*\{/gi, '.editor-container {');
-                    css = css.replace(/(?:body|html|:root),\s*/gi, '.editor-container, ');
-
-                    // 2. Proxy the universal selector (*) to be scoped INSIDE the container
-                    // Converting "* {" to ".editor-container * {" ensures resets apply to children
-                    css = css.replace(/\*\s*\{/g, '.editor-container * {');
-
-                    node.innerHTML = css;
-                } else if (asset.tagName === 'SCRIPT') {
-                    node = document.createElement('script');
-                    if ((asset as HTMLScriptElement).src) {
-                        (node as HTMLScriptElement).src = (asset as HTMLScriptElement).src;
-                    } else {
-                        node.innerHTML = asset.innerHTML;
-                    }
-                } else {
-                    node = asset.cloneNode(true) as HTMLElement;
-                }
-                node.setAttribute('data-editor-asset', 'true');
-                document.head.appendChild(node);
-            });
-
             // Mirror all body classes and inline styles to the editor root
             if (editorElement) {
                 const bodyClasses = Array.from(doc.body.classList);
                 editorElement.className = `editor-container ${bodyClasses.join(' ')}`;
+                editorElement.setAttribute('data-source-fidelity', 'true');
                 if (doc.body.getAttribute('style')) {
                     editorElement.setAttribute('style', doc.body.getAttribute('style') || '');
                 }
-                // CRITICAL FIX: Unlock the background so the proxied CSS can take over.
-                // We remove the inline background-color entirely.
-                // This allows rules like ".editor-container { background-color: var(--dark); }" to win.
+                // CRITICAL FIX: Unlock properties so the proxied CSS can take over.
                 editorElement.style.removeProperty('background-color');
-
-                // CRITICAL FIX: Unlock the text color as well.
-                // This ensures "color: #fff" from the proxy CSS (via body styles) works
                 editorElement.style.removeProperty('color');
             }
         } else {
             SourceViewPlugin._fullDocTemplate = null;
-            const editorElement = editor.getInternalEditor().getRootElement();
             if (editorElement) {
                 editorElement.className = 'editor-container';
+                editorElement.setAttribute('data-source-fidelity', 'true');
                 editorElement.style.backgroundColor = '';
                 editorElement.style.color = '';
             }
@@ -221,8 +271,15 @@ export const SourceViewPlugin = {
         html = html.replace(/ (required|checked|disabled|readonly|multiple|selected)=""/g, ' $1');
 
         // 5. Normalization Fix: Remove extra paragraphs that wrap structural elements
-        html = html.replace(/<p><(div|header|footer|nav|section|article|aside|form)/gi, '<$1');
-        html = html.replace(/<\/(div|header|footer|nav|section|article|aside|form)><\/p>/gi, '</$1>');
+        const structureTags = 'div|header|footer|nav|main|section|article|aside|form|ul|ol|li';
+        const regOpen = new RegExp(`<p><(${structureTags})`, 'gi');
+        const regClose = new RegExp(`</(${structureTags})></p>`, 'gi');
+        html = html.replace(regOpen, '<$1');
+        html = html.replace(regClose, '</$1>');
+
+        // Extra fix for nested paragraphs after structure tags
+        html = html.replace(new RegExp(`(<(?:${structureTags})[^>]*>)<p>`, 'gi'), '$1');
+        html = html.replace(new RegExp(`</p>(</(?:${structureTags})>)`, 'gi'), '$1');
 
         // 6. Final cleanup: Remove empty styles and empty spans
         html = html.replace(/ style=""/g, '');

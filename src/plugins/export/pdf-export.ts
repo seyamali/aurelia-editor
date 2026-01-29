@@ -1,5 +1,6 @@
 import html2pdf from 'html2pdf.js';
 import { type LexicalEditor } from 'lexical';
+import { DialogSystem } from '../../shared/dialog-system';
 
 export const ExportPDF = {
     exportToPdf: (editor: LexicalEditor) => {
@@ -26,7 +27,7 @@ export const ExportPDF = {
                 html2pdf().set(opt).from(editorElement).save();
             } catch (e) {
                 console.error("PDF Export failed", e);
-                alert("Failed to export PDF. See console for details.");
+                DialogSystem.alert("Failed to export PDF. See console for details.", "Export Failed");
             }
         });
     }

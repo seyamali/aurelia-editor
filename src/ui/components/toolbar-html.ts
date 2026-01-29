@@ -49,15 +49,6 @@ export const TOOLBAR_HTML = `
         <button id="emoji-btn" data-i18n="emoji" data-i18n-icon="😀" title="Insert Emoji">😀 Emoji</button>
         <button id="table-btn" data-i18n="table" data-i18n-icon="📅">📅 Table</button>
         
-        <!-- Contextual Table Tools (Hidden by default) -->
-        <button id="table-row-above-btn" data-item-id="table-row-above" class="toolbar-btn contextual-btn" title="Row Above" style="display:none">🔼</button>
-        <button id="table-row-below-btn" data-item-id="table-row-below" class="toolbar-btn contextual-btn" title="Row Below" style="display:none">🔽</button>
-        <button id="table-col-left-btn" data-item-id="table-col-left" class="toolbar-btn contextual-btn" title="Col Left" style="display:none">◀️</button>
-        <button id="table-col-right-btn" data-item-id="table-col-right" class="toolbar-btn contextual-btn" title="Col Right" style="display:none">▶️</button>
-        <button id="table-merge-btn" data-item-id="table-merge" class="toolbar-btn contextual-btn" title="Merge Cells" style="display:none">🔗</button>
-        <button id="table-split-btn" data-item-id="table-split" class="toolbar-btn contextual-btn" title="Split Cells" style="display:none">✂️</button>
-        <button id="table-delete-btn" data-item-id="table-delete" class="toolbar-btn contextual-btn" title="Delete Table" style="display:none">❌</button>
-
         <button id="video-btn" data-i18n="youtube" data-i18n-icon="📹">📹 Video</button>
         <button id="html-snippet-btn" data-i18n="htmlSnippet" data-i18n-icon="&lt;/&gt;">&lt;/&gt; Snippet</button>
         <button id="code-block-btn" data-i18n="codeBlock" data-i18n-icon="{}">{} Code Block</button>

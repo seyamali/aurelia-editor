@@ -15,7 +15,6 @@ import { ListNode } from '@lexical/list';
 import { LinkNode } from '@lexical/link';
 import { $isImageNode } from '../../plugins/media/image-node';
 import { $isTableNode } from '@lexical/table';
-import { $getSelectionStyleValueForProperty } from '@lexical/selection';
 import { ICONS } from '../icons';
 
 export function setupToolbarState(internalEditor: any) {

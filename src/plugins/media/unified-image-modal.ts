@@ -31,8 +31,8 @@ export function setupUnifiedImageModal(editor: any) {
                             <h3>Drag & Drop Image Here</h3>
                             <p>or click to browse your files</p>
                             <button class="btn-browse" type="button">Browse Files</button>
-                            <input type="file" id="unified-file-input" accept="image/*" style="display: none;" />
                         </div>
+                        <input type="file" id="unified-file-input" accept="image/*" style="display: none;" />
                     </div>
 
                     <!-- URL Tab -->
@@ -98,7 +98,7 @@ export function setupUnifiedImageModal(editor: any) {
     // Upload elements
     const uploadZone = document.getElementById('upload-drop-zone')!;
     const fileInput = document.getElementById('unified-file-input') as HTMLInputElement;
-    const browseBtn = uploadZone.querySelector('.btn-browse')!;
+    const initialUploadZoneHTML = uploadZone.innerHTML; // Store initial state
 
     // URL elements
     const urlInput = document.getElementById('unified-url-input') as HTMLInputElement;
@@ -120,6 +120,17 @@ export function setupUnifiedImageModal(editor: any) {
         urlInput.value = '';
         altInput.value = '';
         urlPreview.innerHTML = '<div class="url-preview-placeholder">Enter a URL above to preview the image</div>';
+
+        // Reset Upload Zone
+        uploadZone.innerHTML = initialUploadZoneHTML;
+        fileInput.value = ''; // Clear file input
+
+        // Re-attach listener to the new browse button
+        const newBrowseBtn = uploadZone.querySelector('.btn-browse');
+        if (newBrowseBtn) {
+            newBrowseBtn.addEventListener('click', () => fileInput.click());
+        }
+
         pasteZone.classList.remove('has-image');
         pasteZone.innerHTML = `
             <div class="paste-zone-icon">📋</div>
@@ -149,7 +160,13 @@ export function setupUnifiedImageModal(editor: any) {
     });
 
     // Upload Tab Logic
-    browseBtn.addEventListener('click', () => fileInput.click());
+    // Initial listener for the first load (redundant but safe if showModal logic fails on first run, though showModal handles it now)
+    // Actually, showModal resets it, so we rely on showModal for the binding or bind it here once for clarity if showModal isn't called immediately (it is called by user).
+    // Better: Bind strictly in showModal or setup logic that persists. 
+    // Since we overwrite innerHTML in showModal, we MUST rely on showModal re-binding.
+    // However, to make it work on very first click if we didn't call showModal (e.g. debugging), we can bind here too.
+    const firstBrowseBtn = uploadZone.querySelector('.btn-browse');
+    if (firstBrowseBtn) firstBrowseBtn.addEventListener('click', () => fileInput.click());
 
     fileInput.addEventListener('change', () => {
         const file = fileInput.files?.[0];

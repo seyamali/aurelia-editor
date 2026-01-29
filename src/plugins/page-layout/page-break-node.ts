@@ -6,6 +6,8 @@ import {
     type NodeKey,
     type SerializedLexicalNode,
     type Spread,
+    type DOMConversionMap,
+    type DOMConversionOutput,
 } from 'lexical';
 
 export type SerializedPageBreakNode = Spread<
@@ -72,6 +74,24 @@ export class PageBreakNode extends DecoratorNode<HTMLDivElement> {
         return div;
     }
 
+    static importDOM(): DOMConversionMap | null {
+        return {
+            div: (domNode: HTMLElement) => {
+                if (
+                    domNode.classList.contains('editor-page-break') ||
+                    domNode.classList.contains('print-page-break') ||
+                    domNode.style.pageBreakAfter === 'always'
+                ) {
+                    return {
+                        conversion: $convertPageBreakElement,
+                        priority: 4,
+                    };
+                }
+                return null;
+            },
+        };
+    }
+
     exportDOM(): DOMExportOutput {
         const element = document.createElement('div');
         element.style.pageBreakAfter = 'always';
@@ -91,4 +111,8 @@ export function $createPageBreakNode(): PageBreakNode {
 
 export function $isPageBreakNode(node: LexicalNode | null | undefined): node is PageBreakNode {
     return node instanceof PageBreakNode;
+}
+
+function $convertPageBreakElement(): DOMConversionOutput {
+    return { node: $createPageBreakNode() };
 }

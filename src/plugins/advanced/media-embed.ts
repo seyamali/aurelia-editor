@@ -1,10 +1,11 @@
 import { $insertNodes } from 'lexical';
 import { $createYouTubeNode } from './youtube-node.ts';
 import { $createHTMLSnippetNode } from './html-snippet-node.ts';
+import { DialogSystem } from '../../shared/dialog-system';
 
 export const MediaEmbedPlugin = {
-    insertYouTube: (editor: any) => {
-        const url = window.prompt("Enter YouTube URL:", "https://www.youtube.com/watch?v=");
+    insertYouTube: async (editor: any) => {
+        const url = await DialogSystem.prompt("Enter YouTube URL:", "https://www.youtube.com/watch?v=", "Embed YouTube Video");
 
         if (url) {
             // Regex to extract the 11-character YouTube ID
@@ -17,13 +18,13 @@ export const MediaEmbedPlugin = {
                     $insertNodes([node]);
                 });
             } else {
-                alert("Invalid YouTube URL. Please try again.");
+                DialogSystem.alert("Invalid YouTube URL. Please try again.", "Embed Error");
             }
         }
     },
 
-    insertHTMLSnippet: (editor: any) => {
-        const html = window.prompt("Paste your HTML snippet here:");
+    insertHTMLSnippet: async (editor: any) => {
+        const html = await DialogSystem.prompt("Paste your HTML snippet here:", "", "Insert HTML Snippet");
         if (html) {
             editor.getInternalEditor().update(() => {
                 $insertNodes([$createHTMLSnippetNode(html)]);

@@ -1,26 +1,66 @@
 /* Editor Content Area - Document Style */
 
+.editor-main-area {
+    /* Flex grow to fill the parent .editor-wrapper minus toolbar/status bar */
+    flex: 1;
+    height: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background-color: #f8fafc;
+    /* Lighter, more premium neutral */
+    /* display: flex; REMOVED to fix Chrome focus issue */
+    /* flex-direction: column; */
+    /* align-items: center; */
+    scroll-behavior: smooth;
+    position: relative;
+
+    /* Hide scrollbar for Firefox */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    /* IE/Edge */
+}
+
+/* Hide scrollbar for WebKit (Chrome/Safari) */
+.editor-main-area::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+}
+
 
 
 .editor-container {
-    min-height: calc(11in - 150px);
-    /* Approximate A4 page height minus toolbar */
-    padding: 40px 60px;
-    /* Standard document margins */
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 820px;
+    min-height: 1056px;
+    /* Exact A4 aspect-ish */
+    margin: 40px auto;
+    padding: 80px 100px;
+    /* Deeper margins for premium look */
     outline: none;
     overflow-x: hidden;
     overflow-y: visible;
-    /* Let the wrapper scroll if needed, or window */
     position: relative;
-    /* font-family: 'Inter', ...;  Removed to allow pasted styles to take effect if present */
     color: #1a202c;
-    /* Standard text color */
-    line-height: 1.6;
+    line-height: 1.7;
+    /* Slightly more breathable line height */
     font-size: 16px;
-    background: white;
-    /* Default background */
+    background-color: white;
+    /* Multilayered soft shadow for depth */
+    box-shadow:
+        0 20px 25px -5px rgba(0, 0, 0, 0.03),
+        0 10px 10px -5px rgba(0, 0, 0, 0.02),
+        0 0 0 1px rgba(0, 0, 0, 0.02);
+    border-radius: 6px;
     transform: translate3d(0, 0, 0);
-    /* Jail fixed-position elements */
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.editor-container:hover {
+    box-shadow:
+        0 25px 30px -5px rgba(0, 0, 0, 0.05),
+        0 15px 15px -5px rgba(0, 0, 0, 0.03);
 }
 
 /* Mobile Responsiveness for Margins */
@@ -30,27 +70,26 @@
     }
 }
 
-/* Base formatting inside editor to ensure it looks good immediately */
-.editor-container p {
+/* Base formatting inside editor - Lowered specificity for designs that provide their own */
+.editor-container:not([data-source-fidelity="true"]) p {
     margin-bottom: 1em;
-    /* Clear paragraph spacing */
 }
 
-.editor-container h1,
-.editor-container h2,
-.editor-container h3 {
+.editor-container:not([data-source-fidelity="true"]) h1,
+.editor-container:not([data-source-fidelity="true"]) h2,
+.editor-container:not([data-source-fidelity="true"]) h3 {
     color: #111827;
     font-weight: 600;
     line-height: 1.3;
 }
 
-.editor-container h1 {
+.editor-container:not([data-source-fidelity="true"]) h1 {
     font-size: 2.25em;
     margin-top: 1.5em;
     margin-bottom: 0.8em;
 }
 
-.editor-container h2 {
+.editor-container:not([data-source-fidelity="true"]) h2 {
     font-size: 1.75em;
     margin-top: 1.4em;
     margin-bottom: 0.6em;
@@ -58,17 +97,81 @@
     border-bottom: 1px solid #f1f5f9;
 }
 
-.editor-container h3 {
+.editor-container:not([data-source-fidelity="true"]) h3 {
     font-size: 1.4em;
     margin-top: 1.2em;
     margin-bottom: 0.5em;
 }
 
 /* Links */
-.editor-container a {
+.editor-container:not([data-source-fidelity="true"]) a {
     color: #2563eb;
     text-decoration: underline;
     text-underline-offset: 2px;
+}
+
+/* --- FIDELITY OVERRIDES --- */
+/* Remove editor padding and defaults when a full design is pasted */
+.editor-container[data-source-fidelity="true"] {
+    padding: 0 !important;
+    margin: 0 !important;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* Ensure headings and logos render gradients correctly in Fidelity Mode */
+.editor-container[data-source-fidelity="true"] h1,
+.editor-container[data-source-fidelity="true"] h2,
+.editor-container[data-source-fidelity="true"] h3,
+.editor-container[data-source-fidelity="true"] .logo,
+.editor-container[data-source-fidelity="true"] .hero h1 {
+    display: block;
+    /* Required for width-based gradients */
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* If the design is left-aligned, we should respect it */
+.editor-container[data-source-fidelity="true"] :not(.title-center)>h1,
+.editor-container[data-source-fidelity="true"] :not(.title-center)>h2 {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+/* Fix for background-clip: text (Logo and Gradient Heading issue) */
+.editor-container[data-source-fidelity="true"] [style*="background-clip: text"] {
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    display: inline-block;
+}
+
+/* Animation Container Fix: Ensure morphing shapes have proper context */
+.editor-container[data-source-fidelity="true"] .hero-image,
+.editor-container[data-source-fidelity="true"] [class*="-image"] {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+}
+
+/* --- ICON FIXES --- */
+/* FontAwesome icons must be inline-block and should NOT be italicized by editor defaults */
+.editor-container i,
+.editor-container [class*="fa-"] {
+    display: inline-block !important;
+    font-style: normal !important;
+    line-height: 1;
+    vertical-align: middle;
+    /* Ensure they don't inherit background-clip: text from parents unless desired */
+    -webkit-background-clip: border-box !important;
+    background-clip: border-box !important;
+}
+
+/* Fix for icons inside specific containers */
+.editor-container .icon-box i,
+.editor-container .hero-image i {
+    font-size: inherit;
+    color: inherit;
 }
 
 /* Blockquotes */

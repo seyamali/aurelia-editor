@@ -189,6 +189,24 @@ export class ToolbarCustomizationUI {
         this.populateActiveTools();
         this.populateAvailableTools();
         this.initializeDragAndDrop();
+        this.updatePresetHighlight();
+    }
+
+    /**
+     * Update active preset button highlighting
+     */
+    private updatePresetHighlight(): void {
+        const config = ToolbarConfigManager.getConfig();
+        const activePresetId = config.customItems && config.customItems.length > 0 ? null : (config.preset || 'standard');
+
+        this.modal?.querySelectorAll('.preset-btn').forEach(btn => {
+            const buttonPresetId = (btn as HTMLElement).dataset.preset;
+            if (activePresetId === buttonPresetId) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        });
     }
 
     /**
@@ -229,8 +247,20 @@ export class ToolbarCustomizationUI {
         allItems.forEach(item => {
             if (activeItems.includes(item.id)) return; // Skip active items
             const group = item.group || 'productivity';
-            if (groups[group]) {
-                groups[group].push(item);
+
+            // Map legacy or varied group names to supported containers
+            let targetGroup = group;
+            if (group === 'formatting' || group === 'alignment') targetGroup = 'text-formatting';
+            if (group === 'lists') targetGroup = 'layout';
+            if (group === 'indent') targetGroup = 'layout';
+            if (group === 'history') targetGroup = 'productivity';
+            if (group === 'utils') targetGroup = 'productivity';
+
+            if (groups[targetGroup]) {
+                groups[targetGroup].push(item);
+            } else {
+                // Fallback for any unknown groups
+                groups['productivity'].push(item);
             }
         });
 
@@ -240,7 +270,15 @@ export class ToolbarCustomizationUI {
             if (!groupContainer) return;
 
             groupContainer.innerHTML = '';
-            items.forEach(item => {
+
+            // Sort items alphabetically by label (A-Z)
+            const sortedItems = [...items].sort((a, b) => {
+                const labelA = (a.label || a.id).toLowerCase();
+                const labelB = (b.label || b.id).toLowerCase();
+                return labelA.localeCompare(labelB);
+            });
+
+            sortedItems.forEach(item => {
                 const element = this.createToolItem(item, false);
                 groupContainer.appendChild(element);
             });

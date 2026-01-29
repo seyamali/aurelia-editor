@@ -1,6 +1,7 @@
 import mammoth from 'mammoth';
 import { $insertNodes, type LexicalEditor } from 'lexical';
 import { $generateNodesFromDOM } from '@lexical/html';
+import { DialogSystem } from '../../shared/dialog-system';
 
 export const ImportWord = {
     importDocx: (editor: LexicalEditor, file: File) => {
@@ -28,7 +29,7 @@ export const ImportWord = {
                 })
                 .catch((err) => {
                     console.error("Word Import Failed", err);
-                    alert("Failed to import Word document.");
+                    DialogSystem.alert("Failed to import Word document.", "Import Error");
                 });
         };
         reader.readAsArrayBuffer(file);

@@ -1,16 +1,33 @@
 {
-  "name": "my-universal-editor",
-  "private": true,
-  "version": "0.0.0",
+  "name": "@seyamali/aurelia-editor",
+  "private": false,
+  "version": "0.1.0",
   "type": "module",
+  "main": "./dist/my-universal-editor.umd.cjs",
+  "module": "./dist/my-universal-editor.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/my-universal-editor.js",
+      "require": "./dist/my-universal-editor.umd.cjs"
+    },
+    "./style.css": "./dist/style.css"
+  },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "prepublishOnly": "npm run build"
   },
+  "author": "Seyam Ali",
+  "license": "MIT",
   "devDependencies": {
     "typescript": "~5.9.3",
-    "vite": "^7.2.4"
+    "vite": "^7.2.4",
+    "vite-plugin-dts": "^4.5.4"
   },
   "dependencies": {
     "@lexical/clipboard": "^0.39.0",

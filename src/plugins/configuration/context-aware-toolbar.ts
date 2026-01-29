@@ -174,7 +174,7 @@ export class ContextAwareToolbar {
                 'insert-link', 'heading-dropdown', 'align-left', 'align-center', 'align-right',
             ],
             'image': [
-                'align-left', 'align-center', 'align-right',
+                'align-left', 'align-center', 'align-right', 'insert-link',
             ],
             'table': [
                 'align-left', 'align-center', 'align-right',
@@ -185,8 +185,8 @@ export class ContextAwareToolbar {
             'code': [
                 // Code blocks have minimal formatting
             ],
-            'empty': [],
-            'mixed': [],
+            'empty': ['insert-link'],
+            'mixed': ['insert-link'],
         };
 
         const allowedTools = contextualTools[context] || [];

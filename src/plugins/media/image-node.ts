@@ -30,6 +30,7 @@ export type SerializedImageNode = Spread<{
     showCaption?: boolean;
     linkUrl?: string;
     cropData?: { x: number; y: number; width: number; height: number };
+    className?: string;
 }, SerializedLexicalNode>;
 
 export class ImageNode extends DecoratorNode<HTMLElement> {
@@ -43,6 +44,7 @@ export class ImageNode extends DecoratorNode<HTMLElement> {
     __showCaption: boolean;
     __linkUrl: string;
     __cropData: { x: number; y: number; width: number; height: number } | null;
+    __className: string;
 
     constructor(
         src: string = '',
@@ -55,6 +57,7 @@ export class ImageNode extends DecoratorNode<HTMLElement> {
         showCaption: boolean = false,
         linkUrl: string = '',
         cropData: { x: number; y: number; width: number; height: number } | null = null,
+        className: string = '',
         key?: NodeKey
     ) {
         super(key);
@@ -68,6 +71,7 @@ export class ImageNode extends DecoratorNode<HTMLElement> {
         this.__showCaption = showCaption;
         this.__linkUrl = linkUrl;
         this.__cropData = cropData;
+        this.__className = className;
     }
 
     static getType(): string { return 'image'; }
@@ -84,6 +88,7 @@ export class ImageNode extends DecoratorNode<HTMLElement> {
             node.__showCaption,
             node.__linkUrl,
             node.__cropData,
+            node.__className,
             node.__key
         );
     }
@@ -106,10 +111,12 @@ export class ImageNode extends DecoratorNode<HTMLElement> {
                             const height = img.getAttribute('data-height') ? parseInt(img.getAttribute('data-height')!) : img.height;
                             const alignment = img.getAttribute('data-alignment') as ImageAlignment || 'center';
                             const caption = figcaption ? figcaption.innerText : '';
+                            const className = img.className; // Capture class
 
                             const node = $createImageNode(src, altText, 500);
                             node.setWidthAndHeight(width || 'inherit', height || 'inherit');
                             node.setAlignment(alignment);
+                            node.setClassName(className);
                             if (caption) {
                                 node.setShowCaption(true);
                                 node.setCaption(caption);
@@ -130,10 +137,12 @@ export class ImageNode extends DecoratorNode<HTMLElement> {
                     const width = img.getAttribute('data-width') ? parseInt(img.getAttribute('data-width')!) : img.width;
                     const height = img.getAttribute('data-height') ? parseInt(img.getAttribute('data-height')!) : img.height;
                     const alignment = img.getAttribute('data-alignment') as ImageAlignment || 'center';
+                    const className = img.className; // Capture class
 
                     const node = $createImageNode(src, altText, 500);
                     node.setWidthAndHeight(width || 'inherit', height || 'inherit');
                     node.setAlignment(alignment);
+                    node.setClassName(className);
                     return { node };
                 },
                 priority: 0,
@@ -148,6 +157,9 @@ export class ImageNode extends DecoratorNode<HTMLElement> {
         img.setAttribute('data-width', this.__width.toString());
         img.setAttribute('data-height', this.__height.toString());
         img.setAttribute('data-alignment', this.__alignment);
+        if (this.__className) {
+            img.className = this.__className;
+        }
 
         if (this.__width !== 'inherit') img.style.width = `${this.__width}px`;
         if (this.__height !== 'inherit') img.style.height = `${this.__height}px`;
@@ -168,7 +180,7 @@ export class ImageNode extends DecoratorNode<HTMLElement> {
     }
 
     static importJSON(serializedNode: SerializedImageNode): ImageNode {
-        const { altText, caption, height, maxWidth, src, width, alignment, showCaption, linkUrl, cropData } = serializedNode;
+        const { altText, caption, height, maxWidth, src, width, alignment, showCaption, linkUrl, cropData, className } = serializedNode;
         const node = $createImageNode(src, altText, maxWidth);
         node.__width = width || 'inherit';
         node.__height = height || 'inherit';
@@ -177,6 +189,7 @@ export class ImageNode extends DecoratorNode<HTMLElement> {
         node.__showCaption = showCaption || false;
         node.__linkUrl = linkUrl || '';
         node.__cropData = cropData || null;
+        node.__className = className || '';
         return node;
     }
 
@@ -194,7 +207,13 @@ export class ImageNode extends DecoratorNode<HTMLElement> {
             showCaption: this.__showCaption,
             linkUrl: this.__linkUrl,
             cropData: this.__cropData || undefined,
+            className: this.__className || undefined,
         };
+    }
+
+    setClassName(className: string): void {
+        const writable = this.getWritable();
+        writable.__className = className;
     }
 
     setWidthAndHeight(width: number | 'inherit', height: number | 'inherit'): void {
@@ -260,7 +279,8 @@ export class ImageNode extends DecoratorNode<HTMLElement> {
             this.__showCaption !== prevNode.__showCaption ||
             this.__altText !== prevNode.__altText ||
             this.__caption !== prevNode.__caption ||
-            this.__linkUrl !== prevNode.__linkUrl
+            this.__linkUrl !== prevNode.__linkUrl ||
+            this.__className !== prevNode.__className
         );
     }
 
@@ -277,6 +297,7 @@ export class ImageNode extends DecoratorNode<HTMLElement> {
         const img = document.createElement('img');
         img.src = this.__src;
         img.alt = this.__altText;
+        if (this.__className) img.className = this.__className;
         img.draggable = false; // Prevent native image dragging so wrapper drag works
         img.style.width = this.__width === 'inherit' ? '100%' : `${this.__width}px`;
         img.style.height = this.__height === 'inherit' ? 'auto' : `${this.__height}px`;

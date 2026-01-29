@@ -52,7 +52,7 @@ export class LayoutNode extends ElementNode {
             'form', 'label', 'fieldset', 'legend', 'details', 'summary', 'canvas',
             'video', 'audio', 'object', 'embed', 'picture', 'source', 'hr',
             'button', 'input', 'select', 'textarea', 'option', 'optgroup', 'datalist',
-            'output', 'progress', 'meter'
+            'output', 'progress', 'meter', 'ul', 'ol', 'li'
         ];
         const map: DOMConversionMap = {};
 

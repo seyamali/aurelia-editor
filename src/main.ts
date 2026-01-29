@@ -1,7 +1,7 @@
 import './style.css';
 import './spare.css';
 import { initSpareLogic } from './spare';
-import { MyUniversalEditor } from './core/engine';
+import { AureliaEditor } from './core/engine';
 import { EDITOR_LAYOUT_HTML } from './ui/layout';
 import { setupToolbarState } from './ui/toolbar-logic/state-logic';
 import { setupLinkPopover } from './plugins/media/link-popover-ui';
@@ -38,6 +38,7 @@ import { I18nManager } from './plugins/configuration/i18n';
 import { AccessibilityManager } from './plugins/configuration/accessibility';
 import { UploadManager } from './plugins/upload/upload-manager';
 import { Base64UploadAdapter, CKBoxUploadAdapter, CustomUploadAdapter } from './plugins/upload/adapters';
+import { DialogSystem } from './shared/dialog-system';
 
 // --- UI SETUP IMPORTS ---
 import { setupRevisionHistoryUI } from './ui/revision-history-ui';
@@ -48,16 +49,18 @@ import { setupTablePopover } from './ui/table-popover-ui';
 import { setupTableGridPicker } from './ui/table-grid-picker';
 import { setupTrackChangesUI } from './ui/track-changes-ui';
 import { DocumentOutlinePlugin } from './plugins/productivity/document-outline';
+import { TableResizerPlugin } from './plugins/layout/table-resizer';
 
 const appElement = document.querySelector<HTMLDivElement>('#app');
 
 if (appElement) {
   initSpareLogic();
   appElement.innerHTML = EDITOR_LAYOUT_HTML;
+  DialogSystem.initConsoleProxy();
 
   const canvas = document.querySelector<HTMLDivElement>('#editor-canvas');
   if (canvas) {
-    const editor = new MyUniversalEditor(canvas);
+    const editor = new AureliaEditor(canvas);
 
     // 1. Load Plugins
     editor.use(BasicStylesPlugin);
@@ -86,6 +89,7 @@ if (appElement) {
     editor.use(HelloWorldPlugin);
     editor.use(ProductivityPlugin);
     editor.use(RevisionHistoryPlugin);
+    editor.use(TableResizerPlugin);
 
     const internalEditor = editor.getInternalEditor();
 
@@ -119,8 +123,9 @@ if (appElement) {
 
     // 4. Autosave Logic (Restore Check)
     if (hasAutosavedState()) {
-      setTimeout(() => {
-        if (confirm("An unsaved draft was found. Do you want to restore it?")) {
+      setTimeout(async () => {
+        const shouldRestore = await DialogSystem.confirm("An unsaved draft was found. Do you want to restore it?", "Autosave Detected");
+        if (shouldRestore) {
           loadAutosavedState(internalEditor);
         }
       }, 500);

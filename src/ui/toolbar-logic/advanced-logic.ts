@@ -9,6 +9,7 @@ import { TOGGLE_TRACK_CHANGES_COMMAND } from '../../plugins/collaboration/track-
 import { SourceViewPlugin } from '../../plugins/advanced/source-view';
 import { FormatPainter } from '../../plugins/productivity/format-painter';
 import { CaseChange } from '../../plugins/productivity/case-change';
+import { DialogSystem } from '../../shared/dialog-system';
 import { REMOVE_FORMATTING_COMMAND } from '../../plugins/essentials/clipboard';
 
 export function setupAdvancedLogic(editor: MyUniversalEditor, internalEditor: any) {
@@ -31,7 +32,7 @@ export function setupAdvancedLogic(editor: MyUniversalEditor, internalEditor: an
             internal.dispatchCommand(PASTE_COMMAND, event);
         } catch (e) {
             console.error("Paste failed: Browser security blocked clipboard access from button.", e);
-            alert("Please use Ctrl+V to paste.");
+            DialogSystem.alert("Please use Ctrl+V to paste.", "Clipboard Access Blocked");
         }
     });
     document.getElementById('paste-plain-btn')?.addEventListener('click', async () => {
@@ -45,7 +46,7 @@ export function setupAdvancedLogic(editor: MyUniversalEditor, internalEditor: an
             });
         } catch (e) {
             console.error("Paste Plain failed.", e);
-            alert("Please use Ctrl+Shift+V to paste as plain text.");
+            DialogSystem.alert("Please use Ctrl+Shift+V to paste as plain text.", "Clipboard Access Blocked");
         }
     });
 
@@ -175,7 +176,7 @@ export function setupAdvancedLogic(editor: MyUniversalEditor, internalEditor: an
                 editor.getInternalEditor().focus();
             } catch (error) {
                 console.error("HTML Source Apply Error:", error);
-                alert("Failed to apply HTML changes. Please check for invalid tags.");
+                DialogSystem.alert("Failed to apply HTML changes. Please check for invalid tags.", "Format Error");
             }
         }
     });

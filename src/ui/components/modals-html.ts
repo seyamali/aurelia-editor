@@ -153,4 +153,41 @@ export const MODALS_HTML = `
               </div>
           </div>
       </div>
+
+      <!-- Generic Alert/Info Modal -->
+      <div id="universal-alert-modal" class="modal hidden">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h3 id="ua-title">Notification</h3>
+                  <button id="close-ua-btn" class="modal-close-btn">&times;</button>
+              </div>
+              <div class="modal-body">
+                  <p id="ua-message"></p>
+              </div>
+              <div class="modal-footer">
+                  <button id="ua-ok-btn" class="btn-primary">OK</button>
+              </div>
+          </div>
+      </div>
+
+      <!-- Generic Prompt/Input Modal -->
+      <div id="universal-prompt-modal" class="modal hidden">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h3 id="up-title">Input Required</h3>
+                  <button id="close-up-btn" class="modal-close-btn">&times;</button>
+              </div>
+              <div class="modal-body">
+                  <p id="up-message" style="margin-bottom: 12px;"></p>
+                  <input type="text" id="up-input" style="width: 100%;" />
+              </div>
+              <div class="modal-footer">
+                  <button id="up-cancel-btn" class="btn-secondary">Cancel</button>
+                  <button id="up-submit-btn" class="btn-primary">Submit</button>
+              </div>
+          </div>
+      </div>
+
+      <!-- Toast Notification Container -->
+      <div id="toast-container" class="toast-container"></div>
 `;

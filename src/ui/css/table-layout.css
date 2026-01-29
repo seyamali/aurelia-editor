@@ -97,11 +97,13 @@
 .table-popover button {
     background: transparent;
     border: none;
-    padding: 6px 8px;
-    border-radius: 3px;
+    padding: 6px;
+    width: 32px;
+    height: 32px;
+    border-radius: 4px;
     cursor: pointer;
     font-size: 13px;
-    color: #333;
+    color: #475569;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -109,17 +111,21 @@
 }
 
 .table-popover button:hover {
-    background: #f0f2f5;
+    background: #f1f5f9;
+    color: #0f172a;
+    transform: scale(1.05);
 }
 
 .table-popover button.danger:hover {
-    background: #fff0f0;
-    color: #d93025;
+    background: #fef2f2;
+    color: #ef4444;
 }
 
 .table-popover button svg {
-    width: 16px;
-    height: 16px;
+    width: 18px;
+    height: 18px;
+    stroke: currentColor;
+    stroke-width: 2;
 }
 
 /* Table Multi-cell Selection Handle (Advanced) */

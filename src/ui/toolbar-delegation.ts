@@ -6,18 +6,21 @@ import {
     INDENT_CONTENT_COMMAND,
     OUTDENT_CONTENT_COMMAND,
 } from 'lexical';
-import { MyUniversalEditor } from '../core/engine';
+import { AureliaEditor } from '../core/engine';
 import { INSERT_UNORDERED_LIST_COMMAND, INSERT_ORDERED_LIST_COMMAND } from '@lexical/list';
 import { INSERT_HORIZONTAL_RULE_COMMAND } from '@lexical/react/LexicalHorizontalRuleNode';
 import { INSERT_PAGE_BREAK_COMMAND } from '../plugins/page-layout/page-break';
 import { INSERT_FOOTNOTE_COMMAND } from '../plugins/advanced/footnote-plugin';
 import { INSERT_TOC_COMMAND } from '../plugins/page-layout/toc-plugin';
 import { INSERT_CODE_BLOCK_COMMAND } from '../plugins/advanced/code-blocks';
-import { TOGGLE_LINK_COMMAND } from '@lexical/link';
 import { REMOVE_FORMATTING_COMMAND } from '../plugins/essentials/clipboard';
+import { SHOW_LINK_POPOVER_COMMAND } from '../plugins/media/link-popover-ui';
+import { CaseChange } from '../plugins/productivity/case-change';
+import { TOGGLE_TRACK_CHANGES_COMMAND } from '../plugins/collaboration/track-changes';
 
 import { SourceViewPlugin } from '../plugins/advanced/source-view';
 import { ICONS } from './icons';
+import { DialogSystem } from '../shared/dialog-system';
 
 // Imported Logic Handlers
 import { insertImage } from '../plugins/media/images';
@@ -25,8 +28,14 @@ import { MediaEmbedPlugin } from '../plugins/advanced/media-embed';
 import { toggleTableGridPicker } from './table-grid-picker';
 import { toggleBlockQuote } from '../plugins/layout/headings';
 import { FormatPainter } from '../plugins/productivity/format-painter';
+import { ExportPDF } from '../plugins/export/pdf-export';
+import { ExportWord } from '../plugins/export/word-export';
+import { ImportWord } from '../plugins/import/word-import';
+import { MinimapPlugin } from '../plugins/productivity/minimap';
+import { DocumentOutlinePlugin } from '../plugins/productivity/document-outline';
+import { INSERT_PLACEHOLDER_COMMAND } from '../plugins/advanced/placeholder';
 
-function toggleSourceView(editor: MyUniversalEditor, internalEditor: any, btn: HTMLElement) {
+function toggleSourceView(editor: AureliaEditor, internalEditor: any, btn: HTMLElement) {
     const canvas = document.getElementById('editor-canvas') as HTMLElement;
     const sourceArea = document.getElementById('source-editor') as HTMLTextAreaElement;
     const toolbar = document.getElementById('toolbar') as HTMLElement;
@@ -82,12 +91,25 @@ function toggleSourceView(editor: MyUniversalEditor, internalEditor: any, btn: H
             internalEditor.focus();
         } catch (error) {
             console.error("HTML Source Apply Error:", error);
-            alert("Failed to apply HTML changes. Please check for invalid tags.");
+            DialogSystem.alert("Failed to apply HTML changes. Please check for invalid tags.", "Format Error");
         }
     }
 }
 
+function toggleZenMode(btn: HTMLElement) {
+    const app = document.getElementById('app');
+    if (!app) return;
 
+    app.classList.toggle('zen-mode');
+    btn.classList.toggle('active');
+
+    if (app.classList.contains('zen-mode')) {
+        // Hide sidebar or other distractions if they existed
+        document.body.style.overflow = 'hidden'; // Lock body scroll
+    } else {
+        document.body.style.overflow = '';
+    }
+}
 
 // Use string literals for commands that might be missing exports or dynamic
 const OPEN_FIND_REPLACE = 'OPEN_FIND_REPLACE';
@@ -97,7 +119,7 @@ const OPEN_EMOJI_PICKER = 'OPEN_EMOJI_PICKER';
  * centralized delegation for all toolbar actions.
  * This replaces individual event listeners on static IDs.
  */
-export function setupToolbarDelegation(editor: MyUniversalEditor, internalEditor: any) {
+export function setupToolbarDelegation(editor: AureliaEditor, internalEditor: any) {
     const toolbar = document.getElementById('toolbar');
     if (!toolbar) return;
 
@@ -170,7 +192,8 @@ export function setupToolbarDelegation(editor: MyUniversalEditor, internalEditor
     });
 }
 
-function handleToolbarAction(itemId: string, button: HTMLElement, editor: MyUniversalEditor, internalEditor: any) {
+
+function handleToolbarAction(itemId: string, button: HTMLElement, editor: AureliaEditor, internalEditor: any) {
     switch (itemId) {
         // --- TEXT FORMATTING ---
         case 'bold': internalEditor.dispatchCommand(FORMAT_TEXT_COMMAND, 'bold'); break;
@@ -197,8 +220,14 @@ function handleToolbarAction(itemId: string, button: HTMLElement, editor: MyUniv
 
         // --- MEDIA ---
         case 'insert-image': insertImage(); break; // Global function
-        case 'insert-link': internalEditor.dispatchCommand(TOGGLE_LINK_COMMAND, null); break;
+        case 'insert-link': internalEditor.dispatchCommand(SHOW_LINK_POPOVER_COMMAND, undefined); break;
         case 'insert-video': MediaEmbedPlugin.insertYouTube(editor); break;
+        case 'insert-html-snippet': MediaEmbedPlugin.insertHTMLSnippet(editor); break;
+
+        // --- EXPORT/IMPORT ---
+        case 'export-pdf': ExportPDF.exportToPdf(internalEditor); break;
+        case 'export-word': ExportWord.exportToDoc(internalEditor); break;
+        case 'import-word': ImportWord.triggerImport(internalEditor); break;
 
         // --- LAYOUT ---
         case 'blockquote': toggleBlockQuote(internalEditor); break;
@@ -215,6 +244,12 @@ function handleToolbarAction(itemId: string, button: HTMLElement, editor: MyUniv
         case 'find-replace': internalEditor.dispatchCommand(OPEN_FIND_REPLACE, undefined); break;
         case 'emoji': internalEditor.dispatchCommand(OPEN_EMOJI_PICKER, undefined); break;
         case 'format-painter': FormatPainter.copyFormat(internalEditor); break;
+        case 'insert-placeholder': internalEditor.dispatchCommand(INSERT_PLACEHOLDER_COMMAND, undefined); break;
+
+        // --- VIEW ---
+        case 'minimap': MinimapPlugin.toggleVisibility(); break;
+        case 'outline': DocumentOutlinePlugin.toggleVisibility(); break;
+        case 'zen-mode': toggleZenMode(button); break;
 
         // --- INDENTATION ---
         case 'indent': internalEditor.dispatchCommand(INDENT_CONTENT_COMMAND, undefined); break;
@@ -222,6 +257,14 @@ function handleToolbarAction(itemId: string, button: HTMLElement, editor: MyUniv
 
         // --- CLEAR FORMATTING ---
         case 'clear-formatting': internalEditor.dispatchCommand(REMOVE_FORMATTING_COMMAND, undefined); break;
+
+        // --- CASE CHANGE ---
+        case 'uppercase': CaseChange.toUpperCase(internalEditor); break;
+        case 'lowercase': CaseChange.toLowerCase(internalEditor); break;
+        case 'titlecase': CaseChange.toTitleCase(internalEditor); break;
+
+        // --- TRACK CHANGES ---
+        case 'track-changes': internalEditor.dispatchCommand(TOGGLE_TRACK_CHANGES_COMMAND, undefined); break;
 
         // --- UTILS ---
         case 'source-view': toggleSourceView(editor, internalEditor, button); break;
@@ -231,7 +274,7 @@ function handleToolbarAction(itemId: string, button: HTMLElement, editor: MyUniv
     }
 }
 
-function handleCommandAction(command: string, payload: string | undefined, _button: HTMLElement, _editor: MyUniversalEditor, internalEditor: any) {
+function handleCommandAction(command: string, payload: string | undefined, _button: HTMLElement, _editor: AureliaEditor, internalEditor: any) {
     if (command === 'FORMAT_HEADING_COMMAND' && payload) {
         // "h1", "h2", "paragraph"
         const tag = payload as any;

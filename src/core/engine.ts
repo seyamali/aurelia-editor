@@ -26,19 +26,20 @@ import { SpanNode } from '../plugins/formatting/span-node';
 import { LayoutNode } from '../plugins/layout/layout-node';
 import { StyleNode } from '../plugins/advanced/style-node';
 import { AssetLinkNode } from '../plugins/advanced/asset-link-node';
+import { IconNode } from '../plugins/formatting/icon-node';
 
 import { ParagraphNode } from 'lexical';
 import { HeadingNode } from '@lexical/rich-text';
 import { LinkNode, AutoLinkNode } from '@lexical/link';
 
-export class MyUniversalEditor {
+export class AureliaEditor {
     private editor: LexicalEditor;
     private registry: PluginRegistry;
 
     constructor(element: HTMLDivElement) {
 
         this.editor = createEditor({
-            namespace: 'MyCustomEditor',
+            namespace: 'AureliaEditor',
             nodes: [
                 HeadingNode,
                 ParagraphNode,
@@ -71,7 +72,8 @@ export class MyUniversalEditor {
                 LayoutNode,
                 StyleNode,
                 AssetLinkNode,
-                SpanNode
+                SpanNode,
+                IconNode
             ],
             theme: {
                 root: 'editor-container',
@@ -149,7 +151,7 @@ export class MyUniversalEditor {
         // passing 'undefined' is not allowed in strict mode.
         registerHistory(this.editor, createEmptyHistoryState(), 1000);
 
-        console.log("Core Engine Initialized");
+        console.log("AureliaEditor Engine Initialized");
     }
 
     // Register a plugin

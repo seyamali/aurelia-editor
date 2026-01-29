@@ -8,7 +8,9 @@ import {
     type SerializedLexicalNode,
     type Spread,
     type LexicalEditor,
-    type DOMExportOutput
+    type DOMExportOutput,
+    type DOMConversionMap,
+    type DOMConversionOutput
 } from 'lexical';
 
 export type YouTubeAlignment = 'left' | 'right' | 'center' | 'full';
@@ -89,7 +91,7 @@ export class YouTubeNode extends DecoratorNode<HTMLElement> {
         this.__showCaption = showCaption;
     }
 
-    createDOM(config: EditorConfig): HTMLElement {
+    createDOM(_config: EditorConfig): HTMLElement {
         const span = document.createElement('span');
         span.className = 'editor-youtube-block';
         return span;
@@ -106,6 +108,31 @@ export class YouTubeNode extends DecoratorNode<HTMLElement> {
         );
     }
 
+    static importDOM(): DOMConversionMap | null {
+        return {
+            iframe: (domNode: HTMLElement) => {
+                const iframe = domNode as HTMLIFrameElement;
+                const src = iframe.getAttribute('src') || '';
+                const match = src.match(/embed\/([\w-]{11})/);
+                if (match) {
+                    return {
+                        conversion: $convertYouTubeElement,
+                        priority: 4,
+                    };
+                }
+                return null;
+            },
+            figure: (domNode: HTMLElement) => {
+                if (domNode.classList.contains('editor-youtube-figure')) {
+                    return {
+                        conversion: $convertYouTubeElement,
+                        priority: 4,
+                    };
+                }
+                return null;
+            },
+        };
+    }
 
     exportDOM(): DOMExportOutput {
         const iframe = document.createElement('iframe');
@@ -223,4 +250,46 @@ export function $createYouTubeNode(videoID: string): YouTubeNode {
 
 export function $isYouTubeNode(node: LexicalNode | null | undefined): node is YouTubeNode {
     return node instanceof YouTubeNode;
+}
+
+function $convertYouTubeElement(domNode: Node): DOMConversionOutput {
+    let videoID = '';
+    let alignment: YouTubeAlignment = 'center';
+    let caption = '';
+    let showCaption = false;
+
+    const el = domNode as HTMLElement;
+
+    if (el.tagName === 'IFRAME') {
+        const src = el.getAttribute('src') || '';
+        const match = src.match(/embed\/([\w-]{11})/);
+        if (match) videoID = match[1];
+    } else if (el.tagName === 'FIGURE') {
+        const iframe = el.querySelector('iframe');
+        if (iframe) {
+            const src = iframe.getAttribute('src') || '';
+            const match = src.match(/embed\/([\w-]{11})/);
+            if (match) videoID = match[1];
+        }
+        const figcaption = el.querySelector('figcaption');
+        if (figcaption) {
+            caption = figcaption.innerText;
+            showCaption = true;
+        }
+
+        // Detect alignment from class
+        if (el.classList.contains('alignment-left')) alignment = 'left';
+        else if (el.classList.contains('alignment-right')) alignment = 'right';
+        else if (el.classList.contains('alignment-full')) alignment = 'full';
+    }
+
+    if (videoID) {
+        const node = $createYouTubeNode(videoID);
+        node.setAlignment(alignment);
+        node.setCaption(caption);
+        node.setShowCaption(showCaption);
+        return { node };
+    }
+
+    return { node: null };
 }

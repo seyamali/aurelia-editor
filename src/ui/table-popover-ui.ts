@@ -1,6 +1,7 @@
 import { $getSelection, $isRangeSelection, type LexicalEditor, SELECTION_CHANGE_COMMAND, COMMAND_PRIORITY_LOW } from 'lexical';
 import { $isTableCellNode, $isTableSelection } from '@lexical/table';
 import { tableHandlers } from '../plugins/layout/tables';
+import { ICONS } from './icons';
 
 export function setupTablePopover(editor: LexicalEditor) {
     let popover = document.getElementById('table-popover');
@@ -11,24 +12,24 @@ export function setupTablePopover(editor: LexicalEditor) {
         popover.className = 'table-popover hidden';
         popover.innerHTML = `
             <div class="table-popover-group">
-                <button id="table-row-above" title="Insert Row Above">🔼 Row</button>
-                <button id="table-row-below" title="Insert Row Below">🔽 Row</button>
-                <button id="table-row-delete" title="Delete Row" class="danger">❌ Row</button>
+                <button id="table-row-above" title="Insert Row Above">${ICONS.TABLE_ROW_ABOVE}</button>
+                <button id="table-row-below" title="Insert Row Below">${ICONS.TABLE_ROW_BELOW}</button>
+                <button id="table-row-delete" title="Delete Row" class="danger">${ICONS.TABLE_ROW_DELETE}</button>
             </div>
             <div class="divider-v"></div>
             <div class="table-popover-group">
-                <button id="table-col-left" title="Insert Column Left">◀️ Col</button>
-                <button id="table-col-right" title="Insert Column Right">▶️ Col</button>
-                <button id="table-col-delete" title="Delete Column" class="danger">❌ Col</button>
+                <button id="table-col-left" title="Insert Column Left">${ICONS.TABLE_COL_LEFT}</button>
+                <button id="table-col-right" title="Insert Column Right">${ICONS.TABLE_COL_RIGHT}</button>
+                <button id="table-col-delete" title="Delete Column" class="danger">${ICONS.TABLE_COL_DELETE}</button>
+            </div>
+            <div class="divider-v" id="table-merge-divider"></div>
+            <div class="table-popover-group">
+                <button id="table-merge" title="Merge Cells">${ICONS.TABLE_MERGE}</button>
+                <button id="table-split" title="Split Cell">${ICONS.TABLE_SPLIT}</button>
             </div>
             <div class="divider-v"></div>
             <div class="table-popover-group">
-                <button id="table-merge" title="Merge Cells">🔗 Merge</button>
-                <button id="table-split" title="Split Cell">✂️ Split</button>
-            </div>
-            <div class="divider-v"></div>
-            <div class="table-popover-group">
-                <button id="table-delete" title="Delete Table" class="danger">🗑️ Table</button>
+                <button id="table-delete" title="Delete Table" class="danger">${ICONS.TABLE_DELETE}</button>
             </div>
         `;
         document.getElementById('editor-wrapper')?.appendChild(popover);
@@ -73,11 +74,20 @@ export function setupTablePopover(editor: LexicalEditor) {
         SELECTION_CHANGE_COMMAND,
         () => {
             const selection = $getSelection();
-            if (($isRangeSelection(selection) && !selection.isCollapsed()) || $isTableSelection(selection)) {
+
+            // Show even for collapsed selection (cursor inside cell)
+            if ($isRangeSelection(selection) || $isTableSelection(selection)) {
                 const nodes = selection.getNodes();
                 let tableCellFound = false;
 
-                // For TableSelection, the nodes are usually the cells themselves
+                // Toggle visibility of Merge button: only relevant if multiple cells selected
+                const mergeBtn = document.getElementById('table-merge');
+                const mergeDivider = document.getElementById('table-merge-divider');
+                const isTableSel = $isTableSelection(selection);
+
+                if (mergeBtn) mergeBtn.style.display = isTableSel ? 'flex' : 'none';
+                if (mergeDivider) mergeDivider.style.display = isTableSel ? 'block' : 'none';
+
                 for (const node of nodes) {
                     let parent: any = node;
                     while (parent !== null) {
