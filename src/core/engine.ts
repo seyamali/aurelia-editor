@@ -218,4 +218,21 @@ export class AureliaEditor {
     getInternalEditor(): LexicalEditor {
         return this.editor;
     }
+
+    /**
+     * Get the clean, production-ready HTML from the editor.
+     * This uses the SourceViewPlugin's high-fidelity cleaning logic.
+     */
+    async getHtml(): Promise<string> {
+        const { SourceViewPlugin } = await import('../plugins/advanced/source-view');
+        return SourceViewPlugin.getHtml(this);
+    }
+
+    /**
+     * Set the HTML content of the editor with design fidelity.
+     */
+    async setHtml(html: string): Promise<void> {
+        const { SourceViewPlugin } = await import('../plugins/advanced/source-view');
+        SourceViewPlugin.setHtml(this, html);
+    }
 }

@@ -255,15 +255,18 @@ export const SourceViewPlugin = {
      */
     cleanHtml: (html: string): string => {
         // 1. Remove ALL internal data attributes injected by Lexical or our custom nodes
-        html = html.replace(/ data-[a-zA-Z0-9-]+="[^"]*"/g, '');
+        html = html.replace(/\s+data-[a-zA-Z0-9-]+="[^"]*"/g, '');
+        html = html.replace(/\s+contenteditable="[^"]*"/g, '');
+        html = html.replace(/\s+dir="auto"/g, '');
 
         // 2. Remove Lexical's "white-space: pre-wrap" spans and styling
-        html = html.replace(/<span style="white-space: pre-wrap;">(.*?)<\/span>/g, '$1');
-        html = html.replace(/ style="white-space: pre-wrap;"/g, '');
+        // Use a robust regex to handle variations in quotes and spacing
+        html = html.replace(/<span\s+style=["']white-space:\s*pre-wrap;?["']>(.*?)<\/span>/gi, '$1');
+        html = html.replace(/\s+style=["']white-space:\s*pre-wrap;?["']/gi, '');
 
         // 3. Remove Theme Classes and EMPTY classes (Fixes p class="")
-        html = html.replace(/ class="editor-[^"]+"/g, '');
-        html = html.replace(/ class=""/g, '');
+        html = html.replace(/\s+class="editor-[^"]+"/g, '');
+        html = html.replace(/\s+class=""/g, '');
 
         // 4. Restore boolean attributes (required="" -> required)
         html = html.replace(/ (required|checked|disabled|readonly|multiple|selected)=""/g, ' $1');

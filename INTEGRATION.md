@@ -183,6 +183,38 @@ export class EditorComponent implements AfterViewInit {
 
 ---
 
+## 💾 Getting & Setting Content
+
+Aurelia Editor provides high-fidelity helper methods to ensure that your HTML remains clean and complete (including styles and metadata) when moving data between the editor and your database.
+
+### 1. Get Production-Ready HTML
+Use `getHtml()` to retrieve a cleaned string without Lexical-specific attributes.
+
+```typescript
+const html = await editor.getHtml();
+// Ready to be stored in your DB or sent to an API
+```
+
+### 2. Set Initial Content
+Use `setHtml()` when loading a previously saved design or document. This method ensures that all associated styles and metadata tags are correctly initialized.
+
+```typescript
+const savedHtml = "<html>...</html>";
+await editor.setHtml(savedHtml);
+```
+
+### 3. Listening for Changes
+To implement "auto-save" or sync state, listen to the internal Lexical editor updates:
+
+```typescript
+editor.getInternalEditor().registerUpdateListener(({ editorState }) => {
+    // Note: getHtml() is async, so consider debouncing 
+    // if you need the HTML string on every keystroke.
+});
+```
+
+---
+
 ## � Importing Styles
 
 The editor requires its CSS to render correctly. Ensure you import the stylesheet in your entry point (e.g., `main.ts`, `_app.tsx`, or `index.js`).

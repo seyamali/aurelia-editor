@@ -85,8 +85,9 @@ export class RawHtmlNode extends DecoratorNode<HTMLElement> {
     exportDOM(): DOMExportOutput {
         const parser = new DOMParser();
         const doc = parser.parseFromString(this.__html, 'text/html');
-        const element = doc.body.firstChild as HTMLElement || document.createElement(this.__tag);
-        return { element };
+        // Check both head and body for the element (meta/style/title usually go to head)
+        const element = (doc.head.firstChild || doc.body.firstChild) as HTMLElement;
+        return { element: element || document.createElement(this.__tag) };
     }
 }
 
