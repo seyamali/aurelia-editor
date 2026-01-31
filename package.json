@@ -3,13 +3,13 @@
   "private": false,
   "version": "0.1.0",
   "type": "module",
-  "main": "./dist/my-universal-editor.umd.cjs",
-  "module": "./dist/my-universal-editor.js",
+  "main": "./dist/aurelia-editor.umd.cjs",
+  "module": "./dist/aurelia-editor.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/my-universal-editor.js",
-      "require": "./dist/my-universal-editor.umd.cjs"
+      "import": "./dist/aurelia-editor.js",
+      "require": "./dist/aurelia-editor.umd.cjs"
     },
     "./style.css": "./dist/style.css"
   },

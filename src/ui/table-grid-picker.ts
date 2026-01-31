@@ -5,7 +5,8 @@ export function setupTableGridPicker(editor: LexicalEditor) {
     // Initializes the picker markup if not present
     let picker = document.getElementById('table-grid-picker');
     if (!picker) {
-        const wrapper = document.getElementById('editor-wrapper') || document.body;
+        // ALWAYS append to body to avoid overflow clipping from editor containers
+        const wrapper = document.body;
 
         picker = document.createElement('div');
         picker.id = 'table-grid-picker';
@@ -80,12 +81,12 @@ export function toggleTableGridPicker(editor: LexicalEditor, triggerBtn: HTMLEle
         return;
     }
 
-    // Position picker
+    // Position picker relative to BODY (Absolute)
     const rect = triggerBtn.getBoundingClientRect();
-    const wrapper = document.getElementById('editor-wrapper') || document.body;
-    const wrapperRect = wrapper.getBoundingClientRect();
+    const scrollTop = window.scrollY || document.documentElement.scrollTop;
+    const scrollLeft = window.scrollX || document.documentElement.scrollLeft;
 
-    picker.style.top = `${rect.bottom - wrapperRect.top + 5}px`;
-    picker.style.left = `${rect.left - wrapperRect.left}px`;
+    picker.style.top = `${rect.bottom + scrollTop + 5}px`;
+    picker.style.left = `${rect.left + scrollLeft}px`;
     picker.classList.add('active');
 }

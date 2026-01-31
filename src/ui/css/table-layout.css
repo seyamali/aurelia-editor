@@ -167,6 +167,10 @@
     position: absolute;
     z-index: 10001;
     display: none;
+    width: max-content;
+    /* Ensure it doesn't get squeezed */
+    min-width: 210px;
+    /* Base size 10 cols * (18px + 2px gap) + padding */
 }
 
 .table-grid-picker.active {

@@ -3,11 +3,10 @@ import {
     type LexicalCommand,
     $getSelection,
     $isRangeSelection,
-    $getNodeByKey,
     type NodeKey,
     COMMAND_PRIORITY_EDITOR
 } from 'lexical';
-import { $createFootnoteNode, FootnoteNode } from './footnote-node';
+import { $createFootnoteRefNode, FootnoteRefNode } from './footnote-node';
 import { EditorSDK } from '../../core/sdk';
 
 export const INSERT_FOOTNOTE_COMMAND: LexicalCommand<string> = createCommand('INSERT_FOOTNOTE_COMMAND');
@@ -16,16 +15,18 @@ export const EDIT_FOOTNOTE_COMMAND: LexicalCommand<NodeKey> = createCommand('EDI
 export const FootnotePlugin = {
     name: 'footnote',
     init: (sdk: EditorSDK) => {
-        if (!sdk.hasNodes([FootnoteNode])) {
+        if (!sdk.hasNodes([FootnoteRefNode])) {
             throw new Error('FootnotePlugin: FootnoteNode not registered on editor');
         }
 
         sdk.registerCommand(
             INSERT_FOOTNOTE_COMMAND,
-            (content) => {
+            (_content) => {
                 const selection = $getSelection();
                 if ($isRangeSelection(selection)) {
-                    const footnote = $createFootnoteNode(content);
+                    // Generate a unique ID (simple timestamp for now, plugin will re-number)
+                    const id = `fn-${Date.now()}`;
+                    const footnote = $createFootnoteRefNode(id);
                     selection.insertNodes([footnote]);
                 }
                 return true;
@@ -35,16 +36,10 @@ export const FootnotePlugin = {
 
         sdk.registerCommand(
             EDIT_FOOTNOTE_COMMAND,
-            (key) => {
-                sdk.update(() => {
-                    const node = $getNodeByKey(key);
-                    if (node instanceof FootnoteNode) {
-                        const newContent = prompt("Edit Footnote:", node.getContent());
-                        if (newContent !== null) {
-                            node.setContent(newContent);
-                        }
-                    }
-                });
+            (_key) => {
+                // Footnote references are auto-managed.
+                // Editing the *content* happens in the footer, which is DOM-based in this implementation.
+                // We don't edit the reference node itself via this command.
                 return true;
             },
             COMMAND_PRIORITY_EDITOR

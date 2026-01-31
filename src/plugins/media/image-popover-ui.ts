@@ -23,6 +23,7 @@ export function setupImagePopover(editor: LexicalEditor) {
                     <input type="number" id="img-height-input" placeholder="Height" style="width: 50px; padding: 4px" />
                 </div>
                 <span style="flex-grow: 1"></span>
+                <button id="img-link-btn" title="Add Link" style="padding: 4px 8px">🔗 Link</button>
                 <button id="img-unlink-btn" title="Remove Link" class="danger hidden" style="padding: 4px 8px">🔗 Unlink</button>
             </div>
             <div class="popover-row">
@@ -42,6 +43,7 @@ export function setupImagePopover(editor: LexicalEditor) {
     }
 
     const altInput = () => document.getElementById('img-alt-input') as HTMLInputElement;
+    const linkBtn = () => document.getElementById('img-link-btn') as HTMLButtonElement;
     const unlinkBtn = () => document.getElementById('img-unlink-btn') as HTMLButtonElement;
     const widthInput = () => document.getElementById('img-width-input') as HTMLInputElement;
     const heightInput = () => document.getElementById('img-height-input') as HTMLInputElement;
@@ -69,6 +71,17 @@ export function setupImagePopover(editor: LexicalEditor) {
             });
         });
 
+        // Link Button - Opens the Link Popover for this image
+        linkBtn()?.addEventListener('click', () => {
+            // We just need to trigger the command. The command handler checks for selected image node.
+            // Since the image *is* selected when the popover is open, this should work.
+            // We might need to ensure the selection is correct? It should be.
+            import('./link-popover-ui').then(({ SHOW_LINK_POPOVER_COMMAND }) => {
+                editor.dispatchCommand(SHOW_LINK_POPOVER_COMMAND, undefined);
+                hidePopover(); // Hide image popover so link popover can be seen/used without clutter
+            });
+        });
+
         // Unlink
         unlinkBtn()?.addEventListener('click', () => {
             if (!currentImageNodeKey) return;
@@ -76,7 +89,12 @@ export function setupImagePopover(editor: LexicalEditor) {
                 const node = $getNodeByKey(currentImageNodeKey!);
                 if ($isImageNode(node)) node.setLinkUrl('');
             });
-            hidePopover();
+            // Re-show logic to update buttons
+            const node = $getNodeByKey(currentImageNodeKey!) as ImageNode | null;
+            if (node) {
+                linkBtn()?.classList.remove('hidden');
+                unlinkBtn()?.classList.add('hidden');
+            }
         });
 
         // Caption Toggle
@@ -154,13 +172,16 @@ export function setupImagePopover(editor: LexicalEditor) {
         const alt = altInput();
         if (alt) alt.value = node.__altText;
 
-        // Show unlink button only if there is a link
+        // Show unlink vs link button
         const unlink = unlinkBtn();
-        if (unlink) {
+        const link = linkBtn();
+        if (unlink && link) {
             if (node.__linkUrl) {
                 unlink.classList.remove('hidden');
+                link.classList.add('hidden');
             } else {
                 unlink.classList.add('hidden');
+                link.classList.remove('hidden');
             }
         }
 

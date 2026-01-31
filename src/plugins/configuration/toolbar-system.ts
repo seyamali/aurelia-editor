@@ -2,7 +2,7 @@ import { ToolbarConfigManager } from './toolbar-config';
 import { toolbarCustomizationUI } from './toolbar-customization-ui';
 import ContextAwareToolbar from './context-aware-toolbar';
 import type { LexicalEditor } from 'lexical';
-import { MyUniversalEditor } from '../../core/engine';
+import { AureliaEditor } from '../../core/engine';
 import { setupToolbarDelegation } from '../../ui/toolbar-delegation';
 
 // ============================================
@@ -10,13 +10,12 @@ import { setupToolbarDelegation } from '../../ui/toolbar-delegation';
 // ============================================
 
 export class ToolbarSystem {
-    private static contextAwareToolbar: ContextAwareToolbar | null = null;
     private static isInitialized = false;
 
     /**
      * Initialize the complete toolbar system
      */
-    static init(editor: MyUniversalEditor, internalEditor: LexicalEditor): void {
+    static init(editor: AureliaEditor, internalEditor: LexicalEditor): void {
         if (this.isInitialized) return;
 
         // 1. Initialize customization UI
@@ -30,7 +29,7 @@ export class ToolbarSystem {
         setupToolbarDelegation(editor, internalEditor);
 
         // 4. Initialize context-aware toolbar (Manages visibility/state)
-        this.contextAwareToolbar = new ContextAwareToolbar(internalEditor);
+        new ContextAwareToolbar(internalEditor);
 
         // 5. Setup toolbar customization button
         this.setupCustomizationButton();

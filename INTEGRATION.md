@@ -1,116 +1,104 @@
-# Integration & Installation Guide
+# 🔌 Integration Guide
 
-This guide covers how to install `my-universal-editor` and integrate it into various JavaScript frameworks.
+**Aurelia Editor** is designed to be a framework-agnostic, drop-in rich text editor. This guide provides step-by-step instructions for integrating the editor into the most popular web development frameworks.
 
-## 📦 Installation
+## 📦 Prerequisites
 
-To use the editor in your project, install it via npm:
+Ensure you have the package installed in your project:
 
 ```bash
 npm install @seyamali/aurelia-editor
-```
-
-*Note: If you are working with the source code directly, ensure you have `npm install` and `npm run build` executed in the library folder first.*
-
-## 🚀 General Usage (Vanilla JS)
-
-The editor is framework-agnostic and relies on a simple DOM element structure.
-
-1.  **HTML Structure**: Create a container for the editor layout.
-2.  **Initialize**: Call the `AureliaEditor` class.
-
-```javascript
-import { AureliaEditor, EDITOR_LAYOUT_HTML } from '@seyamali/aurelia-editor';
-import '@seyamali/aurelia-editor/dist/style.css'; // Don't forget CSS!
-
-// 1. Setup Container
-const app = document.getElementById('app');
-app.innerHTML = EDITOR_LAYOUT_HTML; // Injects toolbar, sidebar, and canvas structure
-
-// 2. Initialize Logic
-const canvas = document.getElementById('editor-canvas');
-const editor = new AureliaEditor(canvas);
+# or
+yarn add @seyamali/aurelia-editor
 ```
 
 ---
 
-## ⚛️ React Integration
+## � Vanilla TypeScript / JavaScript
 
-Since Lexical is framework-agnostic, you can wrap `AureliaEditor` in a simple React component.
+The editor works natively with the DOM. You simply need a container element to mount the editor instance.
 
-```tsx
-import React, { useRef, useEffect } from 'react';
+### 1. HTML Structure
+Create a container div in your HTML file:
+
+```html
+<div id="app"></div>
+```
+
+### 2. Initialization Script
+
+```typescript
 import { AureliaEditor, EDITOR_LAYOUT_HTML } from '@seyamali/aurelia-editor';
 import '@seyamali/aurelia-editor/dist/style.css'; 
 
-export const RichTextEditor = () => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const editorRef = useRef<AureliaEditor | null>(null);
+// 1. Inject the Editor Scaffold (Toolbar, Sidebar, Canvas)
+const app = document.getElementById('app');
+if (app) {
+    app.innerHTML = EDITOR_LAYOUT_HTML;
 
-  useEffect(() => {
-    if (containerRef.current && !editorRef.current) {
-        // 1. Inject the layout skeleton
-        containerRef.current.innerHTML = EDITOR_LAYOUT_HTML;
-        
-        // 2. Find the canvas within the layout
-        const canvas = containerRef.current.querySelector('#editor-canvas') as HTMLDivElement;
-        
-        // 3. Initialize the editor
-        editorRef.current = new AureliaEditor(canvas);
-    }
-    
-    return () => {
-        // Optional cleanup if method exists
-    };
-  }, []);
-
-  return <div ref={containerRef} style={{ height: '500px' }} />;
-};
-```
-
----
-
-## 🅰️ Angular Integration
-
-In Angular, use `@ViewChild` to access the native element and `AfterViewInit` to initialize the editor.
-
-```typescript
-import { Component, ElementRef, ViewChild, AfterViewInit, ViewEncapsulation } from '@angular/core';
-import { AureliaEditor, EDITOR_LAYOUT_HTML } from '@seyamali/aurelia-editor';
-
-@Component({
-  selector: 'app-rich-text-editor',
-  template: `<div #editorContainer style="height: 500px;"></div>`,
-  styleUrls: [
-    './app.component.css', 
-    '../../node_modules/@seyamali/aurelia-editor/dist/style.css' // Adjust path mainly
-  ], 
-  encapsulation: ViewEncapsulation.None // Important: Global styles for editor content
-})
-export class RichTextEditorComponent implements AfterViewInit {
-  @ViewChild('editorContainer') container!: ElementRef<HTMLDivElement>;
-  editor: AureliaEditor | null = null;
-
-  ngAfterViewInit() {
-    if (this.container) {
-        // 1. Inject Layout
-        this.container.nativeElement.innerHTML = EDITOR_LAYOUT_HTML;
-        
-        // 2. Find Canvas
-        const canvas = this.container.nativeElement.querySelector('#editor-canvas') as HTMLDivElement;
-        
-        // 3. Initialize
-        this.editor = new AureliaEditor(canvas);
-    }
-  }
+    // 2. Initialize the Editor Engine
+    const canvas = document.getElementById('editor-canvas') as HTMLDivElement;
+    const editor = new AureliaEditor(canvas);
 }
 ```
 
 ---
 
-## 🟢 Vue Integration
+## ⚛️ React.js (Component Wrapper)
 
-For Vue 3, use a template ref and the `onMounted` hook.
+Since React manages the DOM virtually, we use a `ref` and `useEffect` to safely mount the editor instance.
+
+```tsx
+import React, { useEffect, useRef } from 'react';
+import { AureliaEditor, EDITOR_LAYOUT_HTML } from '@seyamali/aurelia-editor';
+import '@seyamali/aurelia-editor/dist/style.css';
+
+export const EditorComponent = () => {
+    const containerRef = useRef<HTMLDivElement>(null);
+    const editorInstance = useRef<AureliaEditor | null>(null);
+
+    useEffect(() => {
+        if (containerRef.current && !editorInstance.current) {
+            // Inject Layout
+            containerRef.current.innerHTML = EDITOR_LAYOUT_HTML;
+            
+            // Mount Editor
+            const canvas = containerRef.current.querySelector('#editor-canvas') as HTMLDivElement;
+            if (canvas) {
+                editorInstance.current = new AureliaEditor(canvas);
+            }
+        }
+    }, []);
+
+    return <div ref={containerRef} className="aurelia-editor-wrapper" style={{ height: '100vh' }} />;
+};
+```
+
+### Next.js (Dynamic Import)
+
+For Next.js, because the editor relies on `window` and `document`, you must import the component dynamically with SSR disabled.
+
+```tsx
+// components/Editor.tsx
+// (Use the React code above)
+
+// pages/index.tsx
+import dynamic from 'next/dynamic';
+
+const Editor = dynamic(() => import('../components/Editor').then(mod => mod.EditorComponent), {
+    ssr: false
+});
+
+export default function Page() {
+    return <Editor />;
+}
+```
+
+---
+
+## 🟢 Vue.js 3 (Composition API)
+
+Use the `onMounted` hook to ensure the DOM is ready before initializing the editor.
 
 ```vue
 <script setup>
@@ -118,36 +106,111 @@ import { onMounted, ref } from 'vue';
 import { AureliaEditor, EDITOR_LAYOUT_HTML } from '@seyamali/aurelia-editor';
 import '@seyamali/aurelia-editor/dist/style.css';
 
-const editorContainer = ref(null);
-let editorInstance = null;
+const container = ref(null);
+let editor = null;
 
 onMounted(() => {
-  if (editorContainer.value) {
-    editorContainer.value.innerHTML = EDITOR_LAYOUT_HTML;
-    const canvas = editorContainer.value.querySelector('#editor-canvas');
-    editorInstance = new AureliaEditor(canvas);
-  }
+    if (container.value) {
+        container.value.innerHTML = EDITOR_LAYOUT_HTML;
+        const canvas = container.value.querySelector('#editor-canvas');
+        if (canvas) {
+            editor = new AureliaEditor(canvas);
+        }
+    }
 });
 </script>
 
 <template>
-  <div ref="editorContainer" class="my-editor-wrapper"></div>
+    <div ref="container" class="editor-container"></div>
 </template>
 
-<style>
-/* Ensure the wrapper has some height */
-.my-editor-wrapper {
-  height: 100vh;
+<style scoped>
+.editor-container {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 </style>
 ```
 
 ---
 
-## 🌍 Publish to NPM
+## 🅰️ Angular
 
-If you are the maintainer and wish to publish a new version:
+Use `AfterViewInit` to guarantee the view query is available.
 
-1.  **Login**: `npm login`
-2.  **Build**: `npm run build`
-3.  **Publish**: `npm publish --access public`
+```typescript
+import { Component, ElementRef, ViewChild, AfterViewInit, ViewEncapsulation } from '@angular/core';
+import { AureliaEditor, EDITOR_LAYOUT_HTML } from '@seyamali/aurelia-editor';
+
+@Component({
+  selector: 'app-editor',
+  template: `<div #editorContainer class="editor-host"></div>`,
+  styles: [`
+    .editor-host { height: 100vh; display: block; }
+    /* You may need to import CSS in your global styles or angular.json */
+  `],
+  encapsulation: ViewEncapsulation.None // Required for global editor styles to apply
+})
+export class EditorComponent implements AfterViewInit {
+  @ViewChild('editorContainer') container!: ElementRef<HTMLDivElement>;
+  editor: AureliaEditor | null = null;
+
+  ngAfterViewInit() {
+    if (this.container) {
+      this.container.nativeElement.innerHTML = EDITOR_LAYOUT_HTML;
+      const canvas = this.container.nativeElement.querySelector('#editor-canvas') as HTMLDivElement;
+      this.editor = new AureliaEditor(canvas);
+    }
+  }
+}
+```
+
+**Note:** Add `"node_modules/@seyamali/aurelia-editor/dist/style.css"` to your `angular.json` styles array.
+
+---
+
+## 🟠 Svelte
+
+```svelte
+<script>
+  import { onMount } from 'svelte';
+  import { AureliaEditor, EDITOR_LAYOUT_HTML } from '@seyamali/aurelia-editor';
+  import '@seyamali/aurelia-editor/dist/style.css';
+
+  let container;
+  let editor;
+
+  onMount(() => {
+    if (container) {
+      container.innerHTML = EDITOR_LAYOUT_HTML;
+      const canvas = container.querySelector('#editor-canvas');
+      editor = new AureliaEditor(canvas);
+    }
+  });
+</script>
+
+<div bind:this={container} class="editor-wrapper"></div>
+
+<style>
+  .editor-wrapper {
+    height: 100vh;
+  }
+</style>
+```
+
+---
+
+## � Importing Styles
+
+The editor requires its CSS to render correctly. Ensure you import the stylesheet in your entry point (e.g., `main.ts`, `_app.tsx`, or `index.js`).
+
+```javascript
+import '@seyamali/aurelia-editor/dist/style.css';
+```
+
+If you are using a bundler that doesn't support CSS imports, link it in your HTML:
+
+```html
+<link rel="stylesheet" href="path/to/node_modules/@seyamali/aurelia-editor/dist/style.css">
+```

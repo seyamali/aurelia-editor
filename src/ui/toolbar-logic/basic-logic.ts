@@ -1,11 +1,11 @@
-import { MyUniversalEditor } from '../../core/engine';
+import { AureliaEditor } from '../../core/engine';
 import { HISTORY_COMMANDS } from '../../plugins/essentials/history';
 import { REMOVE_FORMATTING_COMMAND } from '../../plugins/essentials/clipboard';
 import { FORMAT_COMMANDS } from '../../plugins/formatting/basic-styles';
 import { LIST_COMMANDS, toggleList } from '../../plugins/layout/lists';
 import { insertHorizontalRule, setBlockType, toggleBlockQuote } from '../../plugins/layout/headings';
 
-export function setupBasicLogic(editor: MyUniversalEditor, internalEditor: any) {
+export function setupBasicLogic(editor: AureliaEditor, internalEditor: any) {
     // Essentials
     document.getElementById('undo-btn')?.addEventListener('click', () => editor.execute(HISTORY_COMMANDS.UNDO.command));
     document.getElementById('redo-btn')?.addEventListener('click', () => editor.execute(HISTORY_COMMANDS.REDO.command));

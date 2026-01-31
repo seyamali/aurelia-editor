@@ -6,8 +6,8 @@ export default defineConfig({
     build: {
         lib: {
             entry: resolve(__dirname, 'src/index.ts'),
-            name: 'MyUniversalEditor',
-            fileName: 'my-universal-editor',
+            name: 'OmniEditor',
+            fileName: 'omni-editor',
             formats: ['es', 'umd']
         },
         rollupOptions: {
@@ -35,7 +35,18 @@ export default defineConfig({
                 globals: {
                     'lexical': 'Lexical',
                     '@lexical/react': 'LexicalReact',
-                    '@lexical/rich-text': 'LexicalRichText'
+                    '@lexical/rich-text': 'LexicalRichText',
+                    '@lexical/selection': 'LexicalSelection',
+                    '@lexical/utils': 'LexicalUtils',
+                    '@lexical/history': 'LexicalHistory',
+                    '@lexical/html': 'LexicalHtml',
+                    '@lexical/link': 'LexicalLink',
+                    '@lexical/list': 'LexicalList',
+                    '@lexical/table': 'LexicalTable',
+                    '@lexical/code': 'LexicalCode',
+                    '@lexical/clipboard': 'LexicalClipboard',
+                    'react': 'React',
+                    'react-dom': 'ReactDOM'
                 }
             }
         }

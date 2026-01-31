@@ -4,7 +4,7 @@ import { AccessibilityManager } from '../plugins/configuration/accessibility';
 
 /**
  * The EditorSDK provides a stable, simplified interface for plugin developers
- * to interact with the MyUniversalEditor without needing deep knowledge of Lexical internals.
+ * to interact with the AureliaEditor without needing deep knowledge of Lexical internals.
  */
 export class EditorSDK {
     private editor: LexicalEditor;

@@ -18,7 +18,7 @@ import { insertImage } from '../media/images';
 import { insertTable } from '../layout/tables';
 import { INSERT_CODE_BLOCK_COMMAND } from '../advanced/code-blocks';
 import { MediaEmbedPlugin } from '../advanced/media-embed';
-import { INSERT_PLACEHOLDER_COMMAND, showPlaceholderInsertPanel } from '../advanced/placeholder';
+import { showPlaceholderInsertPanel } from '../advanced/placeholder';
 
 const SLASH_COMMANDS: SlashCommand[] = [
     {
@@ -73,13 +73,13 @@ const SLASH_COMMANDS: SlashCommand[] = [
         label: 'Code Block',
         icon: '{}',
         description: 'Code block with syntax highlighting',
-        execute: (editor) => editor.dispatchCommand(INSERT_CODE_BLOCK_COMMAND, undefined)
+        execute: (editor) => editor.dispatchCommand(INSERT_CODE_BLOCK_COMMAND, null)
     },
     {
         label: 'Image',
         icon: '🖼️',
         description: 'Insert an image',
-        execute: (editor) => insertImage(editor)
+        execute: () => insertImage()
     },
     {
         label: 'Table',
@@ -198,7 +198,7 @@ export const SlashCommandPlugin = {
                         const actionToExecute = action;
                         const nodeKeyToMatch = matchNodeKey;
                         const offsetToMatch = matchOffset;
-                        
+
                         // Delete the slash command text first
                         sdk.update(() => {
                             const selection = $getSelection();
@@ -219,7 +219,7 @@ export const SlashCommandPlugin = {
                         // Execute action after deletion (most actions handle their own updates)
                         // This ensures proper undo/redo behavior
                         actionToExecute.execute(editor);
-                        
+
                         menuUI.hide();
                         matchOffset = -1;
                         matchNodeKey = null;

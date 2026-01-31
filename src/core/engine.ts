@@ -147,6 +147,11 @@ export class AureliaEditor {
         // Initial basic setup (Essentials)
         registerRichText(this.editor);
 
+        // Register Horizontal Rule Plugin
+        import('../plugins/essentials/horizontal-rule-plugin').then(({ HorizontalRulePlugin }) => {
+            this.registry.register(HorizontalRulePlugin);
+        });
+
         // 4. Fixed registerHistory: It requires a HistoryState object, 
         // passing 'undefined' is not allowed in strict mode.
         registerHistory(this.editor, createEmptyHistoryState(), 1000);

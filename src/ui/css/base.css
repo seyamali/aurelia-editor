@@ -8,27 +8,27 @@
 }
 
 #app {
-    max-width: 860px;
-    /* Slightly wider for modern feel */
-    margin: 40px auto;
+    max-width: 1000px;
+    /* Wider to prevent "losing space" */
+    height: 95vh;
+    margin: 20px auto;
     padding: 0 20px;
-    /* Add horizontal padding for small screens */
+    overflow: hidden;
 }
 
 /* The Main Document Frame - now purely a layout container */
 .editor-wrapper {
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 12px;
-    box-shadow: 0 4px 20px -5px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-    /* Contain inner scrolling */
-    position: relative;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    /* Subtle border to define the area */
+    border-radius: 8px;
+    box-shadow: none;
+    width: 100%;
+    height: 100%;
+    max-height: none;
     display: flex;
     flex-direction: column;
-    height: 90vh;
-    /* Fixed app-like height */
-    max-height: 1000px;
+    position: relative;
 }
 
 .hidden {

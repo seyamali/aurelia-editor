@@ -26,14 +26,14 @@ import { DialogSystem } from '../shared/dialog-system';
 import { insertImage } from '../plugins/media/images';
 import { MediaEmbedPlugin } from '../plugins/advanced/media-embed';
 import { toggleTableGridPicker } from './table-grid-picker';
-import { toggleBlockQuote } from '../plugins/layout/headings';
+import { toggleBlockQuote, setBlockType } from '../plugins/layout/headings';
 import { FormatPainter } from '../plugins/productivity/format-painter';
 import { ExportPDF } from '../plugins/export/pdf-export';
 import { ExportWord } from '../plugins/export/word-export';
 import { ImportWord } from '../plugins/import/word-import';
 import { MinimapPlugin } from '../plugins/productivity/minimap';
 import { DocumentOutlinePlugin } from '../plugins/productivity/document-outline';
-import { INSERT_PLACEHOLDER_COMMAND } from '../plugins/advanced/placeholder';
+import { showPlaceholderInsertPanel } from '../plugins/advanced/placeholder';
 
 function toggleSourceView(editor: AureliaEditor, internalEditor: any, btn: HTMLElement) {
     const canvas = document.getElementById('editor-canvas') as HTMLElement;
@@ -244,7 +244,7 @@ function handleToolbarAction(itemId: string, button: HTMLElement, editor: Aureli
         case 'find-replace': internalEditor.dispatchCommand(OPEN_FIND_REPLACE, undefined); break;
         case 'emoji': internalEditor.dispatchCommand(OPEN_EMOJI_PICKER, undefined); break;
         case 'format-painter': FormatPainter.copyFormat(internalEditor); break;
-        case 'insert-placeholder': internalEditor.dispatchCommand(INSERT_PLACEHOLDER_COMMAND, undefined); break;
+        case 'insert-placeholder': showPlaceholderInsertPanel(internalEditor); break;
 
         // --- VIEW ---
         case 'minimap': MinimapPlugin.toggleVisibility(); break;
@@ -278,10 +278,6 @@ function handleCommandAction(command: string, payload: string | undefined, _butt
     if (command === 'FORMAT_HEADING_COMMAND' && payload) {
         // "h1", "h2", "paragraph"
         const tag = payload as any;
-
-        // Import dynamic to avoid circular dependencies if any
-        import('../plugins/layout/headings').then(m => {
-            m.setBlockType(internalEditor, tag);
-        });
+        setBlockType(internalEditor, tag);
     }
 }

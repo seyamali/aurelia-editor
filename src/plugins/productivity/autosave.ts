@@ -58,15 +58,36 @@ export const AutosavePlugin: EditorPlugin = {
     }
 };
 
+const AUTOSAVE_ASSETS_KEY = 'editor_autosave_assets';
+
 function saveState(editorState: EditorState) {
     const json = editorState.toJSON();
     const isEmpty = isStateEmpty(json);
 
     if (isEmpty) {
         localStorage.removeItem(AUTOSAVE_KEY);
+        localStorage.removeItem(AUTOSAVE_ASSETS_KEY);
         updateStatus('Changes cleared', 'saved');
     } else {
         localStorage.setItem(AUTOSAVE_KEY, JSON.stringify(json));
+
+        // Save External Assets (Styles/Scripts from Source View)
+        const assets: string[] = [];
+        document.querySelectorAll('[data-editor-asset="true"]').forEach(el => {
+            assets.push(el.outerHTML);
+        });
+
+        const rootEl = document.querySelector('.editor-container');
+        const fidelity = rootEl?.getAttribute('data-source-fidelity');
+        const rootStyle = rootEl?.getAttribute('style');
+
+        const extraState = {
+            assets,
+            fidelity,
+            rootStyle
+        };
+        localStorage.setItem(AUTOSAVE_ASSETS_KEY, JSON.stringify(extraState));
+
         updateStatus('All changes saved', 'saved');
     }
 }
@@ -124,10 +145,40 @@ export function hasAutosavedState(): boolean {
 
 export function loadAutosavedState(editor: LexicalEditor) {
     const saved = localStorage.getItem(AUTOSAVE_KEY);
+    const savedExtras = localStorage.getItem(AUTOSAVE_ASSETS_KEY);
+
     if (saved) {
         try {
             const state = editor.parseEditorState(saved);
             editor.setEditorState(state);
+
+            // Restore Assets
+            if (savedExtras) {
+                const { assets, fidelity, rootStyle } = JSON.parse(savedExtras);
+
+                // Clear existing first to avoid dupes
+                document.querySelectorAll('[data-editor-asset="true"]').forEach(el => el.remove());
+
+                if (assets && Array.isArray(assets)) {
+                    assets.forEach((html: string) => {
+                        const template = document.createElement('div');
+                        template.innerHTML = html;
+                        const el = template.firstChild as HTMLElement;
+                        document.head.appendChild(el);
+                    });
+                }
+
+                const rootEl = editor.getRootElement();
+                if (rootEl) {
+                    if (fidelity === 'true') {
+                        rootEl.setAttribute('data-source-fidelity', 'true');
+                    }
+                    if (rootStyle) {
+                        rootEl.setAttribute('style', rootStyle);
+                    }
+                }
+            }
+
             console.log("Autosave restored.");
             updateStatus('Restored from draft', 'saved');
         } catch (e) {

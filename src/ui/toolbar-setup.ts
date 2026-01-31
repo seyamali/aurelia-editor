@@ -1,4 +1,4 @@
-import { MyUniversalEditor } from '../core/engine';
+import { AureliaEditor } from '../core/engine';
 import { setupBasicLogic } from './toolbar-logic/basic-logic';
 import { setupAdvancedLogic } from './toolbar-logic/advanced-logic';
 import { setupDocumentLogic } from './toolbar-logic/document-logic';
@@ -10,7 +10,7 @@ import { setupCodeBlockPopover } from './code-block-popover-ui';
  * Initializes all toolbar button event listeners and dynamic state updates.
  * Logic is modularized into the ./toolbar-logic/ directory.
  */
-export function setupToolbar(editor: MyUniversalEditor, internalEditor: any) {
+export function setupToolbar(editor: AureliaEditor, internalEditor: any) {
     // 1. Basic Formatting (Bold, Lists, Blocks, etc.)
     setupBasicLogic(editor, internalEditor);
 

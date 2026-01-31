@@ -1,4 +1,4 @@
-import { MyUniversalEditor } from '../../core/engine';
+import { AureliaEditor } from '../../core/engine';
 import { ExportPDF } from '../../plugins/export/pdf-export';
 import { ExportWord } from '../../plugins/export/word-export';
 import { ImportWord } from '../../plugins/import/word-import';
@@ -10,7 +10,7 @@ import { type TOCConfig } from '../../plugins/page-layout/toc-node';
 import { I18nManager, type LanguageCode } from '../../plugins/configuration/i18n';
 import { DocumentOutlinePlugin } from '../../plugins/productivity/document-outline';
 
-export function setupDocumentLogic(editor: MyUniversalEditor, internalEditor: any) {
+export function setupDocumentLogic(editor: AureliaEditor, internalEditor: any) {
     // PDF Export
     document.getElementById('export-pdf-btn')?.addEventListener('click', () => {
         ExportPDF.exportToPdf(internalEditor);

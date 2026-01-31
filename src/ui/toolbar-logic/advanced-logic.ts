@@ -1,5 +1,5 @@
 import { CUT_COMMAND, COPY_COMMAND, PASTE_COMMAND, $getSelection, $isRangeSelection, INDENT_CONTENT_COMMAND, OUTDENT_CONTENT_COMMAND } from 'lexical';
-import { MyUniversalEditor } from '../../core/engine';
+import { AureliaEditor } from '../../core/engine';
 import { insertImage } from '../../plugins/media/images';
 import { tableHandlers } from '../../plugins/layout/tables';
 import { MediaEmbedPlugin } from '../../plugins/advanced/media-embed';
@@ -12,7 +12,7 @@ import { CaseChange } from '../../plugins/productivity/case-change';
 import { DialogSystem } from '../../shared/dialog-system';
 import { REMOVE_FORMATTING_COMMAND } from '../../plugins/essentials/clipboard';
 
-export function setupAdvancedLogic(editor: MyUniversalEditor, internalEditor: any) {
+export function setupAdvancedLogic(editor: AureliaEditor, internalEditor: any) {
     let isSourceMode = false;
     const internal = editor.getInternalEditor();
 

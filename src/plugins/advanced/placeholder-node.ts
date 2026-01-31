@@ -43,7 +43,7 @@ export class PlaceholderNode extends DecoratorNode<HTMLElement> {
     }
 
 
-    createDOM(config: EditorConfig): HTMLElement {
+    createDOM(_config: EditorConfig): HTMLElement {
         const span = document.createElement('span');
         span.className = 'editor-placeholder-field';
         span.setAttribute('data-placeholder-name', this.__name);
@@ -52,13 +52,13 @@ export class PlaceholderNode extends DecoratorNode<HTMLElement> {
         span.setAttribute('tabindex', '0');
         span.setAttribute('role', 'button');
         span.setAttribute('aria-label', `Merge field: ${this.__name}`);
-        
+
         // Get metadata for tooltip
         const metadata = this.getPlaceholderMetadata(this.__name);
         span.title = metadata.tooltip;
         span.setAttribute('data-placeholder-type', metadata.type);
         span.setAttribute('data-placeholder-description', metadata.description);
-        
+
         // Enhanced styling with light gray background and rounded borders
         span.style.background = '#f3f4f6';
         span.style.borderRadius = '6px';
@@ -72,27 +72,27 @@ export class PlaceholderNode extends DecoratorNode<HTMLElement> {
         span.style.fontWeight = '500';
         span.style.color = '#374151';
         span.style.transition = 'all 0.2s ease';
-        
+
         // Hover effect for tooltip
         span.addEventListener('mouseenter', () => {
             span.style.background = '#e5e7eb';
             span.style.borderColor = '#9ca3af';
             this.showTooltip(span, metadata);
         });
-        
+
         span.addEventListener('mouseleave', () => {
             span.style.background = '#f3f4f6';
             span.style.borderColor = '#cbd5e1';
             this.hideTooltip();
         });
-        
+
         // Keyboard navigation: Lexical handles arrow key navigation for DecoratorNodes automatically
         // Placeholders are non-editable, so arrow keys will naturally skip over them
         // We just need to ensure the placeholder is focusable for accessibility
-        
+
         return span;
     }
-    
+
     private getPlaceholderMetadata(name: string): { type: string; description: string; tooltip: string } {
         // Define metadata for known placeholders
         // This should match MERGE_FIELDS in placeholder.ts
@@ -102,19 +102,19 @@ export class PlaceholderNode extends DecoratorNode<HTMLElement> {
             'Company': { type: 'Organization', description: 'The company name' },
             'Date': { type: 'System', description: 'Current date' },
         };
-        
+
         const meta = metadataMap[name] || { type: 'Custom', description: 'Custom merge field' };
         return {
             ...meta,
             tooltip: `${meta.type}: ${meta.description} ({{${name}}})`
         };
     }
-    
+
     private tooltipElement: HTMLElement | null = null;
-    
+
     private showTooltip(element: HTMLElement, metadata: { type: string; description: string; tooltip: string }) {
         this.hideTooltip();
-        
+
         const tooltip = document.createElement('div');
         tooltip.className = 'placeholder-tooltip-popup';
         tooltip.innerHTML = `
@@ -126,18 +126,18 @@ export class PlaceholderNode extends DecoratorNode<HTMLElement> {
         `;
         document.body.appendChild(tooltip);
         this.tooltipElement = tooltip;
-        
+
         // Position tooltip after it's rendered
         requestAnimationFrame(() => {
             const rect = element.getBoundingClientRect();
             const tooltipRect = tooltip.getBoundingClientRect();
             const scrollY = window.scrollY || window.pageYOffset;
             const scrollX = window.scrollX || window.pageXOffset;
-            
+
             // Position above the element, centered
             let top = rect.top + scrollY - tooltipRect.height - 8;
             let left = rect.left + scrollX + rect.width / 2 - tooltipRect.width / 2;
-            
+
             // Adjust if tooltip would go off screen
             if (left < scrollX + 10) {
                 left = scrollX + 10;
@@ -145,17 +145,17 @@ export class PlaceholderNode extends DecoratorNode<HTMLElement> {
             if (left + tooltipRect.width > scrollX + window.innerWidth - 10) {
                 left = scrollX + window.innerWidth - tooltipRect.width - 10;
             }
-            
+
             // If tooltip would go above viewport, position below instead
             if (top < scrollY + 10) {
                 top = rect.bottom + scrollY + 8;
             }
-            
+
             tooltip.style.top = `${top}px`;
             tooltip.style.left = `${left}px`;
         });
     }
-    
+
     private hideTooltip() {
         if (this.tooltipElement) {
             this.tooltipElement.remove();
@@ -178,7 +178,7 @@ export class PlaceholderNode extends DecoratorNode<HTMLElement> {
 
     decorate(): HTMLElement {
         // Use createDOM for consistency
-        return this.createDOM({});
+        return this.createDOM({ namespace: 'editor', theme: {} } as EditorConfig);
     }
 
     getTextContent(): string {

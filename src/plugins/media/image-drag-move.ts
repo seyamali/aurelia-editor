@@ -1,5 +1,5 @@
 import { $getNodeByKey, $getRoot, $getNearestNodeFromDOMNode, type LexicalEditor } from 'lexical';
-import { $isImageNode, ImageNode } from './image-node';
+import { $isImageNode } from './image-node';
 
 export function setupImageDragToMove(editor: LexicalEditor) {
     let draggedNodeKey: string | null = null;

@@ -50,7 +50,7 @@
     top: 0;
     right: -320px;
     width: var(--tc-sidebar-width);
-    height: 100vh;
+    height: 100%;
     background: #ffffff;
     box-shadow: -5px 0 20px rgba(0, 0, 0, 0.1);
     z-index: 2100;

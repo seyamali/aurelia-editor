@@ -10,7 +10,6 @@ import type { EditorSDK } from '../../core/sdk';
 import type { EditorPlugin } from '../../core/registry';
 import {
     $createFootnoteRefNode,
-    $createFootnoteContentNode,
     $createFootnoteContainerNode,
     $isFootnoteContainerNode,
 } from './footnote-node';

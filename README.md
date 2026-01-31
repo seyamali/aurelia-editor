@@ -1,102 +1,154 @@
-# Aurelia Editor - by Seyam Ali
+# Aurelia Editor
 
-A powerful, customizable, and framework-agnostic rich text editor built with [Lexical](https://lexical.dev/). Designed for modern content creation with a clean, "Notion-style" interface and comprehensive productivity tools.
+[![NPM Version](https://img.shields.io/npm/v/@seyamali/aurelia-editor?style=flat-square&color=blue)](https://www.npmjs.com/package/@seyamali/aurelia-editor)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
+[![TypeScript](https://img.shields.io/badge/Written%20With-TypeScript-3178C6?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
+
+**Aurelia Editor** is a powerful, customizable, and framework-agnostic rich text editor built on top of [Lexical](https://lexical.dev/). It is designed for modern content creation, offering a clean, "Notion-style" interface combined with enterprise-grade features like MS Word compatibility, PDF export, and advanced layout tools.
 
 ![Editor Preview](https://via.placeholder.com/800x400?text=Aurelia+Editor+Preview)
 
-## ✨ key Features
+---
 
-**Aurelia Editor** provides a "batteries-included" experience:
-
-### 📝 Advanced Formatting
-- **Rich Text**: Bold, Italic, Underline, Strikethrough, Subscript, Superscript.
-- **Typography**: Heading levels (H1-H3), Blockquotes, and more.
-- **Fonts & Colors**: Customizable font families and text/highlight colors.
-- **Case Converter**: Easily toggle between Uppercase, Lowercase, and Title Case.
-
+## ✨ Features
+ 
+**Aurelia Editor** delivers a premium writing experience with a "batteries-included" philosophy:
+ 
+### 📝 Core Editing
+*   **Rich Text**: Bold, Italic, Underline, Strikethrough, Subscript, Superscript, Inline Code.
+*   **Typography**: Hierarchical headings (H1-H6), Blockquotes, Dividers.
+*   **Fonts & Color**: Custom font families, text colors, and background highlights.
+*   **Lists**: Nested bullet and numbered lists with indentation controls.
+*   **Case Converter**: Toggle text between Uppercase, Lowercase, and Title Case.
+*   **Clear Formatting**: Instantly strip styles from copied text.
+ 
 ### 🖼️ Media & Embeds
-- **Universal Image Upload**: Drag & drop, copy-paste, or upload images via a unified modal.
-- **Image Editing**: Resize images, drag to move, and add captions.
-- **Video Support**: Embed YouTube videos and other media.
-- **Files**: Support for file attachments.
-
-### 📊 Layout & Structure
-- **Smart Tables**: Create tables with resizable columns/rows, merge cells, and custom backgrounds.
-- **Code Blocks**: Syntax highlighting for multiple languages via PrismJS.
-- **Structure**: Collapsible Text, Page Breaks, Horizontal Rules.
-- **Navigation**: Auto-generated Table of Contents & Document Outline.
-
+*   **Smart Images**: Drag & drop upload, resize, alignment positioning, captions, and link support.
+*   **Video Embedding**: YouTube integration with preview.
+*   **HTML Snippets**: Insert raw HTML for custom widgets or layouts.
+*   **Files**: Support for generic file attachments (extensible).
+ 
+### 📊 Structured Content
+*   **Advanced Tables**: Header rows, cell merging, splitting, column resizing, and row/column management.
+*   **Code Blocks**: Syntax highlighting for multiple languages with copy support.
+*   **Table of Contents**: Auto-generated TOC based on document headings with scroll-spy.
+*   **Footnotes**: Academic-style referencing and footnotes.
+*   **Page Layout**: Page breaks and print-ready styles.
+ 
 ### 🚀 Productivity Tools
-- **Slash Commands**: Type `/` to instantly access a menu of blocks and actions.
-- **Markdown Support**: Full Markdown shortcuts (e.g., `## Heading`, `> Quote`, `- List`).
-- **Autosave**: Never lose work with local storage autosave and recovery.
-- **Find & Replace**: Powerful search functionality within the editor.
-- **Format Painter**: Copy formatting from one section and apply it to another.
-- **Word Count**: Real-time statistics.
-
-### 📄 Export & Import
-- **PDF Export**: One-click download of your document as a styled PDF.
-- **Word Export/Import**: Seamlessly move content to and from Microsoft Word (`.docx`).
-- **Print Friendly**: Optimized CSS for printing.
-
-### 🤝 Collaboration & Extras
-- **Comments/Track Changes**: (Beta) Infrastructure for collaborative reviewing.
-- **Mentions**: Support for `@user` mentions.
-- **Source View**: HTML source editing for power users.
-- **Zen Mode**: Distraction-free writing experience.
+*   **Slash Commands**: Type `/` to access a unified menu for all tools.
+*   **Format Painter**: Copy and paste styles between text blocks.
+*   **Find & Replace**: Search with match highlighting and bulk replacement.
+*   **Autosave**: Automatic local backup to prevent data loss.
+*   **Mentions & Tags**: Support for `@user` mentions or custom tags (configurable).
+*   **Placeholders / Merge Fields**: Insert dynamic variables like `{{FirstName}}`.
+*   **Emoji Picker**: Built-in library for expressive writing.
+ 
+### 👀 View & Analysis
+*   **Document Outline**: Sidebar navigation for long documents.
+*   **Minimap**: VS Code-style minimap for quick scrolling.
+*   **Zen Mode**: Distraction-free full-screen writing.
+*   **Source View**: Edit the underlying HTML directly.
+*   **Word Count**: Real-time statistics.
+ 
+### 🔄 Collaboration & History
+*   **Track Changes**: Suggestion mode (Accept/Reject changes).
+*   **Revision History**: visual history of edits (if backend connected).
+*   **Comments**: Threaded comments support (framework ready).
+ 
+### 📤 Import / Export
+*   **PDF Export**: High-fidelity client-side PDF generation.
+*   **Word Support**: Import `.docx` files and export content to Word.
+*   **Markdown**: Full Markdown shortcut support (`##`, `*`, `>`).
 
 ---
 
-## 💻 Tech Stack
+## 📦 Installation
 
-- **Core**: [Lexical](https://lexical.dev/) (by Meta)
-- **Language**: TypeScript
-- **Bundler**: Vite
-- **Styling**: Vanilla CSS (CSS Variables for easy theming)
+Install the package via npm:
 
-## 🎛️ Toolbar Configuration
+```bash
+npm install @seyamali/aurelia-editor
+```
 
-The editor features a highly configurable toolbar system. You can switch between presets or define your own.
+---
 
-**Presets:**
-- `standard`: The default balanced set of tools.
-- `minimal`: Distraction-free, just the basics.
-- `blogging`: Focused on media and structure.
-- `full`: All available tools enabled.
+## 🛠️ Usage
 
-To change the preset programmatically:
+### Basic Setup
+Initialize the editor by mounting it to a DOM element:
+
 ```typescript
-import { ToolbarConfigManager } from 'my-universal-editor';
+import { AureliaEditor } from '@seyamali/aurelia-editor';
+import '@seyamali/aurelia-editor/dist/style.css';
 
+const editor = new AureliaEditor({
+  element: document.getElementById('editor-root'),
+  theme: 'default',
+  placeholder: 'Start writing...'
+});
+
+editor.render();
+```
+
+### Retrieval & Events
+Listen to changes or get the content:
+
+```typescript
+// Get HTML content
+const html = editor.getHTML();
+
+// Get JSON State
+const jsonState = editor.getEditorState();
+
+// Listen for updates
+editor.on('update', (content) => {
+  console.log('Document updated:', content);
+});
+```
+
+---
+
+## ⚙️ Configuration
+
+Aurelia Editor features a dynamic toolbar system. You can switch between built-in presets or define your own configuration.
+
+### Toolbar Presets
+Available presets: `standard`, `minimal`, `blogging`, `full`.
+
+```typescript
+import { ToolbarConfigManager } from '@seyamali/aurelia-editor';
+
+// Switch to a minimal, distraction-free interface
 ToolbarConfigManager.applyPreset('minimal');
 ```
 
+---
+
 ## ⌨️ Shortcuts
 
-| Action | Shortcut |
-|--------|----------|
-| **Bold** | `Ctrl + B` |
-| **Italic** | `Ctrl + I` |
-| **Canel/Undo** | `Ctrl + Z` |
-| **Slash Menu** | `/` |
-| **Find & Replace** | `Ctrl + F` |
-| **Save** | `Ctrl + S` (Triggers Autosave) |
+| Context | Shortcut | Action |
+| :--- | :--- | :--- |
+| **Formatting** | `Ctrl + B` | Bold |
+| | `Ctrl + I` | Italic |
+| | `Ctrl + U` | Underline |
+| **History** | `Ctrl + Z` | Undo |
+| | `Ctrl + Y` | Redo |
+| **Tools** | `/` | Slash Menu |
+| | `Ctrl + F` | Find & Replace |
+| | `Ctrl + S` | Save (Autosave trigger) |
+| **Navigation** | `Ctrl + K` | Insert Link |
 
 ---
 
 ## 📄 License & Attribution
 
-This project is open-source and available under the **MIT License**.
+This project is open-source software licensed under the **MIT License**.
 
-### Summary
-- **Commercial Use**: ✅ Allowed
-- **Modification**: ✅ Allowed
-- **Distribution**: ✅ Allowed
-- **Private Use**: ✅ Allowed
-- **Liability**: ❌ None (Use at your own risk)
-- **Attribution**: ⚠️ **REQUIRED**
+### Terms of Use:
+*   ✅ **Commercial Use**: Allowed
+*   ✅ **Modification**: Allowed
+*   ✅ **Private Use**: Allowed
+*   ⚠️ **Attribution Required**: You must retain the copyright notice and license file in your source code.
 
-### Credit Requirement
-If you use this editor in your project (commercial or non-commercial), you **must** retain the copyright notice and license file (`LICENSE`) in your source code. This ensures the original author receives credit for their work.
-
-Copyright (c) 2026 Seyam Ali
+**Copyright © 2026 Seyam Ali**. All rights reserved.
