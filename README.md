@@ -1,4 +1,4 @@
-﻿# Aurelia Editor
+# Aurelia Editor
 
 [![NPM Version](https://img.shields.io/npm/v/@seyamali/aurelia-editor?style=flat-square&color=blue)](https://www.npmjs.com/package/@seyamali/aurelia-editor)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
@@ -6,65 +6,37 @@
 [![GitHub](https://img.shields.io/badge/GitHub-Repository-181717?style=flat-square&logo=github)](https://github.com/seyamali/custom-rich-text-editor)
 [![Live Demo](https://img.shields.io/badge/Live-Demo-0f766e?style=flat-square&logo=vercel)](https://aurelia-editor.pro.bd/)
 
-**Aurelia Editor** is a customizable, framework-agnostic rich text and CMS editor built on top of [Lexical](https://lexical.dev/). It is designed for modern content creation and combines a clean authoring experience with advanced document, layout, and export features.
+**Aurelia Editor** is a framework-agnostic rich text and CMS editor built on top of [Lexical](https://lexical.dev/). It is designed for content teams, blogs, docs, and page builders that want a polished editing experience with strong publishing tools.
 
 Try the live demo at [aurelia-editor.pro.bd](https://aurelia-editor.pro.bd/).
 
 ![Editor Preview](https://seyam.runasp.net/uploads/6d201eb5-6f39-4429-958d-be310c964419.png)
 
----
+## What it includes
 
-## Features
+- Rich text formatting, typography, lists, alignment, and case conversion
+- Image tools, video embeds, HTML snippets, and link editing
+- Tables, code blocks, TOC, footnotes, and page breaks
+- Comments, track changes, presence, and revision support
+- CMS page settings, SEO audit, publish workflow, and export presets
+- Command palette, slash commands, format painter, autosave, and document stats
+- Template blocks and reusable page snippets
 
-**Aurelia Editor** follows a batteries-included approach and ships with a broad set of authoring tools out of the box.
+## Best for
 
-### High-Fidelity Design
-* **Design Preservation**: Paste complex HTML layouts and preserve styles, metadata, and structure with high fidelity.
-* **Clean Export**: Removes Lexical-specific internal attributes to produce cleaner HTML output.
-* **CSS Sandboxing**: Scopes custom CSS to the editor container to reduce style leakage.
+- CMS and headless CMS editing
+- Blog publishing and article drafting
+- Documentation and knowledge base pages
+- Landing pages and content-heavy marketing sites
+- Teams that need an editor with both writing and publishing tools
 
-### Core Editing
-* **Rich Text**: Bold, italic, underline, strikethrough, subscript, superscript, and inline code.
-* **Typography**: Headings, blockquotes, dividers, and paragraph controls.
-* **Fonts and Color**: Custom font families, text color, and highlight support.
-* **Lists**: Nested bullet and numbered lists with indentation controls.
-* **Case Conversion**: Toggle text between uppercase, lowercase, and title case.
-
-### Media and Embeds
-* **Smart Images**: Drag-and-drop upload, resizing, alignment, captions, and links.
-* **Video Embedding**: YouTube embedding with preview support.
-* **HTML Snippets**: Insert raw HTML for widgets or custom layouts.
-
-### Structured Content
-* **Advanced Tables**: Header rows, cell merging, splitting, resizing, and row or column management.
-* **Code Blocks**: Syntax highlighting for multiple languages with copy support.
-* **Table of Contents**: Auto-generated TOC based on document headings.
-* **Footnotes**: Academic-style footnotes and references.
-
-### Productivity Tools
-* **Slash Commands**: Type `/` to open a unified command menu.
-* **Format Painter**: Copy and reuse formatting between text blocks.
-* **Find and Replace**: Search with match highlighting and bulk replacement.
-* **Autosave**: Local draft recovery to help prevent data loss.
-* **Placeholders**: Insert merge-field style placeholders such as `{{FirstName}}`.
-
----
-
-## Installation
-
-Install the package with npm:
+## Install
 
 ```bash
 npm install @seyamali/aurelia-editor
 ```
 
----
-
-## Usage
-
-### Basic Setup
-
-Initialize the full editor, including the default toolbar and UI:
+## Use
 
 ```typescript
 import { AureliaEditor } from '@seyamali/aurelia-editor';
@@ -79,58 +51,37 @@ if (!container) {
 const editor = await AureliaEditor.create(container);
 ```
 
-### Reading and Setting Content
-
-Use the public helpers to work with editor content:
+## Working with content
 
 ```typescript
 const html = await editor.getHtml();
-
-await editor.setHtml(initialHtml);
-
-const jsonState = editor.getInternalEditor().getEditorState().toJSON();
+await editor.setHtml(html);
 ```
 
----
+## Toolbar presets
 
-## Configuration
+Available presets:
 
-Aurelia Editor includes a dynamic toolbar system with built-in presets.
+- `minimal`
+- `standard`
+- `blogging`
+- `documentation`
+- `full`
 
-Available presets: `standard`, `minimal`, `blogging`, `documentation`, `full`
+## Useful shortcuts
 
-```typescript
-import { ToolbarSystem } from '@seyamali/aurelia-editor';
+- `Ctrl/Cmd + K`: Command palette
+- `Ctrl/Cmd + Alt + M`: Comment
+- `Ctrl/Cmd + Alt + T`: Templates
+- `Ctrl/Cmd + Alt + S`: Stats
+- `Ctrl/Cmd + F`: Find and replace
+- `/`: Slash menu
 
-ToolbarSystem.applyPreset('documentation');
-```
+## Public site
 
----
+- Live demo: [https://aurelia-editor.pro.bd/](https://aurelia-editor.pro.bd/)
+- GitHub: [https://github.com/seyamali/custom-rich-text-editor](https://github.com/seyamali/custom-rich-text-editor)
 
-## Shortcuts
+## License
 
-| Context | Shortcut | Action |
-| :--- | :--- | :--- |
-| **Formatting** | `Ctrl + B` | Bold |
-|  | `Ctrl + I` | Italic |
-|  | `Ctrl + U` | Underline |
-| **History** | `Ctrl + Z` | Undo |
-|  | `Ctrl + Y` | Redo |
-| **Tools** | `/` | Slash Menu |
-|  | `Ctrl + F` | Find and Replace |
-|  | `Ctrl + S` | Save or trigger autosave |
-| **Navigation** | `Ctrl + K` | Insert Link |
-
----
-
-## License and Attribution
-
-This project is licensed under the **MIT License**.
-
-### Terms of Use
-* **Commercial Use**: Allowed
-* **Modification**: Allowed
-* **Private Use**: Allowed
-* **Attribution Required**: Retain the copyright notice and license file in source distributions.
-
-**Copyright (c) 2026 Seyam Ali**. All rights reserved.
+MIT
