@@ -1,6 +1,7 @@
 import {
     $getSelection,
     $isRangeSelection,
+    $isTextNode,
     type LexicalEditor,
     COMMAND_PRIORITY_LOW,
     CLICK_COMMAND
@@ -11,6 +12,7 @@ import { DialogSystem } from '../../shared/dialog-system';
 
 // Store the copied format style
 let copiedFormat: number | null = null;
+let copiedStyle = '';
 let isPainting = false;
 
 export const FormatPainterPlugin: EditorPlugin = {
@@ -26,7 +28,10 @@ export const FormatPainterPlugin: EditorPlugin = {
                         sdk.update(() => {
                             const selection = $getSelection();
                             if ($isRangeSelection(selection)) {
-                                selection.format = copiedFormat!;
+                                selection.setFormat(copiedFormat!);
+                                if (copiedStyle) {
+                                    selection.setStyle(copiedStyle);
+                                }
                             }
                         });
 
@@ -52,6 +57,10 @@ export const FormatPainter = {
             const selection = $getSelection();
             if ($isRangeSelection(selection)) {
                 copiedFormat = selection.format;
+                const styledNode = selection.getNodes().find((node) => $isTextNode(node)) as
+                    | { getStyle: () => string }
+                    | undefined;
+                copiedStyle = selection.style || styledNode?.getStyle?.() || '';
                 console.log("Format copied:", copiedFormat);
                 togglePainting(true, isLocked);
             } else {
@@ -69,7 +78,7 @@ function togglePainting(active: boolean, locked = false) {
     isPainting = active;
     isLockedMode = active && locked;
 
-    const btn = document.getElementById('format-painter-btn');
+    const btn = document.getElementById('format-painter-btn') || document.querySelector<HTMLElement>('[data-item-id="format-painter"]');
     if (btn) {
         if (active) {
             btn.classList.add('active');
@@ -81,6 +90,7 @@ function togglePainting(active: boolean, locked = false) {
             btn.style.backgroundColor = '';
             document.body.classList.remove('format-painter-active');
             isLockedMode = false;
+            copiedStyle = '';
         }
     }
 }

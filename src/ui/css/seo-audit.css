@@ -1,0 +1,242 @@
+.seo-audit-panel {
+    position: fixed;
+    inset: 0;
+    z-index: 5260;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    pointer-events: none;
+    box-sizing: border-box;
+}
+
+.seo-audit-panel.hidden {
+    display: none;
+}
+
+.seo-audit-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.34);
+    backdrop-filter: blur(8px);
+    pointer-events: auto;
+}
+
+.seo-audit-card {
+    position: relative;
+    width: min(460px, 100%);
+    max-height: min(88vh, 900px);
+    overflow: auto;
+    pointer-events: auto;
+    background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    border-radius: 22px;
+    box-shadow: 0 30px 80px rgba(15, 23, 42, 0.24);
+    padding: 22px;
+    display: grid;
+    gap: 18px;
+    box-sizing: border-box;
+}
+
+.seo-audit-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    align-items: flex-start;
+}
+
+.seo-audit-kicker {
+    margin: 0 0 4px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-weight: 800;
+    color: #0f766e;
+}
+
+.seo-audit-badge {
+    width: 42px;
+    height: 42px;
+    display: grid;
+    place-items: center;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #14b8a6, #0f766e);
+    color: #fff;
+    box-shadow: 0 10px 24px rgba(15, 118, 110, 0.22);
+    margin-bottom: 10px;
+}
+
+.seo-audit-badge svg {
+    width: 22px;
+    height: 22px;
+}
+
+.seo-audit-header h3 {
+    margin: 0;
+    color: #0f172a;
+    font-size: 22px;
+}
+
+.seo-audit-subtitle {
+    margin: 8px 0 0;
+    color: #475569;
+    line-height: 1.5;
+}
+
+.seo-audit-close {
+    width: 36px;
+    height: 36px;
+    border: 0;
+    border-radius: 999px;
+    background: #ecfeff;
+    color: #0f766e;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.seo-audit-score {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 16px;
+    align-items: center;
+    padding: 16px;
+    border-radius: 18px;
+    background: linear-gradient(135deg, #ecfeff 0%, #f0fdf4 100%);
+    border: 1px solid #cffafe;
+}
+
+.seo-audit-score-ring {
+    --seo-score: 0;
+    width: 84px;
+    height: 84px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    font-size: 26px;
+    font-weight: 900;
+    color: #0f172a;
+    background:
+        radial-gradient(circle at center, #ffffff 58%, transparent 59%),
+        conic-gradient(#14b8a6 calc(var(--seo-score) * 1%), #d1fae5 0);
+    box-shadow: inset 0 0 0 1px rgba(15, 118, 110, 0.12);
+}
+
+.seo-audit-score-copy strong {
+    display: block;
+    font-size: 18px;
+    color: #0f172a;
+    text-transform: capitalize;
+}
+
+.seo-audit-score-copy p {
+    margin: 6px 0 0;
+    color: #475569;
+    line-height: 1.5;
+}
+
+.seo-audit-metrics {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.seo-audit-metric {
+    border-radius: 16px;
+    padding: 14px;
+    border: 1px solid #e2e8f0;
+    background: white;
+    display: grid;
+    gap: 4px;
+}
+
+.seo-audit-metric.good {
+    border-color: #bbf7d0;
+}
+
+.seo-audit-metric.warn {
+    border-color: #fde68a;
+}
+
+.seo-audit-metric.bad {
+    border-color: #fecaca;
+}
+
+.seo-audit-metric-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: #64748b;
+    font-weight: 800;
+}
+
+.seo-audit-metric-value {
+    font-size: 18px;
+    color: #0f172a;
+}
+
+.seo-audit-metric-note {
+    font-size: 12px;
+    color: #475569;
+    line-height: 1.5;
+}
+
+.seo-audit-recommendations {
+    display: grid;
+    gap: 10px;
+}
+
+.seo-audit-section-title {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-weight: 800;
+    color: #0f766e;
+}
+
+.seo-audit-list {
+    margin: 0;
+    padding-left: 18px;
+    display: grid;
+    gap: 8px;
+    color: #334155;
+    line-height: 1.5;
+}
+
+.seo-audit-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.seo-audit-button {
+    border: 0;
+    border-radius: 12px;
+    padding: 10px 16px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.seo-audit-button.secondary {
+    background: #ecfeff;
+    color: #0f766e;
+}
+
+@media (max-width: 720px) {
+    .seo-audit-panel {
+        padding: 12px;
+    }
+
+    .seo-audit-metrics {
+        grid-template-columns: 1fr;
+    }
+
+    .seo-audit-score {
+        grid-template-columns: 1fr;
+        justify-items: start;
+    }
+
+    .seo-audit-card {
+        max-height: calc(100vh - 24px);
+    }
+}

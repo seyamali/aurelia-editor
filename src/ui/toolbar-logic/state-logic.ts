@@ -42,7 +42,7 @@ export function setupToolbarState(internalEditor: any) {
 
                 // --- Block Type Detection (Heading Dropdown) ---
                 const anchorNode = selection.anchor.getNode();
-                let element = anchorNode.getKey() === 'root'
+                const element = anchorNode.getKey() === 'root'
                     ? anchorNode
                     : anchorNode.getTopLevelElementOrThrow();
 

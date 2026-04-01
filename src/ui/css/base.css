@@ -82,6 +82,15 @@ a:focus-visible {
     color: #cbd5e1;
 }
 
+.status-right {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.autosave-status {
+    color: #10b981;
+}
+
 /* RTL Support */
 .editor-wrapper[dir="rtl"] {
     text-align: right;

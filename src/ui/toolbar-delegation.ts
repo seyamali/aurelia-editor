@@ -17,6 +17,7 @@ import { REMOVE_FORMATTING_COMMAND } from '../plugins/essentials/clipboard';
 import { SHOW_LINK_POPOVER_COMMAND } from '../plugins/media/link-popover-ui';
 import { CaseChange } from '../plugins/productivity/case-change';
 import { TOGGLE_TRACK_CHANGES_COMMAND } from '../plugins/collaboration/track-changes';
+import { promptForInlineComment } from '../plugins/collaboration/comments';
 
 import { SourceViewPlugin } from '../plugins/advanced/source-view';
 import { ICONS } from './icons';
@@ -27,13 +28,31 @@ import { insertImage } from '../plugins/media/images';
 import { MediaEmbedPlugin } from '../plugins/advanced/media-embed';
 import { toggleTableGridPicker } from './table-grid-picker';
 import { toggleBlockQuote, setBlockType } from '../plugins/layout/headings';
+import {
+    TABLE_ADD_ROW_ABOVE_COMMAND,
+    TABLE_ADD_ROW_BELOW_COMMAND,
+    TABLE_ADD_COL_LEFT_COMMAND,
+    TABLE_ADD_COL_RIGHT_COMMAND,
+    TABLE_DELETE_ROW_COMMAND,
+    TABLE_DELETE_COL_COMMAND,
+    TABLE_DELETE_TABLE_COMMAND,
+    TABLE_MERGE_CELLS_COMMAND,
+    TABLE_SPLIT_CELLS_COMMAND,
+} from '../plugins/layout/tables';
 import { FormatPainter } from '../plugins/productivity/format-painter';
 import { ExportPDF } from '../plugins/export/pdf-export';
 import { ExportWord } from '../plugins/export/word-export';
 import { ImportWord } from '../plugins/import/word-import';
+import { toggleExportPresetsPanel } from './export-presets-ui';
 import { MinimapPlugin } from '../plugins/productivity/minimap';
 import { DocumentOutlinePlugin } from '../plugins/productivity/document-outline';
 import { showPlaceholderInsertPanel } from '../plugins/advanced/placeholder';
+import { showTemplateBlocksPanel } from '../plugins/advanced/template-blocks';
+import { toggleDocumentStatsPanel } from './document-stats-ui';
+import { toggleImageToolsPanel } from './image-tools-ui';
+import { toggleTypographyPanel } from './text-style-ui';
+import { toggleContentWorkspace } from './content-workspace-ui';
+import { toggleCommandPalette } from './command-palette-ui';
 
 function toggleSourceView(editor: AureliaEditor, internalEditor: any, btn: HTMLElement) {
     const canvas = document.getElementById('editor-canvas') as HTMLElement;
@@ -220,14 +239,17 @@ function handleToolbarAction(itemId: string, button: HTMLElement, editor: Aureli
 
         // --- MEDIA ---
         case 'insert-image': insertImage(); break; // Global function
+        case 'image-tools': toggleImageToolsPanel(); break;
         case 'insert-link': internalEditor.dispatchCommand(SHOW_LINK_POPOVER_COMMAND, undefined); break;
         case 'insert-video': MediaEmbedPlugin.insertYouTube(editor); break;
         case 'insert-html-snippet': MediaEmbedPlugin.insertHTMLSnippet(editor); break;
+        case 'template-blocks': showTemplateBlocksPanel(internalEditor); break;
 
         // --- EXPORT/IMPORT ---
         case 'export-pdf': ExportPDF.exportToPdf(internalEditor); break;
         case 'export-word': ExportWord.exportToDoc(internalEditor); break;
         case 'import-word': ImportWord.triggerImport(internalEditor); break;
+        case 'export-presets': toggleExportPresetsPanel(); break;
 
         // --- LAYOUT ---
         case 'blockquote': toggleBlockQuote(internalEditor); break;
@@ -243,8 +265,15 @@ function handleToolbarAction(itemId: string, button: HTMLElement, editor: Aureli
         // --- PRODUCTIVITY ---
         case 'find-replace': internalEditor.dispatchCommand(OPEN_FIND_REPLACE, undefined); break;
         case 'emoji': internalEditor.dispatchCommand(OPEN_EMOJI_PICKER, undefined); break;
+        case 'comment': promptForInlineComment(internalEditor); break;
         case 'format-painter': FormatPainter.copyFormat(internalEditor); break;
         case 'insert-placeholder': showPlaceholderInsertPanel(internalEditor); break;
+        case 'document-stats': toggleDocumentStatsPanel(); break;
+        case 'cms-settings': toggleContentWorkspace('cms'); break;
+        case 'seo-audit': toggleContentWorkspace('seo'); break;
+        case 'typography': toggleTypographyPanel(); break;
+        case 'publish-workflow': toggleContentWorkspace('publish'); break;
+        case 'command-palette': toggleCommandPalette(); break;
 
         // --- VIEW ---
         case 'minimap': MinimapPlugin.toggleVisibility(); break;
@@ -275,9 +304,41 @@ function handleToolbarAction(itemId: string, button: HTMLElement, editor: Aureli
 }
 
 function handleCommandAction(command: string, payload: string | undefined, _button: HTMLElement, _editor: AureliaEditor, internalEditor: any) {
-    if (command === 'FORMAT_HEADING_COMMAND' && payload) {
-        // "h1", "h2", "paragraph"
-        const tag = payload as any;
-        setBlockType(internalEditor, tag);
+    switch (command) {
+        case 'FORMAT_HEADING_COMMAND':
+            if (payload) {
+                const tag = payload as any;
+                setBlockType(internalEditor, tag);
+            }
+            break;
+        case 'TABLE_ADD_ROW_ABOVE':
+            internalEditor.dispatchCommand(TABLE_ADD_ROW_ABOVE_COMMAND, undefined);
+            break;
+        case 'TABLE_ADD_ROW_BELOW':
+            internalEditor.dispatchCommand(TABLE_ADD_ROW_BELOW_COMMAND, undefined);
+            break;
+        case 'TABLE_ADD_COL_LEFT':
+            internalEditor.dispatchCommand(TABLE_ADD_COL_LEFT_COMMAND, undefined);
+            break;
+        case 'TABLE_ADD_COL_RIGHT':
+            internalEditor.dispatchCommand(TABLE_ADD_COL_RIGHT_COMMAND, undefined);
+            break;
+        case 'TABLE_DELETE_ROW':
+            internalEditor.dispatchCommand(TABLE_DELETE_ROW_COMMAND, undefined);
+            break;
+        case 'TABLE_DELETE_COL':
+            internalEditor.dispatchCommand(TABLE_DELETE_COL_COMMAND, undefined);
+            break;
+        case 'TABLE_DELETE_TABLE':
+            internalEditor.dispatchCommand(TABLE_DELETE_TABLE_COMMAND, undefined);
+            break;
+        case 'TABLE_MERGE_CELLS':
+            internalEditor.dispatchCommand(TABLE_MERGE_CELLS_COMMAND, undefined);
+            break;
+        case 'TABLE_SPLIT_CELLS':
+            internalEditor.dispatchCommand(TABLE_SPLIT_CELLS_COMMAND, undefined);
+            break;
+        default:
+            break;
     }
 }

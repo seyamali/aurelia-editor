@@ -1,16 +1,16 @@
 export const TOOLBAR_HTML = `
       <div id="toolbar" class="toolbar" role="toolbar" aria-label="Editor toolbar">
-        <button id="undo-btn" data-i18n="undo" data-i18n-icon="↶" aria-label="Undo">↶ Undo</button>
-        <button id="redo-btn" data-i18n="redo" data-i18n-icon="↷" aria-label="Redo">↷ Redo</button>
+        <button id="undo-btn" data-i18n="undo" data-i18n-icon="Ã¢â€ Â¶" aria-label="Undo">Ã¢â€ Â¶ Undo</button>
+        <button id="redo-btn" data-i18n="redo" data-i18n-icon="Ã¢â€ Â·" aria-label="Redo">Ã¢â€ Â· Redo</button>
         <span class="divider"></span>
-        <button id="cut-btn" title="Cut (Ctrl+X)">✂️ Cut</button>
-        <button id="copy-btn" title="Copy (Ctrl+C)">📋 Copy</button>
-        <button id="paste-btn" title="Paste (Ctrl+V)">📥 Paste</button>
-        <button id="paste-plain-btn" title="Paste as Plain Text (Ctrl+Shift+V)">📄 Paste Plain</button>
+        <button id="cut-btn" title="Cut (Ctrl+X)">Ã¢Å“â€šÃ¯Â¸Â Cut</button>
+        <button id="copy-btn" title="Copy (Ctrl+C)">Ã°Å¸â€œâ€¹ Copy</button>
+        <button id="paste-btn" title="Paste (Ctrl+V)">Ã°Å¸â€œÂ¥ Paste</button>
+        <button id="paste-plain-btn" title="Paste as Plain Text (Ctrl+Shift+V)">Ã°Å¸â€œâ€ž Paste Plain</button>
         <span class="divider"></span>
         <button id="clear-btn" data-i18n="clearFormatting" aria-label="Clear formatting">Clear Format</button>
-        <button id="format-painter-btn" aria-label="Format Painter">🖌️ Painter</button>
-        <button id="find-btn" title="Find & Replace (Ctrl+F)">🔍 Find</button>
+        <button id="format-painter-btn" aria-label="Format Painter">Ã°Å¸â€“Å’Ã¯Â¸Â Painter</button>
+        <button id="find-btn" title="Find & Replace (Ctrl+F)">Ã°Å¸â€Â Find</button>
         
         <span class="divider"></span>
 
@@ -34,40 +34,41 @@ export const TOOLBAR_HTML = `
           <option value="h6" data-i18n="h6">Heading 6</option>
           <option value="quote" data-i18n="quote">Block Quote</option>
         </select>
-        <button id="hr-btn" title="Horizontal Line">—</button>
-        <button id="quote-btn" title="Block Quote" aria-label="Block Quote">“</button>
+        <button id="hr-btn" title="Horizontal Line">Ã¢â‚¬â€</button>
+        <button id="quote-btn" title="Block Quote" aria-label="Block Quote">Ã¢â‚¬Å“</button>
         
-        <button id="bullet-btn" title="Bulleted List" aria-label="Bulleted List">• List</button>
+        <button id="bullet-btn" title="Bulleted List" aria-label="Bulleted List">Ã¢â‚¬Â¢ List</button>
         <button id="number-btn" title="Numbered List" aria-label="Numbered List">1. List</button>
-        <button id="outdent-btn" title="Decrease Indent" aria-label="Decrease Indent">← Indent</button>
-        <button id="indent-btn" title="Increase Indent" aria-label="Increase Indent">Indent →</button>
+        <button id="outdent-btn" title="Decrease Indent" aria-label="Decrease Indent">Ã¢â€ Â Indent</button>
+        <button id="indent-btn" title="Increase Indent" aria-label="Increase Indent">Indent Ã¢â€ â€™</button>
         
         <span class="divider"></span>
 
-        <button id="link-btn" data-i18n="link" data-i18n-icon="🔗">🔗 Link</button>
-        <button id="image-btn" data-i18n="image" data-i18n-icon="🖼️" title="Insert Image (Upload, URL, Paste, or Drag & Drop)">🖼️ Image</button>
-        <button id="emoji-btn" data-i18n="emoji" data-i18n-icon="😀" title="Insert Emoji">😀 Emoji</button>
-        <button id="table-btn" data-i18n="table" data-i18n-icon="📅">📅 Table</button>
+        <button id="link-btn" data-i18n="link" data-i18n-icon="Ã°Å¸â€â€”">Ã°Å¸â€â€” Link</button>
+        <button id="image-btn" data-i18n="image" data-i18n-icon="Ã°Å¸â€“Â¼Ã¯Â¸Â" title="Insert Image (Upload, URL, Paste, or Drag & Drop)">Ã°Å¸â€“Â¼Ã¯Â¸Â Image</button>
+        <button id="image-tools-btn" title="Edit Selected Image">Image Tools</button>
+        <button id="emoji-btn" data-i18n="emoji" data-i18n-icon="Ã°Å¸Ëœâ‚¬" title="Insert Emoji">Ã°Å¸Ëœâ‚¬ Emoji</button>
+        <button id="table-btn" data-i18n="table" data-i18n-icon="Ã°Å¸â€œâ€¦">Ã°Å¸â€œâ€¦ Table</button>
         
-        <button id="video-btn" data-i18n="youtube" data-i18n-icon="📹">📹 Video</button>
+        <button id="video-btn" data-i18n="youtube" data-i18n-icon="Ã°Å¸â€œÂ¹">Ã°Å¸â€œÂ¹ Video</button>
         <button id="html-snippet-btn" data-i18n="htmlSnippet" data-i18n-icon="&lt;/&gt;">&lt;/&gt; Snippet</button>
         <button id="code-block-btn" data-i18n="codeBlock" data-i18n-icon="{}">{} Code Block</button>
         
         <span class="divider"></span>
-<button id="insert-placeholder-btn" title="Insert Placeholder" data-i18n="placeholders">🏷️ Field</button>
+<button id="insert-placeholder-btn" title="Insert Placeholder" data-i18n="placeholders">Ã°Å¸ÂÂ·Ã¯Â¸Â Field</button>
         
         <span class="divider"></span>
         
-        <button id="export-pdf-btn" data-i18n="pdf" data-i18n-icon="📄">📄 PDF</button>
-        <button id="export-word-btn" data-i18n="word" data-i18n-icon="📝">📝 Word</button>
-        <button id="import-word-btn" data-i18n="importWord" data-i18n-icon="📥">📥 Import Word</button>
+        <button id="export-pdf-btn" data-i18n="pdf" data-i18n-icon="Ã°Å¸â€œâ€ž">Ã°Å¸â€œâ€ž PDF</button>
+        <button id="export-word-btn" data-i18n="word" data-i18n-icon="Ã°Å¸â€œÂ">Ã°Å¸â€œÂ Word</button>
+        <button id="import-word-btn" data-i18n="importWord" data-i18n-icon="Ã°Å¸â€œÂ¥">Ã°Å¸â€œÂ¥ Import Word</button>
         
         <span class="divider"></span>
-        <button id="page-break-btn" data-i18n="pageBreak" data-i18n-icon="📄">📄 Break</button>
-        <button id="footnote-btn" data-i18n="footnote" data-i18n-icon="¹">¹ Footnote</button>
-        <button id="toc-btn" data-i18n="toc" data-i18n-icon="📑">📑 TOC</button>
-        <button id="outline-toggle-btn" data-i18n="outline" data-i18n-icon="📑">📑 Outline Sidebar</button>
-        <button id="minimap-toggle-btn" title="Toggle Minimap">🗺️ Minimap</button>
+        <button id="page-break-btn" data-i18n="pageBreak" data-i18n-icon="Ã°Å¸â€œâ€ž">Ã°Å¸â€œâ€ž Break</button>
+        <button id="footnote-btn" data-i18n="footnote" data-i18n-icon="Ã‚Â¹">Ã‚Â¹ Footnote</button>
+        <button id="toc-btn" data-i18n="toc" data-i18n-icon="Ã°Å¸â€œâ€˜">Ã°Å¸â€œâ€˜ TOC</button>
+        <button id="outline-toggle-btn" data-i18n="outline" data-i18n-icon="Ã°Å¸â€œâ€˜">Ã°Å¸â€œâ€˜ Outline Sidebar</button>
+        <button id="minimap-toggle-btn" title="Toggle Minimap">Ã°Å¸â€”ÂºÃ¯Â¸Â Minimap</button>
         
         <span class="divider"></span>
         <button id="uppercase-btn" title="Uppercase">ABC</button>
@@ -79,16 +80,17 @@ export const TOOLBAR_HTML = `
         
         <span class="divider"></span>
         <select id="language-select" class="toolbar-select">
-            <option value="en">🇺🇸 English</option>
-            <option value="ar">🇸🇦 العربية (Arabic)</option>
-            <option value="es">🇪🇸 Español</option>
-            <option value="fr">🇫🇷 Français</option>
+            <option value="en">Ã°Å¸â€¡ÂºÃ°Å¸â€¡Â¸ English</option>
+            <option value="ar">Ã°Å¸â€¡Â¸Ã°Å¸â€¡Â¦ Ã˜Â§Ã™â€žÃ˜Â¹Ã˜Â±Ã˜Â¨Ã™Å Ã˜Â© (Arabic)</option>
+            <option value="es">Ã°Å¸â€¡ÂªÃ°Å¸â€¡Â¸ EspaÃƒÂ±ol</option>
+            <option value="fr">Ã°Å¸â€¡Â«Ã°Å¸â€¡Â· FranÃƒÂ§ais</option>
         </select>
 
-        <button id="toolbar-settings-btn" title="Toolbar Settings">⚙️</button>
+        <button id="cms-settings-btn" title="Page Settings">CMS</button>
+        <button id="toolbar-settings-btn" title="Toolbar Settings">Ã¢Å¡â„¢Ã¯Â¸Â</button>
 
-        <button id="track-changes-btn" class="off" data-i18n="trackChanges" data-i18n-icon="👁️">👁️ Track Changes: OFF</button>
-        <button id="zen-mode-btn" title="Zen Mode" data-i18n="zenMode">🧘 Zen</button>
+        <button id="track-changes-btn" class="off" data-i18n="trackChanges" data-i18n-icon="Ã°Å¸â€˜ÂÃ¯Â¸Â">Ã°Å¸â€˜ÂÃ¯Â¸Â Track Changes: OFF</button>
+        <button id="zen-mode-btn" title="Zen Mode" data-i18n="zenMode">Ã°Å¸Â§Ëœ Zen</button>
         <div id="autosave-status"></div>
       </div>
 `;

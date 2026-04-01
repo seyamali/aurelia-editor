@@ -1,0 +1,219 @@
+.command-palette {
+    position: fixed;
+    inset: 0;
+    z-index: 2400;
+    display: grid;
+    place-items: start center;
+    padding-top: 12vh;
+}
+
+.command-palette.hidden {
+    display: none;
+}
+
+.command-palette-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.45);
+    backdrop-filter: blur(10px);
+}
+
+.command-palette-panel {
+    position: relative;
+    width: min(760px, calc(100vw - 32px));
+    max-height: min(72vh, 720px);
+    display: grid;
+    gap: 14px;
+    background: rgba(255, 255, 255, 0.96);
+    border: 1px solid rgba(148, 163, 184, 0.25);
+    border-radius: 24px;
+    box-shadow: 0 30px 90px rgba(15, 23, 42, 0.26);
+    padding: 18px;
+    z-index: 1;
+    animation: command-palette-rise 0.2s ease-out;
+}
+
+@keyframes command-palette-rise {
+    from {
+        opacity: 0;
+        transform: translateY(10px) scale(0.98);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.command-palette-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.command-palette-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.command-palette-subtitle {
+    margin-top: 4px;
+    font-size: 12px;
+    color: #64748b;
+}
+
+.command-palette-close {
+    border: 0;
+    background: transparent;
+    color: #64748b;
+    font-size: 24px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.command-palette-close:hover {
+    color: #0f172a;
+}
+
+.command-palette-search {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 14px;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    background: #f8fafc;
+}
+
+.command-palette-search-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    color: #94a3b8;
+    flex: 0 0 auto;
+}
+
+.command-palette-search-icon svg {
+    width: 18px;
+    height: 18px;
+}
+
+.command-palette-search input {
+    width: 100%;
+    border: 0;
+    background: transparent;
+    padding: 12px 0;
+    font: inherit;
+    font-size: 15px;
+    color: #0f172a;
+}
+
+.command-palette-search input:focus {
+    outline: none;
+}
+
+.command-palette-results {
+    display: grid;
+    gap: 8px;
+    overflow: auto;
+    padding-right: 4px;
+    max-height: 52vh;
+}
+
+.command-palette-section {
+    display: grid;
+    gap: 8px;
+}
+
+.command-palette-section-label {
+    padding: 4px 2px 0;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #94a3b8;
+}
+
+.command-palette-item {
+    display: grid;
+    grid-template-columns: 36px 1fr;
+    gap: 12px;
+    align-items: start;
+    border: 1px solid transparent;
+    border-radius: 16px;
+    padding: 12px 14px;
+    text-align: left;
+    background: #fff;
+    cursor: pointer;
+    transition: border-color 0.15s ease, background-color 0.15s ease, transform 0.15s ease;
+}
+
+.command-palette-item:hover,
+.command-palette-item.selected {
+    border-color: #f59e0b;
+    background: #fffaf0;
+    transform: translateY(-1px);
+}
+
+.command-palette-item-icon {
+    width: 36px;
+    height: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    background: #f8fafc;
+    color: #92400e;
+}
+
+.command-palette-item-icon svg {
+    width: 18px;
+    height: 18px;
+}
+
+.command-palette-item-body {
+    min-width: 0;
+    display: grid;
+    gap: 4px;
+}
+
+.command-palette-item-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.command-palette-item-label {
+    font-size: 14px;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.command-palette-item-shortcut {
+    font-size: 11px;
+    font-weight: 700;
+    color: #b45309;
+    background: #fffbeb;
+    border: 1px solid #fcd34d;
+    border-radius: 999px;
+    padding: 3px 8px;
+    white-space: nowrap;
+}
+
+.command-palette-item-description {
+    font-size: 12px;
+    color: #64748b;
+    line-height: 1.4;
+}
+
+.command-palette-empty {
+    padding: 24px 8px;
+    text-align: center;
+    color: #64748b;
+    font-size: 13px;
+}

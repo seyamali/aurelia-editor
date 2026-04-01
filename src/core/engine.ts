@@ -15,6 +15,7 @@ import { HTMLSnippetNode } from '../plugins/advanced/html-snippet-node.ts';
 import { CodeNode, CodeHighlightNode } from '@lexical/code';
 import { CodeBlockNode } from '../plugins/advanced/code-block-node';
 import { SuggestionNode } from '../plugins/collaboration/suggestion-node.ts';
+import { CommentNode } from '../plugins/collaboration/comment-node';
 import { PlaceholderNode } from '../plugins/advanced/placeholder-node.ts';
 import { PageBreakNode } from '../plugins/page-layout/page-break-node';
 import { FootnoteRefNode, FootnoteContentNode, FootnoteContainerNode } from '../plugins/advanced/footnote-node';
@@ -32,8 +33,10 @@ import { RawHtmlNode } from '../plugins/advanced/raw-html-node';
 import { ParagraphNode } from 'lexical';
 import { HeadingNode } from '@lexical/rich-text';
 import { LinkNode, AutoLinkNode } from '@lexical/link';
+import { SourceViewPlugin } from '../plugins/advanced/source-view';
 
 import { EDITOR_LAYOUT_HTML } from '../ui/layout';
+import { initializeDefaultEditorSetup } from './default-setup';
 
 export class AureliaEditor {
     private editor: LexicalEditor;
@@ -57,21 +60,7 @@ export class AureliaEditor {
         const editor = new AureliaEditor(canvas);
         const internalEditor = editor.getInternalEditor();
 
-        // 4. Initialize UI and Toolbar systems
-        // We use dynamic imports to avoid circular dependencies
-        const { ToolbarSystem } = await import('../plugins/configuration/toolbar-system');
-        const { setupToolbarState } = await import('../ui/toolbar-logic/state-logic');
-        const { setupLinkPopover } = await import('../plugins/media/link-popover-ui');
-        const { setupCodeBlockPopover } = await import('../ui/code-block-popover-ui');
-        const { setupTablePopover } = await import('../ui/table-popover-ui');
-
-        // Initialize core UI systems
-        setupToolbarState(internalEditor);
-        setupLinkPopover(internalEditor);
-        setupCodeBlockPopover(internalEditor);
-        setupTablePopover(internalEditor);
-
-        ToolbarSystem.init(editor, internalEditor);
+        await initializeDefaultEditorSetup(editor, internalEditor);
 
         return editor;
     }
@@ -103,6 +92,7 @@ export class AureliaEditor {
                 CodeBlockNode,
                 CodeHighlightNode,
                 SuggestionNode,
+                CommentNode,
                 PlaceholderNode,
                 PageBreakNode,
                 FootnoteRefNode,
@@ -176,9 +166,6 @@ export class AureliaEditor {
         });
         element.contentEditable = "true";
 
-        // 3. Fixed the onError callback (second argument)
-        this.editor._onError = (error: Error) => console.error(error);
-
         // Mount the editor to the HTML element
         this.editor.setRootElement(element);
 
@@ -224,7 +211,6 @@ export class AureliaEditor {
      * This uses the SourceViewPlugin's high-fidelity cleaning logic.
      */
     async getHtml(): Promise<string> {
-        const { SourceViewPlugin } = await import('../plugins/advanced/source-view');
         return SourceViewPlugin.getHtml(this);
     }
 
@@ -232,7 +218,6 @@ export class AureliaEditor {
      * Set the HTML content of the editor with design fidelity.
      */
     async setHtml(html: string): Promise<void> {
-        const { SourceViewPlugin } = await import('../plugins/advanced/source-view');
         SourceViewPlugin.setHtml(this, html);
     }
 }

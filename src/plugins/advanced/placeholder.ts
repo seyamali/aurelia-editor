@@ -14,7 +14,7 @@ const MERGE_FIELDS = [
 // Valid merge field names (for sanitization)
 const VALID_MERGE_FIELD_NAMES = new Set(MERGE_FIELDS.map(f => f.name));
 
-let recentFields: string[] = [];
+const recentFields: string[] = [];
 
 /**
  * Sanitizes a placeholder name to ensure it's safe and valid.
@@ -79,7 +79,7 @@ export function showPlaceholderInsertPanel(editor: LexicalEditor) {
     function renderGroups(filter = '') {
         groups.innerHTML = '';
         errorDiv.style.display = 'none';
-        let filtered = MERGE_FIELDS.filter(f =>
+        const filtered = MERGE_FIELDS.filter(f =>
             f.label.toLowerCase().includes(filter.toLowerCase()) ||
             f.name.toLowerCase().includes(filter.toLowerCase())
         );

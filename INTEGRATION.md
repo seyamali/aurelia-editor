@@ -29,7 +29,7 @@ Create a container div in your HTML file:
 
 ```typescript
 import { AureliaEditor } from '@seyamali/aurelia-editor';
-import '@seyamali/aurelia-editor/dist/aurelia-editor.css'; 
+import '@seyamali/aurelia-editor/style.css'; 
 
 // 1. Mount the Full Editor (Toolbar + Engine) 
 const app = document.getElementById('app');
@@ -47,7 +47,7 @@ Since React manages the DOM virtually, we use a `ref` and `useEffect` to safely 
 ```tsx
 import React, { useEffect, useRef } from 'react';
 import { AureliaEditor } from '@seyamali/aurelia-editor';
-import '@seyamali/aurelia-editor/dist/aurelia-editor.css';
+import '@seyamali/aurelia-editor/style.css';
 
 export const EditorComponent = () => {
     const containerRef = useRef<HTMLDivElement>(null);
@@ -95,7 +95,7 @@ Use the `onMounted` hook to ensure the DOM is ready before initializing the edit
 <script setup>
 import { onMounted, ref } from 'vue';
 import { AureliaEditor } from '@seyamali/aurelia-editor';
-import '@seyamali/aurelia-editor/dist/aurelia-editor.css';
+import '@seyamali/aurelia-editor/style.css';
 
 const container = ref(null);
 let editor = null;
@@ -220,11 +220,11 @@ editor.getInternalEditor().registerUpdateListener(({ editorState }) => {
 The editor requires its CSS to render correctly. Ensure you import the stylesheet in your entry point (e.g., `main.ts`, `_app.tsx`, or `index.js`).
 
 ```javascript
-import '@seyamali/aurelia-editor/dist/aurelia-editor.css';
+import '@seyamali/aurelia-editor/style.css';
 ```
 
 If you are using a bundler that doesn't support CSS imports, link it in your HTML:
 
 ```html
-<link rel="stylesheet" href="path/to/node_modules/@seyamali/aurelia-editor/dist/aurelia-editor.css">
+<link rel="stylesheet" href="path/to/node_modules/@seyamali/aurelia-editor/style.css">
 ```

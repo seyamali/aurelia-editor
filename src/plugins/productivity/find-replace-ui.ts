@@ -1,6 +1,9 @@
 import { type LexicalEditor } from 'lexical';
 import { FindReplace, type SearchOptions } from './find-replace';
 
+let findDialogRef: HTMLElement | null = null;
+let findInputRef: HTMLInputElement | null = null;
+
 export function setupFindReplaceUI(internalEditor: LexicalEditor) {
     const findDialog = document.getElementById('find-replace-dialog');
     const findInput = document.getElementById('find-input') as HTMLInputElement;
@@ -12,6 +15,9 @@ export function setupFindReplaceUI(internalEditor: LexicalEditor) {
     const regexOpt = document.getElementById('fr-opt-regex') as HTMLInputElement;
 
     if (!findDialog) return;
+
+    findDialogRef = findDialog;
+    findInputRef = findInput;
 
     // Helper to get current options
     const getOptions = (): SearchOptions => ({
@@ -69,4 +75,14 @@ export function setupFindReplaceUI(internalEditor: LexicalEditor) {
             FindReplace.replaceAll(internalEditor, findInput.value, replaceInput.value, getOptions());
         }
     });
+}
+
+export function toggleFindReplaceDialog(): void {
+    if (!findDialogRef) return;
+
+    findDialogRef.classList.toggle('hidden');
+    if (!findDialogRef.classList.contains('hidden')) {
+        findInputRef?.focus();
+        findInputRef?.select();
+    }
 }

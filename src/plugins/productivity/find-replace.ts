@@ -83,13 +83,9 @@ export const FindReplace = {
                     for (let i = matches.length - 1; i >= 0; i--) {
                         const m = matches[i];
                         const isSameNode = m.node.getKey() === anchorNode.getKey();
-                        let isStrictlyBefore = false;
-
-                        if (isSameNode) {
-                            isStrictlyBefore = m.index < currentOffset;
-                        } else {
-                            isStrictlyBefore = m.node.isBefore(anchorNode);
-                        }
+                        const isStrictlyBefore = isSameNode
+                            ? m.index < currentOffset
+                            : m.node.isBefore(anchorNode);
 
                         if (isStrictlyBefore) {
                             currentIndex = i;
@@ -103,14 +99,9 @@ export const FindReplace = {
                     for (let i = 0; i < matches.length; i++) {
                         const m = matches[i];
                         const isSameNode = m.node.getKey() === anchorNode.getKey();
-                        let isAfter = false;
-
-                        if (isSameNode) {
-                            isAfter = m.index >= currentOffset;
-                        } else {
-                            // If anchor is before m.node, then m.node is after anchor
-                            isAfter = anchorNode.isBefore(m.node);
-                        }
+                        const isAfter = isSameNode
+                            ? m.index >= currentOffset
+                            : anchorNode.isBefore(m.node);
 
                         if (isAfter) {
                             currentIndex = i;

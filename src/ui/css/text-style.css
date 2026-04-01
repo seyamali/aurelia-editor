@@ -1,0 +1,222 @@
+.typography-panel {
+    position: fixed;
+    right: 20px;
+    top: 88px;
+    width: min(420px, calc(100vw - 32px));
+    max-height: calc(100vh - 120px);
+    overflow: auto;
+    z-index: 5270;
+    display: flex;
+    justify-content: flex-end;
+    pointer-events: none;
+}
+
+.typography-panel.hidden {
+    display: none;
+}
+
+.typography-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.32);
+    backdrop-filter: blur(8px);
+    pointer-events: auto;
+}
+
+.typography-card {
+    position: relative;
+    width: 100%;
+    pointer-events: auto;
+    background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    border-radius: 22px;
+    box-shadow: 0 30px 80px rgba(15, 23, 42, 0.24);
+    padding: 22px;
+    display: grid;
+    gap: 18px;
+}
+
+.typography-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    align-items: flex-start;
+}
+
+.typography-kicker {
+    margin: 0 0 4px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-weight: 800;
+    color: #7c3aed;
+}
+
+.typography-header h3 {
+    margin: 0;
+    color: #0f172a;
+    font-size: 22px;
+}
+
+.typography-subtitle {
+    margin: 8px 0 0;
+    color: #475569;
+    line-height: 1.5;
+}
+
+.typography-close {
+    width: 36px;
+    height: 36px;
+    border: 0;
+    border-radius: 999px;
+    background: #f5f3ff;
+    color: #7c3aed;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.typography-preview {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    padding: 16px 18px;
+    border-radius: 18px;
+    background: linear-gradient(135deg, #f5f3ff 0%, #eef2ff 100%);
+    border: 1px solid #e9d5ff;
+}
+
+.typography-preview-badge {
+    width: 42px;
+    height: 42px;
+    border-radius: 14px;
+    display: grid;
+    place-items: center;
+    background: linear-gradient(135deg, #7c3aed, #4f46e5);
+    color: #fff;
+    box-shadow: 0 10px 24px rgba(124, 58, 237, 0.22);
+}
+
+.typography-preview-badge svg {
+    width: 22px;
+    height: 22px;
+}
+
+.typography-preview strong {
+    display: block;
+    font-size: 1.05rem;
+    color: #0f172a;
+}
+
+.typography-preview p {
+    margin: 2px 0 0;
+    color: #475569;
+}
+
+.typography-grid {
+    display: grid;
+    gap: 14px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.typography-field {
+    display: grid;
+    gap: 6px;
+}
+
+.typography-field span {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 700;
+    color: #64748b;
+}
+
+.typography-field select {
+    width: 100%;
+    border: 1px solid #cbd5e1;
+    background: #ffffff;
+    color: #0f172a;
+    border-radius: 12px;
+    padding: 10px 12px;
+    font: inherit;
+}
+
+.typography-field input[type="color"] {
+    width: 100%;
+    height: 44px;
+    border: 1px solid #cbd5e1;
+    border-radius: 12px;
+    padding: 4px;
+    background: #ffffff;
+    cursor: pointer;
+}
+
+.typography-check {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+    color: #334155;
+}
+
+.typography-check input {
+    width: 16px;
+    height: 16px;
+    accent-color: #7c3aed;
+}
+
+.typography-highlight-field.disabled {
+    opacity: 0.55;
+}
+
+.typography-highlight-field.disabled input {
+    cursor: not-allowed;
+}
+
+.typography-field select:focus {
+    outline: none;
+    border-color: #7c3aed;
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.12);
+}
+
+.typography-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.typography-button {
+    border: 0;
+    border-radius: 12px;
+    padding: 10px 16px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.typography-button.primary {
+    background: linear-gradient(135deg, #7c3aed, #4f46e5);
+    color: #ffffff;
+}
+
+.typography-button.secondary {
+    background: #f5f3ff;
+    color: #6d28d9;
+}
+
+@media (max-width: 720px) {
+    .typography-panel {
+        right: 12px;
+        left: 12px;
+        width: auto;
+        top: 78px;
+    }
+
+    .typography-header {
+        flex-direction: column;
+    }
+
+    .typography-grid {
+        grid-template-columns: 1fr;
+    }
+}

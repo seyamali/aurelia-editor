@@ -1,4 +1,4 @@
-import {
+﻿import {
     $getSelection,
     $isRangeSelection,
     COMMAND_PRIORITY_LOW,
@@ -19,11 +19,14 @@ import { insertTable } from '../layout/tables';
 import { INSERT_CODE_BLOCK_COMMAND } from '../advanced/code-blocks';
 import { MediaEmbedPlugin } from '../advanced/media-embed';
 import { showPlaceholderInsertPanel } from '../advanced/placeholder';
+import { promptForInlineComment } from '../collaboration/comments';
+import { showTemplateBlocksPanel } from '../advanced/template-blocks';
+import { ICONS } from '../../ui/icons';
 
 const SLASH_COMMANDS: SlashCommand[] = [
     {
         label: 'Paragraph',
-        icon: '¶',
+        icon: 'P',
         description: 'Plain text paragraph',
         execute: (editor) => setBlockType(editor, 'paragraph')
     },
@@ -53,7 +56,7 @@ const SLASH_COMMANDS: SlashCommand[] = [
     },
     {
         label: 'Bullet List',
-        icon: '•',
+        icon: '-',
         description: 'Bulleted list',
         execute: (editor) => editor.dispatchCommand(LIST_COMMANDS.BULLET.command, undefined)
     },
@@ -65,7 +68,7 @@ const SLASH_COMMANDS: SlashCommand[] = [
     },
     {
         label: 'Divider',
-        icon: '—',
+        icon: '---',
         description: 'Horizontal divider',
         execute: (editor) => insertHorizontalRule(editor)
     },
@@ -77,27 +80,41 @@ const SLASH_COMMANDS: SlashCommand[] = [
     },
     {
         label: 'Image',
-        icon: '🖼️',
+        icon: 'IMG',
         description: 'Insert an image',
         execute: () => insertImage()
     },
     {
         label: 'Table',
-        icon: '📊',
+        icon: 'TBL',
         description: 'Insert a table',
         execute: (editor) => insertTable(editor)
     },
     {
         label: 'YouTube',
-        icon: '📹',
+        icon: 'YT',
         description: 'Embed a YouTube video',
         execute: (editor) => MediaEmbedPlugin.insertYouTube(editor)
     },
     {
         label: 'Placeholder',
-        icon: '🏷️',
+        icon: '{{}}',
         description: 'Insert a merge field placeholder',
         execute: (editor) => showPlaceholderInsertPanel(editor)
+    },
+    {
+        label: 'Template Block',
+        icon: ICONS.TEMPLATE,
+        description: 'Insert a reusable content block',
+        execute: (editor) => showTemplateBlocksPanel(editor)
+    },
+    {
+        label: 'Comment',
+        icon: 'CMT',
+        description: 'Add a comment to the current selection',
+        execute: (editor) => {
+            promptForInlineComment(editor);
+        }
     }
 ];
 
@@ -105,11 +122,32 @@ export const SlashCommandPlugin = {
     name: 'slash-commands',
     init: (sdk: EditorSDK) => {
         const editor = sdk.getLexicalEditor();
-        const menuUI = new SlashMenuUI(editor, SLASH_COMMANDS);
-
-        // Define a way to track the slash trigger
         let matchOffset = -1;
         let matchNodeKey: string | null = null;
+
+        const clearTriggerText = () => {
+            sdk.update(() => {
+                const selection = $getSelection();
+                if ($isRangeSelection(selection) && matchNodeKey) {
+                    const anchor = selection.anchor;
+                    if (anchor.key === matchNodeKey) {
+                        const deleteSize = anchor.offset - matchOffset;
+                        if (deleteSize > 0) {
+                            selection.anchor.offset = matchOffset;
+                            selection.focus.offset = matchOffset + deleteSize;
+                            selection.removeText();
+                        }
+                    }
+                }
+            });
+
+            matchOffset = -1;
+            matchNodeKey = null;
+        };
+
+        const menuUI = new SlashMenuUI(editor, SLASH_COMMANDS, clearTriggerText);
+
+        // Define a way to track the slash trigger
 
         // Listen to updates to detect '/'
         sdk.registerUpdateListener(({ editorState }: any) => {
@@ -124,28 +162,20 @@ export const SlashCommandPlugin = {
                 const offset = selection.anchor.offset;
                 const text = node.getTextContent();
 
-                // Check if we are typing a slash command
-                // Pattern: Starts with '/' or space + '/'
-                // We want to capture text AFTER the slash as the query
-
                 const lastSlash = text.lastIndexOf('/', offset - 1);
 
                 if (lastSlash !== -1) {
-                    // Make sure it's either the start of the node OR preceded by space
                     const isStart = lastSlash === 0;
                     const precededBySpace = lastSlash > 0 && text[lastSlash - 1] === ' ';
 
                     if (isStart || precededBySpace) {
                         const query = text.substring(lastSlash + 1, offset);
-                        // Do not allow spaces in query for now (simplifies things)
                         if (!query.includes(' ')) {
                             matchOffset = lastSlash;
                             matchNodeKey = node.getKey();
 
-                            // Calculate position for menu
                             const domElement = sdk.getElementByKey(node.getKey());
                             if (domElement) {
-                                // Fallback positioning using window selection (simplest for now)
                                 const nativeSelection = window.getSelection();
                                 if (nativeSelection && nativeSelection.rangeCount > 0) {
                                     const rect = nativeSelection.getRangeAt(0).getBoundingClientRect();
@@ -161,7 +191,6 @@ export const SlashCommandPlugin = {
             });
         });
 
-        // Intercept Keys
         sdk.registerCommand(
             KEY_ARROW_UP_COMMAND,
             (payload) => {
@@ -194,35 +223,12 @@ export const SlashCommandPlugin = {
                 if (menuUI.isVisible) {
                     const action = menuUI.selectAction();
                     if (action) {
-                        // Store the action to execute after deletion
                         const actionToExecute = action;
-                        const nodeKeyToMatch = matchNodeKey;
-                        const offsetToMatch = matchOffset;
+                        clearTriggerText();
 
-                        // Delete the slash command text first
-                        sdk.update(() => {
-                            const selection = $getSelection();
-                            if ($isRangeSelection(selection) && nodeKeyToMatch) {
-                                const anchor = selection.anchor;
-                                if (anchor.key === nodeKeyToMatch) {
-                                    // Remove from matchOffset to current anchor offset
-                                    const deleteSize = anchor.offset - offsetToMatch;
-                                    if (deleteSize > 0) {
-                                        selection.anchor.offset = offsetToMatch;
-                                        selection.focus.offset = offsetToMatch + deleteSize;
-                                        selection.removeText();
-                                    }
-                                }
-                            }
-                        });
-
-                        // Execute action after deletion (most actions handle their own updates)
-                        // This ensures proper undo/redo behavior
                         actionToExecute.execute(editor);
 
                         menuUI.hide();
-                        matchOffset = -1;
-                        matchNodeKey = null;
                         payload?.preventDefault();
                         return true;
                     }

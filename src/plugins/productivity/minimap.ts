@@ -89,7 +89,7 @@ export const MinimapPlugin = {
             } else {
                 container.style.display = 'block';
                 // Force layout
-                container.offsetHeight;
+                void container.offsetHeight;
                 container.style.opacity = '1';
                 // Explicitly trigger sync
                 (window as any).dispatchEvent(new Event('scroll'));

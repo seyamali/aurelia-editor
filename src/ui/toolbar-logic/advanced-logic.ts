@@ -11,6 +11,8 @@ import { FormatPainter } from '../../plugins/productivity/format-painter';
 import { CaseChange } from '../../plugins/productivity/case-change';
 import { DialogSystem } from '../../shared/dialog-system';
 import { REMOVE_FORMATTING_COMMAND } from '../../plugins/essentials/clipboard';
+import { toggleImageToolsPanel } from '../image-tools-ui';
+import { toggleCmsPageSettingsPanel } from '../cms-page-settings-ui';
 
 export function setupAdvancedLogic(editor: AureliaEditor, internalEditor: any) {
     let isSourceMode = false;
@@ -64,6 +66,8 @@ export function setupAdvancedLogic(editor: AureliaEditor, internalEditor: any) {
 
     // Media & Tables
     document.getElementById('image-btn')?.addEventListener('click', () => insertImage());
+    document.getElementById('image-tools-btn')?.addEventListener('click', () => toggleImageToolsPanel());
+    document.getElementById('cms-settings-btn')?.addEventListener('click', () => toggleCmsPageSettingsPanel());
     document.getElementById('add-row-btn')?.addEventListener('click', () => tableHandlers.insertRow(editor));
     document.getElementById('add-col-btn')?.addEventListener('click', () => tableHandlers.insertColumn(editor));
     document.getElementById('del-row-btn')?.addEventListener('click', () => tableHandlers.deleteRow(editor));

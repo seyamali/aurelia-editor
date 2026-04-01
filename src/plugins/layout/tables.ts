@@ -28,6 +28,16 @@ import {
 import { EditorSDK } from '../../core/sdk';
 import type { EditorPlugin } from '../../core/registry';
 
+export const TABLE_ADD_ROW_ABOVE_COMMAND = createCommand('TABLE_ADD_ROW_ABOVE');
+export const TABLE_ADD_ROW_BELOW_COMMAND = createCommand('TABLE_ADD_ROW_BELOW');
+export const TABLE_ADD_COL_LEFT_COMMAND = createCommand('TABLE_ADD_COL_LEFT');
+export const TABLE_ADD_COL_RIGHT_COMMAND = createCommand('TABLE_ADD_COL_RIGHT');
+export const TABLE_DELETE_ROW_COMMAND = createCommand('TABLE_DELETE_ROW');
+export const TABLE_DELETE_COL_COMMAND = createCommand('TABLE_DELETE_COL');
+export const TABLE_DELETE_TABLE_COMMAND = createCommand('TABLE_DELETE_TABLE');
+export const TABLE_MERGE_CELLS_COMMAND = createCommand('TABLE_MERGE_CELLS');
+export const TABLE_SPLIT_CELLS_COMMAND = createCommand('TABLE_SPLIT_CELLS');
+
 export const TablesPlugin: EditorPlugin = {
     name: 'tables',
     init: (sdk: EditorSDK) => {
@@ -80,15 +90,15 @@ export const TablesPlugin: EditorPlugin = {
         // Note: Simple cell jump on arrows if at boundaries could be added here
 
         // 4. Register Table Commands for Toolbar
-        editor.registerCommand(createCommand('TABLE_ADD_ROW_ABOVE'), () => { tableHandlers.insertRowAbove({ getInternalEditor: () => editor }); return true; }, COMMAND_PRIORITY_EDITOR);
-        editor.registerCommand(createCommand('TABLE_ADD_ROW_BELOW'), () => { tableHandlers.insertRowBelow({ getInternalEditor: () => editor }); return true; }, COMMAND_PRIORITY_EDITOR);
-        editor.registerCommand(createCommand('TABLE_ADD_COL_LEFT'), () => { tableHandlers.insertColumnLeft({ getInternalEditor: () => editor }); return true; }, COMMAND_PRIORITY_EDITOR);
-        editor.registerCommand(createCommand('TABLE_ADD_COL_RIGHT'), () => { tableHandlers.insertColumnRight({ getInternalEditor: () => editor }); return true; }, COMMAND_PRIORITY_EDITOR);
-        editor.registerCommand(createCommand('TABLE_DELETE_ROW'), () => { tableHandlers.deleteRow({ getInternalEditor: () => editor }); return true; }, COMMAND_PRIORITY_EDITOR);
-        editor.registerCommand(createCommand('TABLE_DELETE_COL'), () => { tableHandlers.deleteColumn({ getInternalEditor: () => editor }); return true; }, COMMAND_PRIORITY_EDITOR);
-        editor.registerCommand(createCommand('TABLE_DELETE_TABLE'), () => { tableHandlers.deleteTable({ getInternalEditor: () => editor }); return true; }, COMMAND_PRIORITY_EDITOR);
-        editor.registerCommand(createCommand('TABLE_MERGE_CELLS'), () => { tableHandlers.mergeCells({ getInternalEditor: () => editor }); return true; }, COMMAND_PRIORITY_EDITOR);
-        editor.registerCommand(createCommand('TABLE_SPLIT_CELLS'), () => { tableHandlers.splitCell({ getInternalEditor: () => editor }); return true; }, COMMAND_PRIORITY_EDITOR);
+        editor.registerCommand(TABLE_ADD_ROW_ABOVE_COMMAND, () => { tableHandlers.insertRowAbove({ getInternalEditor: () => editor }); return true; }, COMMAND_PRIORITY_EDITOR);
+        editor.registerCommand(TABLE_ADD_ROW_BELOW_COMMAND, () => { tableHandlers.insertRowBelow({ getInternalEditor: () => editor }); return true; }, COMMAND_PRIORITY_EDITOR);
+        editor.registerCommand(TABLE_ADD_COL_LEFT_COMMAND, () => { tableHandlers.insertColumnLeft({ getInternalEditor: () => editor }); return true; }, COMMAND_PRIORITY_EDITOR);
+        editor.registerCommand(TABLE_ADD_COL_RIGHT_COMMAND, () => { tableHandlers.insertColumnRight({ getInternalEditor: () => editor }); return true; }, COMMAND_PRIORITY_EDITOR);
+        editor.registerCommand(TABLE_DELETE_ROW_COMMAND, () => { tableHandlers.deleteRow({ getInternalEditor: () => editor }); return true; }, COMMAND_PRIORITY_EDITOR);
+        editor.registerCommand(TABLE_DELETE_COL_COMMAND, () => { tableHandlers.deleteColumn({ getInternalEditor: () => editor }); return true; }, COMMAND_PRIORITY_EDITOR);
+        editor.registerCommand(TABLE_DELETE_TABLE_COMMAND, () => { tableHandlers.deleteTable({ getInternalEditor: () => editor }); return true; }, COMMAND_PRIORITY_EDITOR);
+        editor.registerCommand(TABLE_MERGE_CELLS_COMMAND, () => { tableHandlers.mergeCells({ getInternalEditor: () => editor }); return true; }, COMMAND_PRIORITY_EDITOR);
+        editor.registerCommand(TABLE_SPLIT_CELLS_COMMAND, () => { tableHandlers.splitCell({ getInternalEditor: () => editor }); return true; }, COMMAND_PRIORITY_EDITOR);
     }
 };
 

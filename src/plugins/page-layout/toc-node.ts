@@ -169,7 +169,7 @@ export class TableOfContentsNode extends DecoratorNode<HTMLElement> {
         rootList.className = 'toc-list toc-root';
         if (this.__config.style === 'ordered') rootList.setAttribute('start', '1');
 
-        let currentStack: Array<{ level: number; list: HTMLElement; item: HTMLElement | null }> = [];
+        const currentStack: Array<{ level: number; list: HTMLElement; item: HTMLElement | null }> = [];
 
         entries.forEach((entry, index) => {
             // Find appropriate parent

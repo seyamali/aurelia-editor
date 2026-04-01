@@ -1,54 +1,58 @@
-# Aurelia Editor
+﻿# Aurelia Editor
 
 [![NPM Version](https://img.shields.io/npm/v/@seyamali/aurelia-editor?style=flat-square&color=blue)](https://www.npmjs.com/package/@seyamali/aurelia-editor)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/Written%20With-TypeScript-3178C6?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
+[![GitHub](https://img.shields.io/badge/GitHub-Repository-181717?style=flat-square&logo=github)](https://github.com/seyamali/custom-rich-text-editor)
+[![Live Demo](https://img.shields.io/badge/Live-Demo-0f766e?style=flat-square&logo=vercel)](https://aurelia-editor.pro.bd/)
 
-**Aurelia Editor** is a powerful, customizable, and framework-agnostic rich text editor built on top of [Lexical](https://lexical.dev/). It is designed for modern content creation, offering a clean, "Notion-style" interface combined with enterprise-grade features like High-Fidelity Design Preservation, MS Word compatibility, and advanced layout tools.
+**Aurelia Editor** is a customizable, framework-agnostic rich text and CMS editor built on top of [Lexical](https://lexical.dev/). It is designed for modern content creation and combines a clean authoring experience with advanced document, layout, and export features.
 
-![Editor Preview](https://via.placeholder.com/800x400?text=Aurelia+Editor+Preview)
+Try the live demo at [aurelia-editor.pro.bd](https://aurelia-editor.pro.bd/).
+
+![Editor Preview](https://seyam.runasp.net/uploads/6d201eb5-6f39-4429-958d-be310c964419.png)
 
 ---
 
-## ✨ Features
- 
-**Aurelia Editor** delivers a premium writing experience with a "batteries-included" philosophy:
- 
-### 🎯 High-Fidelity Design (Same-to-Same)
-*   **Design Preservation**: Paste complex HTML layouts from tools or websites and preserve them 100%—including styles, meta tags, and scripts.
-*   **Clean Export**: Strips Lexical-specific internal attributes and pollution, ensuring production-ready HTML.
-*   **CSS Sandboxing**: Prefixes and scopes custom CSS to the editor container, preventing global style leaks.
+## Features
 
-### 📝 Core Editing
-*   **Rich Text**: Bold, Italic, Underline, Strikethrough, Subscript, Superscript, Inline Code.
-*   **Typography**: Hierarchical headings (H1-H6), Blockquotes, Dividers.
-*   **Fonts & Color**: Custom font families, text colors, and background highlights.
-*   **Lists**: Nested bullet and numbered lists with indentation controls.
-*   **Case Converter**: Toggle text between Uppercase, Lowercase, and Title Case.
- 
-### 🖼️ Media & Embeds
-*   **Smart Images**: Drag & drop upload, resize, alignment positioning, captions, and link support.
-*   **Video Embedding**: YouTube integration with preview.
-*   **HTML Snippets**: Insert raw HTML for custom widgets or layouts.
- 
-### 📊 Structured Content
-*   **Advanced Tables**: Header rows, cell merging, splitting, column resizing, and row/column management.
-*   **Code Blocks**: Syntax highlighting for multiple languages with copy support.
-*   **Table of Contents**: Auto-generated TOC based on document headings with scroll-spy.
-*   **Footnotes**: Academic-style referencing and footnotes.
- 
-### 🚀 Productivity Tools
-*   **Slash Commands**: Type `/` to access a unified menu for all tools.
-*   **Format Painter**: Copy and paste styles between text blocks.
-*   **Find & Replace**: Search with match highlighting and bulk replacement.
-*   **Autosave**: Automatic local backup to prevent data loss.
-*   **Placeholders / Merge Fields**: Insert dynamic variables like `{{FirstName}}`.
- 
+**Aurelia Editor** follows a batteries-included approach and ships with a broad set of authoring tools out of the box.
+
+### High-Fidelity Design
+* **Design Preservation**: Paste complex HTML layouts and preserve styles, metadata, and structure with high fidelity.
+* **Clean Export**: Removes Lexical-specific internal attributes to produce cleaner HTML output.
+* **CSS Sandboxing**: Scopes custom CSS to the editor container to reduce style leakage.
+
+### Core Editing
+* **Rich Text**: Bold, italic, underline, strikethrough, subscript, superscript, and inline code.
+* **Typography**: Headings, blockquotes, dividers, and paragraph controls.
+* **Fonts and Color**: Custom font families, text color, and highlight support.
+* **Lists**: Nested bullet and numbered lists with indentation controls.
+* **Case Conversion**: Toggle text between uppercase, lowercase, and title case.
+
+### Media and Embeds
+* **Smart Images**: Drag-and-drop upload, resizing, alignment, captions, and links.
+* **Video Embedding**: YouTube embedding with preview support.
+* **HTML Snippets**: Insert raw HTML for widgets or custom layouts.
+
+### Structured Content
+* **Advanced Tables**: Header rows, cell merging, splitting, resizing, and row or column management.
+* **Code Blocks**: Syntax highlighting for multiple languages with copy support.
+* **Table of Contents**: Auto-generated TOC based on document headings.
+* **Footnotes**: Academic-style footnotes and references.
+
+### Productivity Tools
+* **Slash Commands**: Type `/` to open a unified command menu.
+* **Format Painter**: Copy and reuse formatting between text blocks.
+* **Find and Replace**: Search with match highlighting and bulk replacement.
+* **Autosave**: Local draft recovery to help prevent data loss.
+* **Placeholders**: Insert merge-field style placeholders such as `{{FirstName}}`.
+
 ---
 
-## 📦 Installation
+## Installation
 
-Install the package via npm:
+Install the package with npm:
 
 ```bash
 npm install @seyamali/aurelia-editor
@@ -56,81 +60,77 @@ npm install @seyamali/aurelia-editor
 
 ---
 
-## 🛠️ Usage
+## Usage
 
-### Basic Setup (Recommended)
-Initialize the full-featured editor (including toolbar and layout) with a single command:
+### Basic Setup
+
+Initialize the full editor, including the default toolbar and UI:
 
 ```typescript
 import { AureliaEditor } from '@seyamali/aurelia-editor';
-import '@seyamali/aurelia-editor/dist/aurelia-editor.css';
+import '@seyamali/aurelia-editor/style.css';
 
-// 1. Get container
 const container = document.getElementById('editor-root');
 
-// 2. Initialize (Static factory method)
+if (!container) {
+  throw new Error('Missing #editor-root container');
+}
+
 const editor = await AureliaEditor.create(container);
 ```
 
-### Retrieval & Fidelity (Framework Integration)
-To interact with the editor in React, Angular, or Vue, use these high-fidelity helper methods:
+### Reading and Setting Content
+
+Use the public helpers to work with editor content:
 
 ```typescript
-// --- GET CONTENT ---
-// Returns clean, production-ready, high-fidelity HTML
 const html = await editor.getHtml();
 
-// --- SET CONTENT ---
-// Sets high-fidelity HTML and injects associated styles/metadata
 await editor.setHtml(initialHtml);
 
-// --- GET STATE ---
-// Get the internal Lexical JSON state
 const jsonState = editor.getInternalEditor().getEditorState().toJSON();
 ```
 
 ---
 
-## ⚙️ Configuration
+## Configuration
 
-Aurelia Editor features a dynamic toolbar system. You can switch between built-in presets or define your own configuration.
+Aurelia Editor includes a dynamic toolbar system with built-in presets.
 
-### Toolbar Presets
-Available presets: `standard`, `minimal`, `blogging`, `documentation`, `full`.
+Available presets: `standard`, `minimal`, `blogging`, `documentation`, `full`
 
 ```typescript
-import { ToolbarConfigManager } from '@seyamali/aurelia-editor';
+import { ToolbarSystem } from '@seyamali/aurelia-editor';
 
-// Switch to a documentation-focused interface
-ToolbarConfigManager.applyPreset('documentation');
+ToolbarSystem.applyPreset('documentation');
 ```
 
 ---
 
-## ⌨️ Shortcuts
+## Shortcuts
 
 | Context | Shortcut | Action |
 | :--- | :--- | :--- |
 | **Formatting** | `Ctrl + B` | Bold |
-| | `Ctrl + I` | Italic |
-| | `Ctrl + U` | Underline |
+|  | `Ctrl + I` | Italic |
+|  | `Ctrl + U` | Underline |
 | **History** | `Ctrl + Z` | Undo |
-| | `Ctrl + Y` | Redo |
+|  | `Ctrl + Y` | Redo |
 | **Tools** | `/` | Slash Menu |
-| | `Ctrl + F` | Find & Replace |
-| | `Ctrl + S` | Save (Autosave trigger) |
+|  | `Ctrl + F` | Find and Replace |
+|  | `Ctrl + S` | Save or trigger autosave |
 | **Navigation** | `Ctrl + K` | Insert Link |
 
 ---
 
-## 📄 License & Attribution
+## License and Attribution
 
-This project is open-source software licensed under the **MIT License**.
+This project is licensed under the **MIT License**.
 
-### Terms of Use:
-*   ✅ **Commercial Use**: Allowed
-*   ✅ **Modification**: Allowed
-*   ✅ **Private Use**: Allowed
-*   ⚠️ **Attribution Required**: You must retain the copyright notice and license file in your source code.
+### Terms of Use
+* **Commercial Use**: Allowed
+* **Modification**: Allowed
+* **Private Use**: Allowed
+* **Attribution Required**: Retain the copyright notice and license file in source distributions.
 
-**Copyright © 2026 Seyam Ali**. All rights reserved.
+**Copyright (c) 2026 Seyam Ali**. All rights reserved.

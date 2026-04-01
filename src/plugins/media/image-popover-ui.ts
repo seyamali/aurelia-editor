@@ -1,5 +1,6 @@
 import { $getSelection, $isNodeSelection, $getNodeByKey, $createNodeSelection, $setSelection, type LexicalEditor, SELECTION_CHANGE_COMMAND, COMMAND_PRIORITY_LOW, KEY_DELETE_COMMAND, KEY_BACKSPACE_COMMAND } from 'lexical';
 import { ImageNode, $isImageNode } from './image-node';
+import { SHOW_LINK_POPOVER_COMMAND } from './link-popover-ui';
 
 export function setupImagePopover(editor: LexicalEditor) {
     // 1. Create or Update the Popover Element
@@ -76,10 +77,8 @@ export function setupImagePopover(editor: LexicalEditor) {
             // We just need to trigger the command. The command handler checks for selected image node.
             // Since the image *is* selected when the popover is open, this should work.
             // We might need to ensure the selection is correct? It should be.
-            import('./link-popover-ui').then(({ SHOW_LINK_POPOVER_COMMAND }) => {
-                editor.dispatchCommand(SHOW_LINK_POPOVER_COMMAND, undefined);
-                hidePopover(); // Hide image popover so link popover can be seen/used without clutter
-            });
+            editor.dispatchCommand(SHOW_LINK_POPOVER_COMMAND, undefined);
+            hidePopover(); // Hide image popover so link popover can be seen/used without clutter
         });
 
         // Unlink

@@ -17,7 +17,7 @@ export const AutosavePlugin: EditorPlugin = {
     name: 'autosave',
     init: (sdk: EditorSDK) => {
         const editor = sdk.getLexicalEditor();
-        let timeoutId: number | undefined;
+        let timeoutId: ReturnType<typeof setTimeout> | undefined;
         let lastRevisionTime = Date.now();
 
         // Config defaults
@@ -37,7 +37,6 @@ export const AutosavePlugin: EditorPlugin = {
             clearTimeout(timeoutId);
 
             // 2. Debounce Draft Save (Crash Recovery)
-            // @ts-ignore
             timeoutId = setTimeout(() => {
                 saveState(editorState);
 

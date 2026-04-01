@@ -44,6 +44,10 @@ export interface ToolbarConfig {
     responsive?: boolean;
 }
 
+function withShortcut(label: string, shortcut: string): string {
+    return `${label} (${shortcut})`;
+}
+
 // ============================================
 // TOOLBAR ITEM REGISTRY
 // ============================================
@@ -87,13 +91,34 @@ export const TOOLBAR_ITEMS: Record<string, ToolbarItem> = {
 
     // --- MEDIA ---
     'insert-image': { id: 'insert-image', type: 'button', label: 'Image', icon: ICONS.IMAGE, tooltip: 'Insert Image', command: 'INSERT_IMAGE_COMMAND', group: 'media' },
+    'image-tools': { id: 'image-tools', type: 'button', label: 'Image Tools', icon: ICONS.IMAGE, tooltip: 'Edit selected image', command: 'OPEN_IMAGE_TOOLS', group: 'media' },
     'insert-video': { id: 'insert-video', type: 'button', label: 'Video', icon: ICONS.VIDEO, tooltip: 'Insert YouTube Video', command: 'INSERT_VIDEO_COMMAND', group: 'media' },
     'insert-link': { id: 'insert-link', type: 'button', label: 'Link', icon: ICONS.LINK, tooltip: 'Insert Link', command: 'TOGGLE_LINK_COMMAND', group: 'media' },
 
     // --- LAYOUT & STRUCTURE ---
     'insert-table': { id: 'insert-table', type: 'button', label: 'Table', icon: ICONS.TABLE, tooltip: 'Insert Table', command: 'INSERT_TABLE_COMMAND', group: 'layout' },
+    'table-actions': {
+        id: 'table-actions',
+        type: 'dropdown',
+        label: 'Table Actions',
+        icon: ICONS.TABLE,
+        tooltip: 'Table editing tools',
+        group: 'layout',
+        children: [
+            { id: 'table-add-row-above', type: 'button', label: 'Row Above', command: 'TABLE_ADD_ROW_ABOVE' },
+            { id: 'table-add-row-below', type: 'button', label: 'Row Below', command: 'TABLE_ADD_ROW_BELOW' },
+            { id: 'table-add-col-left', type: 'button', label: 'Column Left', command: 'TABLE_ADD_COL_LEFT' },
+            { id: 'table-add-col-right', type: 'button', label: 'Column Right', command: 'TABLE_ADD_COL_RIGHT' },
+            { id: 'table-merge-cells', type: 'button', label: 'Merge Cells', command: 'TABLE_MERGE_CELLS' },
+            { id: 'table-split-cells', type: 'button', label: 'Split Cell', command: 'TABLE_SPLIT_CELLS' },
+            { id: 'table-delete-row', type: 'button', label: 'Delete Row', command: 'TABLE_DELETE_ROW' },
+            { id: 'table-delete-col', type: 'button', label: 'Delete Column', command: 'TABLE_DELETE_COL' },
+            { id: 'table-delete-table', type: 'button', label: 'Delete Table', command: 'TABLE_DELETE_TABLE' },
+        ]
+    },
     'blockquote': { id: 'blockquote', type: 'button', label: 'Quote', icon: ICONS.QUOTE, tooltip: 'Blockquote', command: 'INSERT_QUOTE_COMMAND', group: 'layout' },
     'code-block': { id: 'code-block', type: 'button', label: 'Code Block', icon: ICONS.CODE_BLOCK, tooltip: 'Code Block', command: 'INSERT_CODE_BLOCK_COMMAND', group: 'layout' },
+    'template-blocks': { id: 'template-blocks', type: 'button', label: 'Templates', icon: ICONS.TEMPLATE, tooltip: withShortcut('Insert Template Block', 'Ctrl/Cmd+Alt+T'), command: 'OPEN_TEMPLATE_BLOCKS_COMMAND', group: 'layout' },
     'hr': { id: 'hr', type: 'button', label: 'Divider', icon: ICONS.HR, tooltip: 'Horizontal Rule', command: 'INSERT_HORIZONTAL_RULE_COMMAND', group: 'layout' },
     'page-break': { id: 'page-break', type: 'button', label: 'Page Break', icon: ICONS.PAGE_BREAK, tooltip: 'Page Break', command: 'INSERT_PAGE_BREAK_COMMAND', group: 'layout' },
 
@@ -103,7 +128,14 @@ export const TOOLBAR_ITEMS: Record<string, ToolbarItem> = {
 
     // --- PRODUCTIVITY ---
     'find-replace': { id: 'find-replace', type: 'button', label: 'Find', icon: ICONS.FIND, tooltip: 'Find & Replace', command: 'OPEN_FIND_REPLACE', group: 'productivity' },
+    'command-palette': { id: 'command-palette', type: 'button', label: 'Palette', icon: ICONS.SEARCH, tooltip: withShortcut('Command Palette', 'Ctrl/Cmd+K'), command: 'OPEN_COMMAND_PALETTE', group: 'productivity' },
     'emoji': { id: 'emoji', type: 'button', label: 'Emoji', icon: ICONS.EMOJI, tooltip: 'Insert Emoji', command: 'OPEN_EMOJI_PICKER', group: 'productivity' },
+    'comment': { id: 'comment', type: 'button', label: 'Comment', icon: ICONS.COMMENT, tooltip: withShortcut('Add Comment', 'Ctrl/Cmd+Alt+M'), command: 'ADD_INLINE_COMMENT', group: 'productivity', requiredSelection: 'text' },
+    'document-stats': { id: 'document-stats', type: 'button', label: 'Stats', icon: ICONS.STATS, tooltip: withShortcut('Show Document Stats', 'Ctrl/Cmd+Alt+S'), command: 'TOGGLE_DOCUMENT_STATS', group: 'productivity' },
+    'cms-settings': { id: 'cms-settings', type: 'button', label: 'CMS', icon: ICONS.CMS, tooltip: 'Page settings', command: 'OPEN_CMS_SETTINGS', group: 'productivity' },
+    'seo-audit': { id: 'seo-audit', type: 'button', label: 'SEO', icon: ICONS.SEO, tooltip: withShortcut('SEO Audit', 'Ctrl/Cmd+Alt+E'), command: 'OPEN_SEO_AUDIT', group: 'productivity' },
+    'typography': { id: 'typography', type: 'button', label: 'Typography', icon: ICONS.FONT, tooltip: 'Font family and size', command: 'OPEN_TYPOGRAPHY_PANEL', group: 'productivity' },
+    'publish-workflow': { id: 'publish-workflow', type: 'button', label: 'Publish', icon: ICONS.PUBLISH, tooltip: 'Publish workflow', command: 'OPEN_PUBLISH_WORKFLOW', group: 'productivity' },
     'format-painter': { id: 'format-painter', type: 'button', label: 'Paint', icon: ICONS.PAINT, tooltip: 'Format Painter', command: 'FORMAT_PAINTER_COMMAND', group: 'productivity' },
 
     // --- INDENTATION ---
@@ -114,6 +146,7 @@ export const TOOLBAR_ITEMS: Record<string, ToolbarItem> = {
     'export-pdf': { id: 'export-pdf', type: 'button', label: 'PDF', icon: ICONS.PDF, tooltip: 'Export to PDF', command: 'EXPORT_PDF_COMMAND', group: 'export' },
     'export-word': { id: 'export-word', type: 'button', label: 'Word', icon: ICONS.WORD, tooltip: 'Export to Word', command: 'EXPORT_WORD_COMMAND', group: 'export' },
     'import-word': { id: 'import-word', type: 'button', label: 'Import', icon: ICONS.IMPORT, tooltip: 'Import from Word', command: 'IMPORT_WORD_COMMAND', group: 'export' },
+    'export-presets': { id: 'export-presets', type: 'button', label: 'Export', icon: ICONS.DOWNLOAD, tooltip: 'Export Presets', command: 'OPEN_EXPORT_PRESETS', group: 'export' },
 
     // --- VIEW ---
     'outline': { id: 'outline', type: 'button', label: 'Outline', icon: ICONS.OUTLINE, tooltip: 'Toggle Outline', command: 'TOGGLE_OUTLINE_COMMAND', group: 'view' },
@@ -159,7 +192,7 @@ export const TOOLBAR_PRESETS: Record<string, ToolbarPreset> = {
         items: [
             'undo', 'redo', 'separator-1',
             'bold', 'italic', 'underline', 'separator-2',
-            'bullet-list', 'insert-link', 'source-view'
+            'bullet-list', 'insert-link', 'comment', 'cms-settings', 'seo-audit', 'typography', 'publish-workflow', 'command-palette', 'source-view'
         ]
     },
     'standard': {
@@ -172,7 +205,7 @@ export const TOOLBAR_PRESETS: Record<string, ToolbarPreset> = {
             'bold', 'italic', 'underline', 'strikethrough', 'separator-3',
             'bullet-list', 'numbered-list', 'indent', 'outdent', 'separator-4',
             'align-left', 'align-center', 'align-right', 'separator-5',
-            'insert-link', 'insert-image', 'insert-table', 'blockquote', 'hr', 'source-view'
+            'insert-link', 'insert-image', 'image-tools', 'insert-table', 'table-actions', 'template-blocks', 'blockquote', 'hr', 'document-stats', 'publish-workflow', 'export-presets', 'command-palette', 'source-view'
         ]
     },
     'blogging': {
@@ -184,8 +217,8 @@ export const TOOLBAR_PRESETS: Record<string, ToolbarPreset> = {
             'heading-dropdown', 'separator-2',
             'bold', 'italic', 'underline', 'format-painter', 'separator-3',
             'bullet-list', 'blockquote', 'separator-4',
-            'insert-link', 'insert-image', 'insert-video', 'emoji', 'separator-5',
-            'find-replace', 'track-changes', 'zen-mode'
+            'insert-link', 'insert-image', 'image-tools', 'insert-video', 'emoji', 'separator-5',
+            'find-replace', 'comment', 'document-stats', 'cms-settings', 'seo-audit', 'typography', 'publish-workflow', 'export-presets', 'command-palette', 'track-changes', 'zen-mode'
         ]
     },
     'documentation': {
@@ -198,8 +231,8 @@ export const TOOLBAR_PRESETS: Record<string, ToolbarPreset> = {
             'bold', 'italic', 'separator-3',
             'bullet-list', 'numbered-list', 'indent', 'outdent', 'separator-4',
             'insert-table', 'code-block', 'toc', 'footnote', 'separator-5',
-            'insert-link', 'insert-image', 'insert-html-snippet', 'hr', 'page-break', 'separator-6',
-            'find-replace', 'outline', 'source-view'
+            'insert-link', 'insert-image', 'insert-html-snippet', 'table-actions', 'template-blocks', 'hr', 'page-break', 'separator-6',
+            'find-replace', 'comment', 'document-stats', 'cms-settings', 'seo-audit', 'typography', 'publish-workflow', 'export-presets', 'command-palette', 'outline', 'source-view'
         ]
     },
     'full': {
@@ -213,9 +246,9 @@ export const TOOLBAR_PRESETS: Record<string, ToolbarPreset> = {
             'bullet-list', 'numbered-list', 'indent', 'outdent', 'blockquote', 'separator-4',
             'toc', 'footnote', 'separator-5',
             'align-left', 'align-center', 'align-right', 'align-justify', 'separator-5',
-            'insert-link', 'insert-image', 'insert-video', 'insert-table', 'hr', 'page-break', 'emoji', 'separator-6',
-            'code-block', 'insert-html-snippet', 'insert-placeholder', 'separator-7',
-            'find-replace', 'track-changes', 'zen-mode', 'outline', 'minimap', 'separator-8',
+            'insert-link', 'insert-image', 'image-tools', 'insert-video', 'insert-table', 'hr', 'page-break', 'emoji', 'separator-6',
+            'code-block', 'insert-html-snippet', 'template-blocks', 'insert-placeholder', 'separator-7',
+            'find-replace', 'comment', 'document-stats', 'cms-settings', 'seo-audit', 'typography', 'publish-workflow', 'export-presets', 'command-palette', 'track-changes', 'zen-mode', 'outline', 'minimap', 'separator-8',
             'export-pdf', 'export-word', 'import-word', 'separator-8',
             'uppercase', 'lowercase', 'titlecase', 'separator-8',
             'clear-formatting', 'source-view'
@@ -284,15 +317,10 @@ export class ToolbarConfigManager {
         toolbar.innerHTML = '';
 
         // Determine items to show
-        let itemsToShow: string[] = [];
-
-        if (config.customItems && config.customItems.length > 0) {
-            itemsToShow = config.customItems;
-        } else {
-            const presetId = config.preset || 'standard';
-            const preset = TOOLBAR_PRESETS[presetId] || TOOLBAR_PRESETS['standard'];
-            itemsToShow = preset.items;
-        }
+        const itemsToShow =
+            config.customItems && config.customItems.length > 0
+                ? config.customItems
+                : (TOOLBAR_PRESETS[config.preset || 'standard'] || TOOLBAR_PRESETS['standard']).items;
 
         // Render items
         itemsToShow.forEach(itemId => {

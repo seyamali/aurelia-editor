@@ -117,7 +117,7 @@ export class CodeBlockNode extends CodeNode {
 
     private _ensureDecorations(dom: HTMLElement) {
         // 1. Copy Button
-        let copyBtn = dom.querySelector('.code-copy-btn') as HTMLElement;
+        const copyBtn = dom.querySelector('.code-copy-btn') as HTMLElement;
         if (!copyBtn) {
             const btn = document.createElement('button');
             btn.className = 'code-copy-btn';

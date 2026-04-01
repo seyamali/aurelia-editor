@@ -9,7 +9,7 @@ export const MediaEmbedPlugin = {
 
         if (url) {
             // Regex to extract the 11-character YouTube ID
-            const match = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/.exec(url);
+            const match = /^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/.exec(url);
             const videoId = (match && match[2].length === 11) ? match[2] : null;
 
             if (videoId) {

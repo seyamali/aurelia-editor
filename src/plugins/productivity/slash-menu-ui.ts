@@ -16,10 +16,12 @@ export class SlashMenuUI {
 
     private editor: LexicalEditor;
     private commands: SlashCommand[];
+    private onExecute?: (cmd: SlashCommand) => void;
 
-    constructor(editor: LexicalEditor, commands: SlashCommand[]) {
+    constructor(editor: LexicalEditor, commands: SlashCommand[], onExecute?: (cmd: SlashCommand) => void) {
         this.editor = editor;
         this.commands = commands;
+        this.onExecute = onExecute;
         this.menuElement = document.createElement('div');
         this.menuElement.className = 'slash-menu';
         document.body.appendChild(this.menuElement);
@@ -127,6 +129,7 @@ export class SlashMenuUI {
 
     executeCommand(cmd: SlashCommand) {
         // We assume the caller handles deleting the slash text
+        this.onExecute?.(cmd);
         cmd.execute(this.editor);
         this.hide();
     }

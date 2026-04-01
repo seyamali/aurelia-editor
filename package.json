@@ -3,15 +3,70 @@
   "private": false,
   "version": "0.1.4",
   "type": "module",
+  "description": "Aurelia Editor is a framework-agnostic rich text and CMS editor built on Lexical with export, collaboration, image, and template tools.",
   "main": "./dist/aurelia-editor.umd.cjs",
   "module": "./dist/aurelia-editor.js",
   "types": "./dist/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/seyamali/custom-rich-text-editor.git"
+  },
+  "homepage": "https://aurelia-editor.pro.bd/",
+  "bugs": {
+    "url": "https://github.com/seyamali/custom-rich-text-editor/issues"
+  },
+  "keywords": [
+    "aurelia",
+    "aurelia editor",
+    "lexical",
+    "rich text editor",
+    "cms editor",
+    "cms",
+    "content management",
+    "content management system",
+    "wysiwyg",
+    "wysiwyg editor",
+    "html editor",
+    "document editor",
+    "content editor",
+    "page editor",
+    "page builder",
+    "site editor",
+    "site builder",
+    "blog editor",
+    "article editor",
+    "headless cms",
+    "headless cms editor",
+    "notion style editor",
+    "notion like editor",
+    "ckeditor alternative",
+    "tinymce alternative",
+    "editor component",
+    "markdown editor",
+    "markdown cms",
+    "typescript",
+    "collaboration",
+    "document collaboration",
+    "track changes",
+    "template blocks",
+    "image editor",
+    "media editor",
+    "export pdf",
+    "export word",
+    "html to pdf",
+    "word export",
+    "content authoring",
+    "publishing",
+    "knowledge base",
+    "documentation editor"
+  ],
   "exports": {
     ".": {
       "import": "./dist/aurelia-editor.js",
       "require": "./dist/aurelia-editor.umd.cjs"
     },
-    "./style.css": "./dist/aurelia-editor.css"
+    "./style.css": "./dist/aurelia-editor.css",
+    "./dist/aurelia-editor.css": "./dist/aurelia-editor.css"
   },
   "files": [
     "dist"
@@ -19,15 +74,23 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "lint": "eslint .",
+    "test": "vitest run",
     "preview": "vite preview",
     "prepublishOnly": "npm run build"
   },
   "author": "Seyam Ali",
   "license": "MIT",
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.1.0",
+    "globals": "^17.4.0",
+    "jsdom": "^29.0.1",
     "typescript": "~5.9.3",
+    "typescript-eslint": "^8.58.0",
     "vite": "^7.2.4",
-    "vite-plugin-dts": "^4.5.4"
+    "vite-plugin-dts": "^4.5.4",
+    "vitest": "^4.1.2"
   },
   "dependencies": {
     "@lexical/clipboard": "^0.39.0",

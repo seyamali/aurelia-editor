@@ -1,4 +1,4 @@
-import { $getSelection, $isRangeSelection, type LexicalEditor } from 'lexical';
+import { $getSelection, $isRangeSelection, $isTextNode, type LexicalEditor } from 'lexical';
 import { EditorSDK } from '../../core/sdk';
 
 export const CaseChange = {
@@ -62,9 +62,7 @@ function applyCaseTransform(editor: LexicalEditor, transform: (text: string) => 
                     // Transforming "ll" -> "LL" matches (inside bold).
                     // So iterating nodes is the way.
 
-                    // @ts-ignore
-                    if (node.getType() === 'text') {
-                        // @ts-ignore
+                    if ($isTextNode(node)) {
                         node.setTextContent(transform(text));
                     }
                 }

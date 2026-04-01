@@ -155,7 +155,7 @@ export const DocumentOutlinePlugin = {
             } else {
                 outline.style.display = 'flex';
                 // Force layout for transition
-                outline.offsetHeight;
+                void outline.offsetHeight;
                 outline.classList.add('active');
             }
         }

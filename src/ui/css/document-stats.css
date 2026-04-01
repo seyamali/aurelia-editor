@@ -1,0 +1,134 @@
+.document-stats-panel {
+    position: fixed;
+    right: 20px;
+    top: 88px;
+    width: min(360px, calc(100vw - 32px));
+    max-height: calc(100vh - 120px);
+    overflow: auto;
+    z-index: 2250;
+    background: linear-gradient(180deg, #fffdf8 0%, #f8fafc 100%);
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    border-radius: 22px;
+    box-shadow: 0 28px 60px rgba(15, 23, 42, 0.18);
+    padding: 18px;
+    display: none;
+}
+
+.document-stats-panel.open {
+    display: block;
+}
+
+.document-stats-header {
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
+.document-stats-kicker {
+    margin: 0;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-weight: 800;
+    color: #c2410c;
+}
+
+.document-stats-header h3 {
+    margin: 4px 0 0;
+    font-size: 22px;
+    color: #0f172a;
+}
+
+.document-stats-close {
+    width: 34px;
+    height: 34px;
+    border: 0;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.92);
+    font-size: 24px;
+    line-height: 1;
+    cursor: pointer;
+    color: #334155;
+}
+
+.document-stats-summary {
+    display: grid;
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+.document-stats-reading {
+    border-radius: 18px;
+    padding: 18px;
+    background: linear-gradient(135deg, #c2410c 0%, #f97316 100%);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.document-stats-value {
+    font-size: 34px;
+    font-weight: 900;
+    line-height: 1;
+}
+
+.document-stats-label {
+    font-size: 13px;
+    opacity: 0.92;
+    font-weight: 600;
+}
+
+.document-stats-note {
+    font-size: 13px;
+    line-height: 1.5;
+    color: #475569;
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 12px 14px;
+}
+
+.document-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.document-stats-card {
+    border-radius: 16px;
+    border: 1px solid #e2e8f0;
+    background: white;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.document-stats-card-value {
+    font-size: 24px;
+    font-weight: 900;
+    color: #111827;
+    line-height: 1;
+}
+
+.document-stats-card-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: #64748b;
+}
+
+@media (max-width: 720px) {
+    .document-stats-panel {
+        right: 12px;
+        left: 12px;
+        width: auto;
+        top: 78px;
+    }
+
+    .document-stats-grid {
+        grid-template-columns: 1fr;
+    }
+}

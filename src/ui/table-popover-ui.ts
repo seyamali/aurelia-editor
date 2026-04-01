@@ -11,25 +11,17 @@ export function setupTablePopover(editor: LexicalEditor) {
         popover.id = 'table-popover';
         popover.className = 'table-popover hidden';
         popover.innerHTML = `
+            <div class="table-popover-label">Quick table tools</div>
             <div class="table-popover-group">
                 <button id="table-row-above" title="Insert Row Above">${ICONS.TABLE_ROW_ABOVE}</button>
                 <button id="table-row-below" title="Insert Row Below">${ICONS.TABLE_ROW_BELOW}</button>
-                <button id="table-row-delete" title="Delete Row" class="danger">${ICONS.TABLE_ROW_DELETE}</button>
             </div>
             <div class="divider-v"></div>
             <div class="table-popover-group">
                 <button id="table-col-left" title="Insert Column Left">${ICONS.TABLE_COL_LEFT}</button>
                 <button id="table-col-right" title="Insert Column Right">${ICONS.TABLE_COL_RIGHT}</button>
+                <button id="table-row-delete" title="Delete Row" class="danger">${ICONS.TABLE_ROW_DELETE}</button>
                 <button id="table-col-delete" title="Delete Column" class="danger">${ICONS.TABLE_COL_DELETE}</button>
-            </div>
-            <div class="divider-v" id="table-merge-divider"></div>
-            <div class="table-popover-group">
-                <button id="table-merge" title="Merge Cells">${ICONS.TABLE_MERGE}</button>
-                <button id="table-split" title="Split Cell">${ICONS.TABLE_SPLIT}</button>
-            </div>
-            <div class="divider-v"></div>
-            <div class="table-popover-group">
-                <button id="table-delete" title="Delete Table" class="danger">${ICONS.TABLE_DELETE}</button>
             </div>
         `;
         document.getElementById('editor-wrapper')?.appendChild(popover);
@@ -80,14 +72,6 @@ export function setupTablePopover(editor: LexicalEditor) {
                 const nodes = selection.getNodes();
                 let tableCellFound = false;
 
-                // Toggle visibility of Merge button: only relevant if multiple cells selected
-                const mergeBtn = document.getElementById('table-merge');
-                const mergeDivider = document.getElementById('table-merge-divider');
-                const isTableSel = $isTableSelection(selection);
-
-                if (mergeBtn) mergeBtn.style.display = isTableSel ? 'flex' : 'none';
-                if (mergeDivider) mergeDivider.style.display = isTableSel ? 'block' : 'none';
-
                 for (const node of nodes) {
                     let parent: any = node;
                     while (parent !== null) {
@@ -135,15 +119,5 @@ export function setupTablePopover(editor: LexicalEditor) {
     });
     document.getElementById('table-col-delete')?.addEventListener('click', () => {
         tableHandlers.deleteColumn(editorProxy);
-    });
-    document.getElementById('table-merge')?.addEventListener('click', () => {
-        tableHandlers.mergeCells(editorProxy);
-    });
-    document.getElementById('table-split')?.addEventListener('click', () => {
-        tableHandlers.splitCell(editorProxy);
-    });
-    document.getElementById('table-delete')?.addEventListener('click', () => {
-        hidePopover();
-        tableHandlers.deleteTable(editorProxy);
     });
 }

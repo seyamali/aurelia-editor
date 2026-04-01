@@ -74,11 +74,11 @@ export function setupImageResizer(editor: LexicalEditor) {
         const diffX = e.clientX - startX;
         const diffY = e.clientY - startY;
 
-        let multX = activeDirection?.includes('w') ? -1 : 1;
-        let multY = activeDirection?.includes('n') ? -1 : 1;
+        const multX = activeDirection?.includes('w') ? -1 : 1;
+        const multY = activeDirection?.includes('n') ? -1 : 1;
 
-        let changeX = diffX * multX;
-        let changeY = diffY * multY;
+        const changeX = diffX * multX;
+        const changeY = diffY * multY;
 
         let nextWidth, nextHeight;
 

@@ -7,6 +7,7 @@
 @import './ui/css/media-layout.css';
 @import './ui/css/link-popover.css';
 @import './ui/css/image-popover.css';
+@import './ui/css/image-tools.css';
 @import './ui/css/image-url-modal.css';
 @import './ui/css/unified-image-modal.css';
 @import './ui/css/productivity.css';
@@ -27,6 +28,17 @@
 @import './ui/css/toolbar-customization.css';
 @import './ui/css/context-toolbar.css';
 @import './ui/css/track-changes.css';
+@import './ui/css/comments.css';
+@import './ui/css/template-blocks.css';
+@import './ui/css/document-stats.css';
+@import './ui/css/command-palette.css';
+@import './ui/css/presence.css';
+@import './ui/css/cms-page-settings.css';
+@import './ui/css/seo-audit.css';
+@import './ui/css/text-style.css';
+@import './ui/css/publish-workflow.css';
+@import './ui/css/content-workspace.css';
+@import './ui/css/export-presets.css';
 @import './ui/css/code-syntax.css';
 @import './ui/css/code-blocks.css';
 @import './ui/css/code-block-popover.css';

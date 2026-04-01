@@ -59,7 +59,7 @@ export const SourceViewPlugin = {
                 } else {
                     formatted += node;
                 }
-            } else if (node.match(/^<\w[^>]*[^\/]>$/)) { // Opening tag
+            } else if (node.match(/^<\w[^>]*[^/]>$/)) { // Opening tag
                 const tagName = node.match(/^<(\w+)/)?.[1] || '';
                 const isProtected = protectedTags.test(tagName);
 

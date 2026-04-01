@@ -35,6 +35,8 @@ export function setupEmojiUI(internalEditor: LexicalEditor) {
 
     if (!emojiDialog || !emojiGrid) return;
 
+    emojiDialog.dataset.state = 'ready';
+
     let currentCategory = 'all';
 
     // Helper: Flatten all for search / all view
@@ -44,12 +46,9 @@ export function setupEmojiUI(internalEditor: LexicalEditor) {
         emojiGrid!.innerHTML = '';
 
         // Determine source list
-        let source: string[] = [];
-        if (currentCategory === 'all') {
-            source = getAllEmojis();
-        } else {
-            source = EMOJI_CATEGORIES[currentCategory] || [];
-        }
+        const source = currentCategory === 'all'
+            ? getAllEmojis()
+            : EMOJI_CATEGORIES[currentCategory] || [];
 
         // Filter by search
         let filtered: string[] = source;
@@ -122,4 +121,8 @@ export function setupEmojiUI(internalEditor: LexicalEditor) {
             emojiDialog.classList.add('hidden');
         }
     });
+}
+
+export function toggleEmojiPicker(): void {
+    document.getElementById('emoji-btn')?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
 }
