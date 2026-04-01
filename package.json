@@ -1,7 +1,7 @@
 {
   "name": "@seyamali/aurelia-editor",
   "private": false,
-  "version": "0.1.4",
+  "version": "0.1.5",
   "type": "module",
   "description": "Aurelia Editor is a framework-agnostic rich text and CMS editor built on Lexical with export, collaboration, image, and template tools.",
   "main": "./dist/aurelia-editor.umd.cjs",
